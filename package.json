@@ -1,11 +1,24 @@
 {
-  "name": "tvtracker",
+  "name": "app",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "angular": ">=1.4 <1.7",
+    "angular-animate": ">=1.4 <1.7",
+    "angular-aria": ">=1.4 <1.7",
+    "angular-material": "^1.1.7",
+    "angular-messages": ">=1.4 <1.7",
+    "angular-route": "^1.6.9",
+    "body-parser": "1.18.2",
+    "dotenv": "^5.0.1",
+    "express": "4.16.2",
+    "isomorphic-fetch": "^2.2.1"
+  }
 }
