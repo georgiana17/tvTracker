@@ -13,8 +13,8 @@ app.get("/", function(req, res) {
   res.sendFile('index.html' , { root : path.join(__dirname, "public")});
 });
 
-var greysUrl = `https://api.themoviedb.org/3/tv/top_rated?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
-
+// var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
+var greysUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
 app.get('/topSeries', function (req, res) {
   fetch(`${greysUrl}`)
       .then(response => response.json())

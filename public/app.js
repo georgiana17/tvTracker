@@ -38,11 +38,9 @@ app.controller("AppController", function($scope,$http, $mdSidenav){
     ]
 
     $scope.getPopularTvSeries = function() {
-        var popularData = $http.get("/popular").then(function(response){
+        var popularData = $http.get("/topSeries").then(function(response){
             $scope.popularSeries = response.data.results;
-            console.log($scope.popularSeries);
         });
-        console.log(popularData)
         return popularData;
     }
     $scope.getPopularTvSeries();
@@ -58,8 +56,9 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     //     enabled: true,
     //     requireBase: false
     // });
-    $locationProvider.hashPrefix(''); 
-    
+    // $locationProvider.hashPrefix(''); 
+    $locationProvider.html5Mode(true);
+
     $routeProvider
     .when("/", {
         templateUrl: "views/main.html"
