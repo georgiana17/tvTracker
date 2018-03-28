@@ -13,6 +13,21 @@ app.get("/", function(req, res) {
   res.sendFile('index.html' , { root : path.join(__dirname, "public")});
 });
 
+app.post("/user", function(req,res){
+  var userDetail = req.body
+  var user = new User({id: userDetail.id, username: userDetail.username, password: userDetail.password})
+  
+  user.save(function(err){
+    if(err)
+      console.log(err);
+      else
+      console.log(user);
+  });
+});
+// app.get("/login", function(req, res) {
+//   res.sendFile('login.html' , { root : path.join(__dirname, "public/views")});
+// });
+
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
 var greysUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
 app.get('/topSeries', function (req, res) {
@@ -43,6 +58,9 @@ user.save(function(err){
     else
     console.log(user);
 });
+
+module.exports = User;
+
 app.listen(3000);
 
 //    background-image: radial-gradient(circle at 20% 50%, rgba(76.86%, 6.27%, 41.96%, 0.98) 0%, rgba(43.92%, 3.92%, 56.86%, 0.88) 100%);

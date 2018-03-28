@@ -18,7 +18,7 @@ app.controller("AppController", function($scope,$http, $mdSidenav){
             icon: 'date_range'
         },
         {
-            link: 'http://google.es',
+            link: '#/login',
             title: 'Settings',
             icon: 'settings'
         }
@@ -26,7 +26,7 @@ app.controller("AppController", function($scope,$http, $mdSidenav){
     ]
     $scope.userItems = [
         {
-            link: '/topSeries',
+            link: '#/topSeries',
             title: 'Top Series',
             icon: 'star'
         },
@@ -56,8 +56,8 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     //     enabled: true,
     //     requireBase: false
     // });
-    // $locationProvider.hashPrefix(''); 
-    $locationProvider.html5Mode(true);
+    $locationProvider.hashPrefix(''); 
+    // $locationProvider.html5Mode(true);
 
     $routeProvider
     .when("/", {
@@ -65,6 +65,10 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/topSeries",{
         templateUrl: "views/topRated.html"
+    })
+    .when("/login",{
+        controller: "LoginController",
+        templateUrl: "views/login.html"
     })
     
   })
