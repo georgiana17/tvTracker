@@ -22,6 +22,27 @@ app.get('/topSeries', function (req, res) {
       .catch(error => res.send(error))
 });
 
+
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/db');
+
+var usersSchema = new mongoose.Schema({
+  id: Number,
+  username: String,
+  password: String
+});
+
+var User = mongoose.model('Todo', usersSchema);
+
+var user = new User({id: 1, username:"test", password:"123456"})
+
+user.save(function(err){
+  if(err)
+    console.log(err);
+    else
+    console.log(user);
+});
 app.listen(3000);
 
 //    background-image: radial-gradient(circle at 20% 50%, rgba(76.86%, 6.27%, 41.96%, 0.98) 0%, rgba(43.92%, 3.92%, 56.86%, 0.88) 100%);
