@@ -45,12 +45,13 @@ mongoose.connect('mongodb://localhost/db');
 var usersSchema = new mongoose.Schema({
   id: Number,
   username: String,
+  email: String,
   password: String
 });
 
 var User = mongoose.model('Todo', usersSchema);
 
-var user = new User({id: 1, username:"test", password:"123456"})
+var user = new User({id: 1, username:"test", email:"test@gmail.com", password:"123456"})
 
 user.save(function(err){
   if(err)

@@ -19,8 +19,13 @@ app.controller("AppController", function($scope,$http, $mdSidenav){
         },
         {
             link: '#/login',
-            title: 'Settings',
-            icon: 'settings'
+            title: 'Login',
+            icon: 'login'
+        },
+        {
+            link: '#/signup',
+            title: 'Sign up',
+            icon: 'register'
         }
         
     ]
@@ -69,6 +74,10 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     .when("/login",{
         controller: "LoginController",
         templateUrl: "views/login.html"
+    })
+    .when("/signup",{
+        controller: "RegisterController",
+        templateUrl: "views/signup.html"
     })
     
   })
