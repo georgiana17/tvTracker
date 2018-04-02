@@ -23,6 +23,20 @@ db.open(function(){
   })
 });
 
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://127.0.0.1/db');
+
+var usersSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String
+});
+
+var User = mongoose.model('user', usersSchema);
+
+module.exports = User;
+
 app.get("/", function(req, res) {
   res.sendFile('index.html' , { root : path.join(__dirname, "public")});
 });
@@ -41,16 +55,21 @@ app.post("/user", function(req,res){
 
 app.get('/users', function (req, res) {
   db.users.find({}).toArray(function(err, result) {
-      if (err) throw err;
-        console.log(result);
+      if (err) 
+        throw err;
+      else
+        res.json(result);
+      
       db.close();
   });
 });
 
 app.get('/users/:username', function (req, res) {
-  db.users.find({username: req.params.username}).toArray(function(err, result) {
-      if (err) throw err;
-        console.log(result);
+  db.users.find({"username": req.params.username}).toArray(function(err, result) {
+      if (err) 
+        res.send(err);
+      else
+        res.json(result);
       db.close();
   });
 });
@@ -65,17 +84,6 @@ app.get('/topSeries', function (req, res) {
 });
 
 
-var mongoose = require('mongoose');
-
-mongoose.connect('mongodb://localhost/db');
-
-var usersSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String
-});
-
-var User = mongoose.model('user', usersSchema);
 
 //  var user = new User({username:"test", email:"ggg@gmail.com", password:"123456"})
 
@@ -86,7 +94,6 @@ var User = mongoose.model('user', usersSchema);
 //     console.log(user);
 // });
 
-module.exports = User;
 
 app.listen(3000);
 

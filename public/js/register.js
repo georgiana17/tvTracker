@@ -4,32 +4,40 @@ app.controller("RegisterController", function($scope, $http, $location){
     var vm = this;
 
     vm.getAllUsers = function($scope){
-        return $http.get("/users").then(function(response){
+        var users = $http.get("/users").then(function(response){
             return response.data;
         });
+        return users;
     };
 
     vm.getByUsername = function(username){
-        console.log("aaaaa");
-        return $http.get("/users/" + username).then(function(response){
+        var data = $http.get("/users/" + username).then(function(response){
             return response.data;
         });
+
+        return data;
     };
 
-    console.log(vm.getAllUsers());
-
+    vm.getByUsername("test123");
     $scope.signup = function($scope) {
-        var userByName = vm.getByUsername(Form.username.value);
-        console.log(userByName);
-        vm.userData = {'username': Form.username.value,'email': Form.email.value, 'password': Form.newPassword.value};
+        vm.userByName = vm.getByUsername(Form.username.value);
+        console.log(vm.userByName);
+        
+        if(vm.userByName.$$state.value.length != null){
+            console.log("User already exists in database.")
+        } else {
+            vm.userData = {'username': Form.username.value,'email': Form.email.value, 'password': Form.newPassword.value};
 
-        $http.post("/user", vm.userData)
-            .then(function(result){
-            },function(result) {
-            $scope.serverError=result;
-        });
-        console.log($location.path())
-        $location.path("/login")
+            $http.post("/user", vm.userData)
+                .then(function(result){
+                },function(result) {
+                $scope.serverError=result;
+            });
+            console.log($location.path())
+            // $location.path("/login")
+        }
+
+        
     }
 
 });
