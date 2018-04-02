@@ -9,6 +9,20 @@ require('dotenv').config({path: 'access_keys.env'})
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
 
+var Db = require('mongodb').Db;
+var Connection = require('mongodb').Connection;
+var Server = require('mongodb').Server;
+var ObjectId = require('mongodb').ObjectId;
+
+var db = new Db('db', new Server("127.0.0.1", 27017, {safe: true}, {auto_reconnect: true}, {}));
+db.open(function(){
+  console.log("[INFO] MongoDB is opened");
+
+  db.collection("users", function(error, users) {
+    db.users = users;
+  })
+});
+
 app.get("/", function(req, res) {
   res.sendFile('index.html' , { root : path.join(__dirname, "public")});
 });
@@ -22,6 +36,22 @@ app.post("/user", function(req,res){
       console.log(err);
       else
       console.log(user);
+  });
+});
+
+app.get('/users', function (req, res) {
+  db.users.find({}).toArray(function(err, result) {
+      if (err) throw err;
+        console.log(result);
+      db.close();
+  });
+});
+
+app.get('/users/:username', function (req, res) {
+  db.users.find({username: req.params.username}).toArray(function(err, result) {
+      if (err) throw err;
+        console.log(result);
+      db.close();
   });
 });
 
