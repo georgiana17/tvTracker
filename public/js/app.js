@@ -1,4 +1,4 @@
-var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute'])
+var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages'])
 app.controller("AppController", function($scope,$http, $mdSidenav){
     $scope.firstName = "TvTracker";
     $scope.menuItems = [

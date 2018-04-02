@@ -24,9 +24,6 @@ app.post("/user", function(req,res){
       console.log(user);
   });
 });
-// app.get("/login", function(req, res) {
-//   res.sendFile('login.html' , { root : path.join(__dirname, "public/views")});
-// });
 
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
 var greysUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
@@ -43,22 +40,21 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/db');
 
 var usersSchema = new mongoose.Schema({
-  id: Number,
   username: String,
   email: String,
   password: String
 });
 
-var User = mongoose.model('Todo', usersSchema);
+var User = mongoose.model('user', usersSchema);
 
-var user = new User({id: 1, username:"test", email:"test@gmail.com", password:"123456"})
+//  var user = new User({username:"test", email:"ggg@gmail.com", password:"123456"})
 
-user.save(function(err){
-  if(err)
-    console.log(err);
-    else
-    console.log(user);
-});
+// user.save(function(err){
+//   if(err)
+//     console.log(err);
+//     else 
+//     console.log(user);
+// });
 
 module.exports = User;
 
