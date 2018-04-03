@@ -3,27 +3,34 @@ var app = express();
 var path = require("path");
 var bodyParser = require("body-parser");
 var fetch = require('isomorphic-fetch');
+var mongoose = require('mongoose');
+
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+  next();
+});
 
 require('dotenv').config({path: 'access_keys.env'})
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
 
-var Db = require('mongodb').Db;
-var Connection = require('mongodb').Connection;
-var Server = require('mongodb').Server;
-var ObjectId = require('mongodb').ObjectId;
+// var Db = require('mongodb').Db;
+// var Connection = require('mongodb').Connection;
+// var Server = require('mongodb').Server;
+// var ObjectId = require('mongodb').ObjectId;
 
-var db = new Db('db', new Server("127.0.0.1", 27017, {safe: true}, {auto_reconnect: true}, {}));
-db.open(function(){
-  console.log("[INFO] MongoDB is opened");
+// var db = new Db('db', new Server("127.0.0.1", 27017, {safe: true}, {auto_reconnect: true}, {}));
+// db.open(function(){
+//   console.log("[INFO] MongoDB is opened");
 
-  db.collection("users", function(error, users) {
-    db.users = users;
-  })
-});
+//   db.collection("users", function(error, users) {
+//     db.users = users;
+//   })
+// });
 
-var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://127.0.0.1/db');
 
@@ -54,23 +61,18 @@ app.post("/user", function(req,res){
 });
 
 app.get('/users', function (req, res) {
-  db.users.find({}).toArray(function(err, result) {
-      if (err) 
-        throw err;
-      else
-        res.json(result);
-      
-      db.close();
+  User.find((err, users) => {
+    if(err) 
+      return res.status(500).send(err);
+      return res.status(200).send(users);
   });
 });
 
-app.get('/users/:username', function (req, res) {
-  db.users.find({"username": req.params.username}).toArray(function(err, result) {
-      if (err) 
-        res.send(err);
-      else
-        res.json(result);
-      db.close();
+app.get('/users/:userName', function (req, res) {
+  User.find({"username": req.params.userName}, (err, users) => {
+    if(err) 
+      return res.status(500).send(err);
+      return res.status(200).send(users);
   });
 });
 

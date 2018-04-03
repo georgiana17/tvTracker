@@ -4,40 +4,35 @@ app.controller("RegisterController", function($scope, $http, $location){
     var vm = this;
 
     vm.getAllUsers = function($scope){
-        var users = $http.get("/users").then(function(response){
+        var users = $http.get("/users", {timeout: 3000}).then(function(response){
             return response.data;
         });
         return users;
     };
 
     vm.getByUsername = function(username){
-        var data = $http.get("/users/" + username).then(function(response){
+        var data = $http.get("/users/" + username, {timeout: 3000}).then(function(response){
             return response.data;
         });
 
         return data;
     };
 
-    vm.getByUsername("test123");
+    // vm.userByName = vm.getByUsername("geo");
+
     $scope.signup = function($scope) {
-        vm.userByName = vm.getByUsername(Form.username.value);
-        console.log(vm.userByName);
-        
-        if(vm.userByName.$$state.value.length != null){
-            console.log("User already exists in database.")
-        } else {
-            vm.userData = {'username': Form.username.value,'email': Form.email.value, 'password': Form.newPassword.value};
-
-            $http.post("/user", vm.userData)
-                .then(function(result){
-                },function(result) {
-                $scope.serverError=result;
-            });
-            console.log($location.path())
-            // $location.path("/login")
-        }
-
-        
+        var promise = vm.getByUsername(Form.username.value).then(function(answer){
+            if(answer.length >= 1) {
+                console.log("User already exists in database.");
+            } else {
+                vm.userData = {'username': Form.username.value, 'email': Form.email.value, 'password': Form.newPassword.value};
+    
+                $http.post("/user", vm.userData)
+                    .then(function(result){
+                    },function(result) {});
+                // $location.path("/login")
+            }
+        });
     }
 
 });

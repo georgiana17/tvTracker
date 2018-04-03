@@ -8,16 +8,18 @@
         </md-toolbar>
         <md-card-content>
             <form name="Form">
-                <md-input-container class="md-block">
+                <md-input-container class="md-block md-icon-left" flex>
                     <label for="username">Username</label>
+                    <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="account_circle" ></ng-md-icon></md-icon>
                     <input type="text" name="username" ng-model="username" placeholder="Username" required minlength="5"/>
                     <div ng-messages="Form.username.$error" role="alert" multiple="">
                         <div ng-message="required">Required.</div>
-                        <div ng-message="minlength">Username too short.</div>
+                        <div ng-message="minlength">Too short.</div>
                     </div>
                 </md-input-container>
                 <md-input-container class="md-block">
                     <label for="email">Email</label>
+                    <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="email" ></ng-md-icon></md-icon>
                     <input type="email" name="email" ng-model="email" placeholder="Email" required/>
                     <div ng-messages="Form.email.$error" role="alert" multiple="">
                         <div ng-message="required">Required.</div>
@@ -26,6 +28,7 @@
                 </md-input-container>
                 <md-input-container class="md-block">
                     <label for="newPassword">Password</label>
+                    <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="vpn_key" ></ng-md-icon></md-icon>
                     <input type="password" name="newPassword" ng-model="newPassword" placeholder="Password" required ng-minlength="7"/>
                     <div ng-messages="Form.newPassword.$error" role="alert" multiple="">
                         <div ng-message="required">Required.</div>
@@ -34,6 +37,7 @@
                 </md-input-container>
                 <md-input-container class="md-block">
                     <label for="newPasswordConfirm">Confirm Password</label>
+                    <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="vpn_key" ></ng-md-icon></md-icon>
                     <input type="password" name="newPasswordConfirm" ng-model="newPasswordConfirm" placeholder="Confirm Password" required pw-check="{{newPassword}}"/>
                     <div ng-messages="Form.newPasswordConfirm.$error" role="alert" multiple="">
                         <div ng-message="noMatch">Passwords do not match.</div>
