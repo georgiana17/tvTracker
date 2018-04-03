@@ -1,21 +1,43 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("LoginController", function($scope, $http, $window, auth, session){
+app.controller("LoginController", function($scope, $http, $window, auth, session, $mdDialog){
     var vm = this;
     vm.userData = "";
-    console.log(session.setUser("georgy17"));
-    console.log(session.getUser());
-    console.log(auth.isLoggedIn());
     $scope.signin = function($scope) {
-        $http.get("/users/" + Form.username.value).then(function(response){
-            if(response.data.length != 0) {
-                // console.log("Username " + response.data[0].username + " exists in database.");
-                console.log($window.localStorage);
-                $window.localStorage.setItem("storeUser", response.data[0].username);
-
+        vm.failed = false;
+        $http.get("/login/" + Form.username.value + "/" + Form.newPassword.value).then(function(response){
+            console.log(response.data);
+            if(response.data.length != 0){
+                if(response.data.userData.length != 0 && response.data.passwordMatch == true) {
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                        .parent(angular.element(document.querySelector('#popupContainer')))
+                        .clickOutsideToClose(true)
+                        .title('Success')
+                        .textContent('User is now connected!')
+                        .ariaLabel('Alert Dialog Demo')
+                        .ok('Got it!')
+                    );
+                } else {
+                    vm.failed = true;
+                }
             } else {
-                console.log("Username does not exist.")
+                vm.failed = true;
+            }
+
+            if(vm.failed == true) {
+                $mdDialog.show(
+                    $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Error')
+                    .textContent('Username or password incorrect!')
+                    .ariaLabel('Alert Dialog Demo')
+                    .ok('Got it!')
+                );
             }
         });
+
+        
     }
 });

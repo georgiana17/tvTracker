@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("RegisterController", function($scope, $http, $location){
+app.controller("RegisterController", function($scope, $http, $location, $mdDialog){
     var vm = this;
 
     vm.getAllUsers = function($scope){
@@ -18,19 +18,51 @@ app.controller("RegisterController", function($scope, $http, $location){
         return data;
     };
 
+    vm.getByEmail = function(email){
+        var data = $http.get("/email/" + email, {timeout: 3000}).then(function(response){
+            return response.data;
+        });
+
+        return data;
+    };
+
     // vm.userByName = vm.getByUsername("geo");
 
     $scope.signup = function($scope) {
         var promise = vm.getByUsername(Form.username.value).then(function(answer){
             if(answer.length >= 1) {
-                console.log("User already exists in database.");
+                $mdDialog.show(
+                    $mdDialog.alert()
+                      .parent(angular.element(document.querySelector('#popupContainer')))
+                      .clickOutsideToClose(true)
+                      .title('Error')
+                      .textContent('User already exists in database.')
+                      .ariaLabel('Alert Dialog Demo')
+                      .ok('Got it!')
+                  );
             } else {
-                vm.userData = {'username': Form.username.value, 'email': Form.email.value, 'password': Form.newPassword.value};
+                var promise = vm.getByEmail(Form.email.value).then(function(response){
+                    if (response.length >= 1) {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                              .parent(angular.element(document.querySelector('#popupContainer')))
+                              .clickOutsideToClose(true)
+                              .title('Error')
+                              .textContent('Email already used.')
+                              .ariaLabel('Alert Dialog Demo')
+                              .ok('Got it!')
+                          );
+                    } else {
+                        
+                        
+                        vm.userData = {'username': Form.username.value, 'email': Form.email.value, 'password': Form.newPassword.value};
     
-                $http.post("/user", vm.userData)
-                    .then(function(result){
-                    },function(result) {});
-                // $location.path("/login")
+                        $http.post("/user", vm.userData)
+                            .then(function(result){
+                            },function(result) {});
+                        // $location.path("/login")
+                    }
+                });                
             }
         });
     }

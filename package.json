@@ -16,6 +16,7 @@
     "angular-material": "^1.1.7",
     "angular-messages": ">=1.4 <1.7",
     "angular-route": "^1.6.9",
+    "bcrypt": "^1.0.3",
     "body-parser": "1.18.2",
     "dotenv": "^5.0.1",
     "express": "4.16.2",

@@ -48,16 +48,25 @@ app.get("/", function(req, res) {
   res.sendFile('index.html' , { root : path.join(__dirname, "public")});
 });
 
+var bcrypt = require("bcrypt");
+const saltRounds = 10;
+
+
 app.post("/user", function(req,res){
-  var userDetail = req.body
-  var user = new User({id: userDetail.id, username: userDetail.username, password: userDetail.password})
-  
-  user.save(function(err){
-    if(err)
-      console.log(err);
-      else
-      console.log(user);
-  });
+  var userDetail = req.body;
+    bcrypt.genSalt(saltRounds, function(err,salt){
+      bcrypt.hash(userDetail.password, salt, function(err, hash){
+        var user = new User({id: userDetail.id, username: userDetail.username, email:userDetail.email, password: hash})
+        
+        user.save(function(err){
+          if(err)
+            console.log(err);
+            else
+            console.log("User successfully saved!");
+        });
+      })
+    });
+ 
 });
 
 app.get('/users', function (req, res) {
@@ -73,6 +82,32 @@ app.get('/users/:userName', function (req, res) {
     if(err) 
       return res.status(500).send(err);
       return res.status(200).send(users);
+  });
+});
+
+app.get('/email/:email', function (req, res) {
+  User.find({"email": req.params.email}, (err, email) => {
+    if(err) 
+      return res.status(500).send(err);
+      return res.status(200).send(email);
+  });
+});
+
+app.get('/login/:userName/:password', function (req, res) {
+  User.find({"username": req.params.userName}, (err, users) => {
+    if(err) 
+      return res.status(500).send();
+    else {
+        if(users.length != 0) {
+          bcrypt.compare(req.params.password, users[0].password, function(err, resp){
+            var data = {userData: users, passwordMatch: resp};
+            return res.status(200).send(data);
+          });
+        }
+        else {
+          res.status(200).send(users);
+        }
+      }
   });
 });
 
