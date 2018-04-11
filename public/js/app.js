@@ -4,8 +4,8 @@ app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, au
     $scope.loggedIn = false;
     $scope.getUser = function(){
         if(auth.isLoggedIn()){
-            $scope.username = JSON.parse(session.getUser());
-            console.log($scope.username)
+            $scope.user = JSON.parse(session.getUser());
+            console.log($scope.user)
             $scope.loggedIn = true;
         }
     }
