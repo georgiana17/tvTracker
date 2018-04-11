@@ -111,6 +111,10 @@ app.get('/login/:userName/:password', function (req, res) {
   });
 });
 
+app.post('logout', function(req,res){
+  
+});
+
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
 var greysUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
 app.get('/topSeries', function (req, res) {

@@ -3,7 +3,7 @@ var app = angular.module('tvTracker');
 app.service("auth", function($http, session){
 
     this.isLoggedIn = function isLoggedIn(){
-        return session.getUser() !== null;
+        return JSON.parse(session.getUser()) !== null;
     };
 
     this.signIn = function(credentials){

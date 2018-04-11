@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("LoginController", function($scope, $http, $window, auth, session, $mdDialog, $location){
+app.controller("LoginController", function($scope, $http, $window, auth, session, $mdDialog, $location, $route){
     var vm = this;
     vm.userData = "";
     $scope.signin = function($scope) {

@@ -1,5 +1,5 @@
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages'])
-app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, auth, session){
+app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, $location, auth, session){
     $scope.appName = "TvTracker";
     $scope.loggedIn = false;
     $scope.getUser = function(){
@@ -8,6 +8,12 @@ app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, au
             console.log($scope.user)
             $scope.loggedIn = true;
         }
+    }
+
+    $scope.signout = function(){
+        session.destroy();
+        $location.path("/login");
+        $scope.loggedIn = false;
     }
 
     $scope.getUser();
@@ -66,9 +72,11 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
       .primaryPalette('deep-purple')
       .accentPalette('orange');
 
-    $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
-    $mdIconProvider.fontSet('md', 'material-icons');
-
+    // $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
+    $mdIconProvider
+        .iconSet('logout', 'images/logout.svg', 24)
+        .fontSet('md', 'material-icons')
+        .defaultIconSet('images/logout.svg', 24);
     // $locationProvider.html5Mode({
     //     enabled: true,
     //     requireBase: false

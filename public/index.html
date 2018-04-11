@@ -32,16 +32,21 @@
 <body  ng-controller="AppController" ng-cloak>
 	<div layout="column" class="relative" layout-fill role="main">
 		<md-toolbar class="md-theme md-toolbar-tools">
-			<h1 class="md-toolbar-tools">{{appName}}</h1>
+			<h1>{{appName}}</h1>
+
 			<span flex></span>
-			<md-button class="md-toolbar-actions">
+
+			<md-button ng-show="loggedIn" class="md-toolbar-actions">
 				<md-icon md-font-set="md">person</md-icon>
 				<span class="inset">{{user}}</span>
 			</md-button>
-			<md-button>
+			<md-button class="md-toolbar-actions">
 				<md-icon md-font-set="md">search</md-icon>
 				<span class="inset">Search</span>
 			</md-button>
+			<md-button ng-show="loggedIn" class="md-toolbar-actions" ng-click="signout()">
+				<md-icon md-svg-src="images/logout.svg" aria-label="android "></md-icon>
+				<span class="inset">Logout</span>
 		</md-toolbar>
 	
 		<div layout="row" style="height:100%">
