@@ -1,6 +1,17 @@
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages'])
-app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog){
-    $scope.firstName = "TvTracker";
+app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, auth, session){
+    $scope.appName = "TvTracker";
+    $scope.loggedIn = false;
+    $scope.getUser = function(){
+        if(auth.isLoggedIn()){
+            $scope.username = JSON.parse(session.getUser());
+            console.log($scope.username)
+            $scope.loggedIn = true;
+        }
+    }
+
+    $scope.getUser();
+
     $scope.menuItems = [
         {
             link: '/',
@@ -56,6 +67,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
       .accentPalette('orange');
 
     $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
+    $mdIconProvider.fontSet('md', 'material-icons');
 
     // $locationProvider.html5Mode({
     //     enabled: true,

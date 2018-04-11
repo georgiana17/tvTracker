@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("LoginController", function($scope, $http, $window, auth, session, $mdDialog){
+app.controller("LoginController", function($scope, $http, $window, auth, session, $mdDialog, $location){
     var vm = this;
     vm.userData = "";
     $scope.signin = function($scope) {
@@ -9,15 +9,8 @@ app.controller("LoginController", function($scope, $http, $window, auth, session
             console.log(response.data);
             if(response.data.length != 0){
                 if(response.data.userData.length != 0 && response.data.passwordMatch == true) {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                        .parent(angular.element(document.querySelector('#popupContainer')))
-                        .clickOutsideToClose(true)
-                        .title('Success')
-                        .textContent('User is now connected!')
-                        .ariaLabel('Alert Dialog Demo')
-                        .ok('Got it!')
-                    );
+                    session.setUser(Form.username.value);
+                    $location.path("/");
                 } else {
                     vm.failed = true;
                 }
