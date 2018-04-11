@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("LoginController", function($scope, $http, $window, auth, session, $mdDialog, $location, $route){
+app.controller("LoginController", function($scope, $rootScope, $http, $window, auth, session, $mdDialog, $location, $route){
     var vm = this;
     vm.userData = "";
     $scope.signin = function($scope) {
@@ -11,6 +11,7 @@ app.controller("LoginController", function($scope, $http, $window, auth, session
                 if(response.data.userData.length != 0 && response.data.passwordMatch == true) {
                     session.setUser(Form.username.value);
                     $location.path("/");
+                    $rootScope.loggedIn = true;
                 } else {
                     vm.failed = true;
                 }
@@ -29,8 +30,6 @@ app.controller("LoginController", function($scope, $http, $window, auth, session
                     .ok('Got it!')
                 );
             }
-        });
-
-        
-    }
+        });        
+    }    
 });

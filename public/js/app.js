@@ -1,22 +1,22 @@
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages'])
-app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, $location, auth, session){
+app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session){
     $scope.appName = "TvTracker";
-    $scope.loggedIn = false;
-    $scope.getUser = function(){
+    $rootScope.loggedIn = false;
+    $rootScope.getUser = function(){
         if(auth.isLoggedIn()){
-            $scope.user = JSON.parse(session.getUser());
-            console.log($scope.user)
-            $scope.loggedIn = true;
+            $rootScope.user = JSON.parse(session.getUser());
+            console.log("blaaaaaaaaaaaa");
+            $rootScope.loggedIn = true;
         }
-    }
+    }    
 
     $scope.signout = function(){
         session.destroy();
         $location.path("/login");
-        $scope.loggedIn = false;
+        $rootScope.loggedIn = false;
     }
 
-    $scope.getUser();
+    $rootScope.getUser();
 
     $scope.menuItems = [
         {
@@ -33,16 +33,6 @@ app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, $l
             link: 'http://google.es',
             title: 'Calendar',
             icon: 'date_range'
-        },
-        {
-            link: '#/login',
-            title: 'Login',
-            icon: 'login'
-        },
-        {
-            link: '#/signup',
-            title: 'Sign up',
-            icon: 'register'
         }
         
     ]
@@ -66,6 +56,13 @@ app.controller("AppController", function($scope,$http, $mdSidenav, $mdDialog, $l
         return popularData;
     }
     $scope.getPopularTvSeries();
+
+    var tvShows = [1412, 1418, 60735, 1622];
+    $http.get("/randomImage/60735").then(function(response){
+        console.log("https://image.tmdb.org/t/p/original/"+response.data.backdrop_path);
+        $scope.backgroundImage = "https://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
+    });
+
    })
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
     $mdThemingProvider.theme('default')

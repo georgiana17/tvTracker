@@ -1,6 +1,5 @@
-<div ng-app="tvTracker">
-    <md-content layout="row" layout-align="space-around" layout-padding="layout-padding" ng-cloak="ng-cloak">
-        <md-card flex="flex" flex-gt-sm="50" flex-gt-md="33">
+<md-content ng-app="tvTracker" layout="row" layout-padding="layout-padding" ng-cloak="ng-cloak" style="display:contents">
+    <md-card  flex="flex" flex-offset="33" flex-gt-sm="50" flex-gt-md="33">
         <md-toolbar>
             <div class="md-toolbar-tools">
             <h2><span>Sign in</span></h2>
@@ -29,7 +28,5 @@
             <md-button ng-disabled="!Form.$valid" ng-click="signin()" class="md-raised md-primary">&nbsp Login &nbsp</md-button>
             </form>
         </md-card-content>
-        </md-card>
-    </md-content>    
-</div>
-
+    </md-card>
+</md-content>

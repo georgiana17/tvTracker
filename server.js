@@ -17,21 +17,6 @@ require('dotenv').config({path: 'access_keys.env'})
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
 
-// var Db = require('mongodb').Db;
-// var Connection = require('mongodb').Connection;
-// var Server = require('mongodb').Server;
-// var ObjectId = require('mongodb').ObjectId;
-
-// var db = new Db('db', new Server("127.0.0.1", 27017, {safe: true}, {auto_reconnect: true}, {}));
-// db.open(function(){
-//   console.log("[INFO] MongoDB is opened");
-
-//   db.collection("users", function(error, users) {
-//     db.users = users;
-//   })
-// });
-
-
 mongoose.connect('mongodb://127.0.0.1/db');
 
 var usersSchema = new mongoose.Schema({
@@ -109,6 +94,15 @@ app.get('/login/:userName/:password', function (req, res) {
         }
       }
   });
+});
+
+app.get('/randomImage/:id', function(req, res){
+  var imageUrl = `https://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}&language=en-US`;
+  fetch(`${imageUrl}`)
+      .then(response => response.json())
+      .then(image => res.send(image))
+      .catch(error => res.send(error))
+  
 });
 
 app.post('logout', function(req,res){
