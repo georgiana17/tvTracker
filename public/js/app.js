@@ -2,10 +2,10 @@ var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMess
 app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session){
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
-    $rootScope.getUser = function(){
+    $rootScope.getUser = function() {
         if(auth.isLoggedIn()){
             $rootScope.user = JSON.parse(session.getUser());
-            console.log("blaaaaaaaaaaaa");
+            console.log($rootScope.user + "ssss");
             $rootScope.loggedIn = true;
         }
     }    
@@ -14,40 +14,58 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         session.destroy();
         $location.path("/login");
         $rootScope.loggedIn = false;
+        $rootScope.update();
     }
-
+    
     $rootScope.getUser();
 
-    $scope.menuItems = [
-        {
-            link: '/',
-            title: 'Home',
-            icon: 'home'
-        },
-        {
-            link: 'http://google.es',
-            title: 'My TV Shows',
-            icon: 'favorite'
-        },
-        {
-            link: 'http://google.es',
-            title: 'Calendar',
-            icon: 'date_range'
-        }
+
+    $rootScope.update = function(){
+
+        $scope.menuItems = [
+            {
+                link: '/',
+                title: 'Home',
+                icon: 'home',
+                logged: true
+            },
+            {
+                link: 'http://google.es',
+                title: 'My TV Shows',
+                icon: 'favorite',
+                logged: $rootScope.loggedIn
+            },
+            {
+                link: 'http://google.es',
+                title: 'Calendar',
+                icon: 'date_range',
+                logged: $rootScope.loggedIn
+            }
+        ]
+        $scope.userItems = [
+            {
+                link: '#/topSeries',
+                title: 'Top Series',
+                icon: 'star',
+                logged: true
+            },
+            {
+                link: 'http://google.es',
+                title: 'Recommendations',
+                icon: 'thumb_up',
+                logged: $rootScope.loggedIn
+            },
+            {
+                link: '#/login',
+                title: 'Login/Sign up',
+                icon: 'login',
+                logged: !$rootScope.loggedIn
+            }
+        ]
         
-    ]
-    $scope.userItems = [
-        {
-            link: '#/topSeries',
-            title: 'Top Series',
-            icon: 'star'
-        },
-        {
-            link: 'http://google.es',
-            title: 'Recommendations',
-            icon: 'thumb_up'
-        }
-    ]
+    }
+
+    $rootScope.update();
 
     $scope.getPopularTvSeries = function() {
         var popularData = $http.get("/topSeries").then(function(response){
@@ -57,11 +75,11 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     }
     $scope.getPopularTvSeries();
 
-    var tvShows = [1412, 1418, 60735, 1622];
-    $http.get("/randomImage/60735").then(function(response){
-        console.log("https://image.tmdb.org/t/p/original/"+response.data.backdrop_path);
-        $scope.backgroundImage = "https://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
-    });
+    // var tvShows = [1412, 1418, 60735, 1622];
+    // $http.get("/randomImage/60735").then(function(response){
+    //     console.log("https://image.tmdb.org/t/p/original/"+response.data.backdrop_path);
+    //     $scope.backgroundImage = "https://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
+    // });
 
    })
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
@@ -96,5 +114,8 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "RegisterController",
         templateUrl: "views/signup.html"
     })
-    
-  })
+    .when("/show/:id",{
+        controller: "ShowController",
+        templateUrl: "views/show.html"
+    })
+  });

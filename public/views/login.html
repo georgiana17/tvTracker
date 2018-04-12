@@ -7,26 +7,30 @@
         </md-toolbar>
         <md-card-content>
             <form name="Form">
-            <md-input-container class="md-block">
-                <label for="username">Username</label>
-                <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="account_circle" ></ng-md-icon></md-icon>
-                <input type="text" name="username" ng-model="username" placeholder="Username" required minlength="5"/>
-                <div ng-messages="Form.username.$error" role="alert" multiple="">
-                    <div ng-message="required">Required.</div>
-                    <div ng-message="minlength">Too short.</div>
-                </div>
-            </md-input-container>
-            <md-input-container class="md-block">
-                <label for="newPassword">Password</label>
-                <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="vpn_key" ></ng-md-icon></md-icon>
-                <input type="password" name="newPassword" ng-model="newPassword" placeholder="Password" required ng-minlength="7"/>
-                <div ng-messages="Form.newPassword.$error" role="alert" multiple="">
-                    <div ng-message="required">Required.</div>
-                    <div ng-message="minlength">Too short.</div>
-                </div>
-            </md-input-container>
-            <md-button ng-disabled="!Form.$valid" ng-click="signin()" class="md-raised md-primary">&nbsp Login &nbsp</md-button>
+                <md-input-container class="md-block">
+                    <label for="username">Username</label>
+                    <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="account_circle" ></ng-md-icon></md-icon>
+                    <input type="text" name="username" ng-model="username" placeholder="Username" required minlength="5"/>
+                    <div ng-messages="Form.username.$error" role="alert" multiple="">
+                        <div ng-message="required">Required.</div>
+                        <div ng-message="minlength">Too short.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label for="newPassword">Password</label>
+                    <md-icon class="material-icons" style="top:4px!important"><ng-md-icon icon="vpn_key" ></ng-md-icon></md-icon>
+                    <input type="password" name="newPassword" ng-model="newPassword" placeholder="Password" required ng-minlength="7"/>
+                    <div ng-messages="Form.newPassword.$error" role="alert" multiple="">
+                        <div ng-message="required">Required.</div>
+                        <div ng-message="minlength">Too short.</div>
+                    </div>
+                </md-input-container>
+                <md-button ng-disabled="!Form.$valid" ng-click="signin()" class="md-raised md-primary">&nbsp Login &nbsp</md-button>
             </form>
+            <footer style="float:right">
+                <p class="md-body-1" style="color:grey">Not a member?</p>
+                <p class="md-body-1">Create an account <a ng-href="#/signup">here</a></p>
+            </footer>
         </md-card-content>
     </md-card>
 </md-content>

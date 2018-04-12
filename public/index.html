@@ -24,6 +24,9 @@
 	<script src="./js/app.js"></script>
 	<script src="./js/controllers/login.js"></script>
 	<script src="./js/controllers/register.js"></script>
+	<script src="./js/controllers/show.js"></script>
+
+
 	<script src="./js/services/localStorage.js"></script>
 	<script src="./js/services/session.js"></script>
 	<script src="./js/services/auth.js"></script>
@@ -53,7 +56,7 @@
 		<div layout="row" style="height:100%">
 			<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%" md-is-locked-open="$mdMedia('gt-md')">
 				<md-list>
-					<md-list-item md-ink-ripple ng-repeat="item in menuItems">
+					<md-list-item md-ink-ripple ng-repeat="item in menuItems" ng-show="item.logged">
 						<a ng-href="{{item.link}}">
 							<md-item-content layout="row" layout-align="start center">
 								<div class="inset">
@@ -64,7 +67,7 @@
 						</a>
 					</md-list-item>
 					<md-divider></md-divider>
-					<md-list-item md-ink-ripple ng-repeat="item in userItems">
+					<md-list-item md-ink-ripple ng-repeat="item in userItems" ng-show="item.logged">
 						<a ng-href="{{item.link}}">
 							<md-item-content layout="row" layout-align="start center">
 								<div class="inset">
@@ -74,30 +77,11 @@
 							</md-item-content>
 						</a>
 					</md-list-item>
-					<md-list-item ng-show="!loggedIn">
-						<a ng-href="#/signup">
-							<md-item-content layout="row" layout-align="start center">
-								<div class="inset">
-									<ng-md-icon icon="x"></ng-md-icon>
-								</div>
-								<div class="inset">Sign Up</div>
-							</md-item-content>
-						</a>
-					</md-list-item>
-					<md-list-item ng-show="!loggedIn">
-						<a ng-href="#/login">
-							<md-item-content layout="row" layout-align="start center">
-								<div class="inset">
-									<ng-md-icon icon="login"></ng-md-icon>
-								</div>
-								<div class="inset">Login</div>
-							</md-item-content>
-						</a>
-					</md-list-item>
 				</md-list>
 			</md-sidenav>
 			<!-- <md-content ng-view flex layout-padding ng-style="{'background-image':'url({{backgroundImage}})'}">	 -->
-			<md-content ng-view flex layout-padding ng-style="{'background-image':'url(https://image.tmdb.org/t/p/original//mmxxEpTqVdwBlu5Pii7tbedBkPC.jpg)', 'background-size':'cover', 'background-position':'inherit'}">				
+					<!-- ng-style="{'background-image':'url(https://image.tmdb.org/t/p/original//mmxxEpTqVdwBlu5Pii7tbedBkPC.jpg)', 'background-size':'cover', 'background-position':'inherit'}" -->
+			<md-content ng-view flex >				
 				
 			</md-content>
 		</div>

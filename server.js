@@ -105,8 +105,12 @@ app.get('/randomImage/:id', function(req, res){
   
 });
 
-app.post('logout', function(req,res){
-  
+app.get('/show/:id', function(req,res){
+  var showDetail = `https://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
+  fetch(`${showDetail}`)
+      .then(response => response.json())
+      .then(info => res.send(info))
+      .catch(error => res.send(error))
 });
 
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;

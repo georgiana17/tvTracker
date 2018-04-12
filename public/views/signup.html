@@ -1,6 +1,6 @@
 <div ng-app="tvTracker">
-    <md-content layout="row" layout-align="space-around" layout-padding="layout-padding" ng-cloak="ng-cloak">
-        <md-card flex="flex" flex-gt-sm="50" flex-gt-md="33">
+    <md-content layout="row" layout-align="space-around" layout-padding="layout-padding" ng-cloak="ng-cloak" style="display:contents">
+        <md-card flex="flex" flex-offset="33" flex-gt-sm="50" flex-gt-md="33">
         <md-toolbar>
             <div class="md-toolbar-tools">
             <h2><span>Create account</span></h2>
@@ -46,6 +46,10 @@
                 </md-input-container>
                 <md-button ng-disabled="!Form.$valid" ng-click="signup()" class="md-raised md-primary">&nbsp Register &nbsp</md-button>
             </form>
+            <footer style="float:right">
+                <p class="md-body-1" style="color:grey">Already a member?</p>
+                <p class="md-body-1">Log in in your account <a ng-href="#/login">here</a></p>
+            </footer>
         </md-card-content>
         </md-card>
     </md-content>    

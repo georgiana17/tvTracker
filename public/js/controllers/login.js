@@ -6,12 +6,13 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
     $scope.signin = function($scope) {
         vm.failed = false;
         $http.get("/login/" + Form.username.value + "/" + Form.newPassword.value).then(function(response){
-            console.log(response.data);
             if(response.data.length != 0){
                 if(response.data.userData.length != 0 && response.data.passwordMatch == true) {
                     session.setUser(Form.username.value);
                     $location.path("/");
                     $rootScope.loggedIn = true;
+                    $rootScope.user = Form.username.value;
+                    $rootScope.update();
                 } else {
                     vm.failed = true;
                 }

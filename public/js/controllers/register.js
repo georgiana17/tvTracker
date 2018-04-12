@@ -53,8 +53,6 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
                               .ok('Got it!')
                           );
                     } else {
-                        
-                        
                         vm.userData = {'username': Form.username.value, 'email': Form.email.value, 'password': Form.newPassword.value};
     
                         $http.post("/user", vm.userData)
