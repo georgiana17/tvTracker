@@ -85,8 +85,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
     $mdThemingProvider.theme('default')
       .primaryPalette('deep-purple')
-      .accentPalette('orange');
-
+      .accentPalette('pink');
     // $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
     $mdIconProvider
         .iconSet('logout', 'images/logout.svg', 24)

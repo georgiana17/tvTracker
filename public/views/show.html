@@ -31,4 +31,38 @@
             ({{releaseYear | date:'yyyy'}})
         </h1>
     </div>
+    <div layout="row">
+        <div class="poster offset" flex-gt-md="23">
+            <img ng-src="{{posterPath}}">
+        </div>
+        <div class="offset" layout-padding flex-gt-sm="50" flex-gt-md="43">
+            <h4>{{data.name}}</h4>
+            <p style="text-align:justify" class="text-muted">{{data.overview}}</p>
+        </div>
+        <div class="offset" layout-padding flex-gt-sm="50" flex-gt-md="33">
+            <ul style="padding-left:0;list-style-type: none;">
+                <li>Network: <span class="text-muted">{{data.networks[0].name}}</span></li>
+                <li>Country: <span class="text-muted">{{data.origin_country[0]}}</span></li>
+                <li>Runtime: <span class="text-muted">{{data.episode_run_time[0]}}</span></li>
+                <li>Status: <span class="text-muted">{{data.status}}</span></li>
+            </ul>
+        </div>
+    </div>
 </div>
+
+<style>
+    .offset {
+        margin-left:8%;
+    }
+    .poster img{
+        width:150px;
+        margin-top: -50px;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 0 20px #000;
+    }
+    .text-muted {
+        color: #98a6ad;
+    }
+
+</style>

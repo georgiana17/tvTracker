@@ -4,8 +4,8 @@
             <md-card md-whiteframe="3" ng-repeat="item in popularSeries" flex-gt-xs="30" style="align-items: stretch; max-height:fit-content !important" layout-flex layout-padding>
                 <img ng-src="https://image.tmdb.org/t/p/original/{{item.backdrop_path}}" class="md-card-image" alt="{{item.name}}">
                 <md-card-title md-whiteframe="3">
-                    <md-card-title-text layout-align="start center">
-                        <span class="md-headline">{{item.name}}</span>
+                    <md-card-title-text class="hover-info" layout-align="start center">
+                        <a ng-href="#/show/{{item.id}}"><span class="md-headline">{{item.name}}</span></a>
                     </md-card-title-text>
                 </md-card-title>
                 <md-card-content layout-padding flex layout-align="center center" style="text-align: center">
@@ -13,7 +13,7 @@
                             <div class="padded" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100">								
                                 <div>{{item.vote_count}}<br/>Followers</div>						 
                             </div> 
-                            <div class="padded" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100" >
+                            <div class="padded  hover-info" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100" >
                                 <a ng-href="#/show/{{item.id}}">
                                     <ng-md-icon icon="more_horiz"></ng-md-icon> <br/>
                                     <span flex>More Info</span>
@@ -24,11 +24,11 @@
                         <div class="padded" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100" >
                             <div>{{item.first_air_date | date:'yyyy'}}</br/>Year</div>
                         </div>
-                        <div class="padded" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100" >
-                            <div>
+                        <div class="padded hover-info" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100" >
+                            <a>
                                 <ng-md-icon icon="add"></ng-md-icon> <br/>
                                 <span>Follow</span>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </md-card-content>
@@ -36,3 +36,21 @@
         </div>
     </div>
 </div>
+
+<style>
+    .hover-info {
+        color: grey;
+        fill:grey;
+    }
+    .hover-info a {
+        text-decoration: none;
+        color: grey;
+        fill:grey;
+        cursor: pointer;
+    }
+
+    .hover-info :hover {
+        color: black;
+        fill:black;
+    }
+</style>

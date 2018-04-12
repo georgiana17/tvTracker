@@ -20,6 +20,7 @@
 	
 	<script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
 
 	<script src="./js/app.js"></script>
 	<script src="./js/controllers/login.js"></script>
@@ -54,7 +55,7 @@
 		</md-toolbar>
 	
 		<div layout="row" style="height:100%">
-			<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%" md-is-locked-open="$mdMedia('gt-md')">
+			<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%; width:17%; font-size:0.9em;" md-is-locked-open="$mdMedia('gt-md')">
 				<md-list>
 					<md-list-item md-ink-ripple ng-repeat="item in menuItems" ng-show="item.logged">
 						<a ng-href="{{item.link}}">
@@ -85,11 +86,9 @@
 				
 			</md-content>
 		</div>
-	</div>
-
-		
-
+	</div>	
 </body>
+
 
 <script>
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +

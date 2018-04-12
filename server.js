@@ -5,6 +5,8 @@ var bodyParser = require("body-parser");
 var fetch = require('isomorphic-fetch');
 var mongoose = require('mongoose');
 
+
+
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -13,6 +15,8 @@ app.use(function(req, res, next) {
 });
 
 require('dotenv').config({path: 'access_keys.env'})
+var TVDB = require('node-tvdb');
+var tvdb = new TVDB(process.env.TVDB_KEY);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
@@ -106,11 +110,12 @@ app.get('/randomImage/:id', function(req, res){
 });
 
 app.get('/show/:id', function(req,res){
+  
   var showDetail = `https://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
   fetch(`${showDetail}`)
       .then(response => response.json())
       .then(info => res.send(info))
-      .catch(error => res.send(error))
+      .catch(error => res.send(error))      
 });
 
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
