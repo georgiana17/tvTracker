@@ -31,16 +31,16 @@
             ({{releaseYear | date:'yyyy'}})
         </h1>
     </div>
-    <div layout="row">
-        <div class="poster offset" flex-gt-md="23">
+    <div layout="row" layout-sm="column" layout-xs="column" >
+        <div class="poster" flex-offset="10" flex-xs-offset="0" layout="column" layout-align-xs="center center" layout-align-sm="center center">
             <img ng-src="{{posterPath}}">
         </div>
-        <div class="offset" layout-padding flex-gt-sm="50" flex-gt-md="43">
+        <div layout-padding flex-offset="10">
             <h4>{{data.name}}</h4>
             <p style="text-align:justify" class="text-muted">{{data.overview}}</p>
         </div>
-        <div class="offset" layout-padding flex-gt-sm="50" flex-gt-md="33">
-            <ul style="padding-left:0;list-style-type: none;">
+        <div layout-padding flex-offset="10">
+            <ul>
                 <li>Network: <span class="text-muted">{{data.networks[0].name}}</span></li>
                 <li>Country: <span class="text-muted">{{data.origin_country[0]}}</span></li>
                 <li>Runtime: <span class="text-muted">{{data.episode_run_time[0]}}</span></li>
@@ -48,11 +48,21 @@
             </ul>
         </div>
     </div>
+    <div class="seasons" layout-padding>
+        <ul layout="row">                
+            <li ng-repeat="season in data.seasons" layout-padding>
+                <a>
+                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}">
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <style>
-    .offset {
-        margin-left:8%;
+    ul {
+        padding-left:0;
+        list-style-type: none;
     }
     .poster img{
         width:150px;
@@ -65,4 +75,19 @@
         color: #98a6ad;
     }
 
+    .seasons ul li a img {
+        width: 150px;
+    }
+
+    .seasons ul {
+        display: inline-flex;
+    }
+
+    .seasons {
+        background-color: #dde6e9;
+        width: 100%;
+        text-align: center;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 </style>

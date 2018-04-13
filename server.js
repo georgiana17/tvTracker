@@ -15,8 +15,9 @@ app.use(function(req, res, next) {
 });
 
 require('dotenv').config({path: 'access_keys.env'})
-var TVDB = require('node-tvdb');
-var tvdb = new TVDB(process.env.TVDB_KEY);
+
+// var TVDB = require('node-tvdb');
+// var tvdb = new TVDB(process.env.TVDB_KEY);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
@@ -110,7 +111,6 @@ app.get('/randomImage/:id', function(req, res){
 });
 
 app.get('/show/:id', function(req,res){
-  
   var showDetail = `https://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
   fetch(`${showDetail}`)
       .then(response => response.json())

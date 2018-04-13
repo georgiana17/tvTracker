@@ -64,24 +64,9 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         ]
         
     }
-
+    
     $rootScope.update();
-
-    $scope.getPopularTvSeries = function() {
-        var popularData = $http.get("/topSeries").then(function(response){
-            $scope.popularSeries = response.data.results;
-        });
-        return popularData;
-    }
-    $scope.getPopularTvSeries();
-
-    // var tvShows = [1412, 1418, 60735, 1622];
-    // $http.get("/randomImage/60735").then(function(response){
-    //     console.log("https://image.tmdb.org/t/p/original/"+response.data.backdrop_path);
-    //     $scope.backgroundImage = "https://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
-    // });
-
-   })
+})
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
     $mdThemingProvider.theme('default')
       .primaryPalette('deep-purple')
@@ -103,6 +88,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         templateUrl: "views/main.html"
     })
     .when("/topSeries",{
+        controller: "ShowController",
         templateUrl: "views/topRated.html"
     })
     .when("/login",{
