@@ -50,9 +50,9 @@
     </div>
     <div class="seasons" layout-padding>
         <ul layout="row">                
-            <li ng-repeat="season in data.seasons" layout-padding>
-                <a>
-                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}">
+            <li ng-repeat="season in data.seasons | filter: displayPosterPath" layout-padding>
+                <a href ng-click="selectSeason(season)">
+                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}" ng-class="{'seasons_selected border': selected === season.id}">
                 </a>
             </li>
         </ul>
@@ -89,5 +89,13 @@
         text-align: center;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+    }
+
+    .seasons_selected {
+        border: 1px solid red;
+    }
+
+    .border {
+        border-width: 2px;
     }
 </style>

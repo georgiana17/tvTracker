@@ -21,4 +21,21 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             console.log($scope.data);
         });
     }
+
+    $scope.selected = null;
+    $scope.selectSeason = function(season) {
+        $scope.selected = season.id;
+        $http.get("/season/" + $routeParams.id + "/" + season.season_number).then(function(response){
+            console.log(response.data);
+        })
+    }
+
+    $scope.displayPosterPath = function(p) {
+        if(p.poster_path === null) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
 });

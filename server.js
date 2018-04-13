@@ -118,6 +118,14 @@ app.get('/show/:id', function(req,res){
       .catch(error => res.send(error))      
 });
 
+app.get('/season/:serie_id/:season_id', function(req,res){
+  var seasonInfo = `https://api.themoviedb.org/3/tv/${req.params.serie_id}/season/${req.params.season_id}?api_key=${process.env.TMDB_KEY}`;
+  fetch(`${seasonInfo}`)
+      .then(response => response.json())
+      .then(season => res.send(season))
+      .catch(error => res.send(error))      
+});
+
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
 var greysUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
 app.get('/topSeries', function (req, res) {
