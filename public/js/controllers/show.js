@@ -26,7 +26,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.selectSeason = function(season) {
         $scope.selected = season.id;
         $http.get("/season/" + $routeParams.id + "/" + season.season_number).then(function(response){
-            console.log(response.data);
+            //TODO
         })
     }
 
