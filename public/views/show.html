@@ -32,14 +32,14 @@
         </h1>
     </div>
     <div layout="row" layout-sm="column" layout-xs="column" >
-        <div class="poster" flex-offset="10" flex-xs-offset="0" layout="column" layout-align-xs="center center" layout-align-sm="center center">
+        <div class="poster" flex-offset="5" flex-offset-xs="0" layout="column" layout-align-xs="center center" layout-align-sm="center center">
             <img ng-src="{{posterPath}}">
         </div>
-        <div layout-padding flex-offset="10">
+        <div layout-padding flex-offset="5">
             <h4>{{data.name}}</h4>
             <p style="text-align:justify" class="text-muted">{{data.overview}}</p>
         </div>
-        <div layout-padding flex-offset="10">
+        <div layout-padding flex-offset="5" flex="25" flex-xs="33">
             <ul>
                 <li>Network: <span class="text-muted">{{data.networks[0].name}}</span></li>
                 <li>Country: <span class="text-muted">{{data.origin_country[0]}}</span></li>
