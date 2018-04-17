@@ -51,11 +51,43 @@
     <div class="seasons" layout-padding>
         <ul layout="row">                
             <li ng-repeat="season in data.seasons | filter: displayPosterPath" layout-padding>
-                <a href ng-click="selectSeason(season)">
-                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}" ng-class="{'seasons_selected border': selected === season.id}">
+                <a href ng-click="selectSeason(season.season_number)">
+                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
                 </a>
             </li>
         </ul>
+    </div>
+    <div layout-padding>
+        <h1>{{seasonName}}</h1>
+        <div layout="row" layout-padding>
+            <div layout-padding layout-wrap layout="row">
+                <md-card  md-whiteframe="3" flex-xs flex-gt-xs="25"  ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
+                    <img ng-src="https://image.tmdb.org/t/p/original{{episode.still_path}}" class="md-card-image" alt="Washed Out">
+                    <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
+                        <span>{{episode.name}}</span>
+                    </md-card-title-text>
+                    </md-card-title>
+                    <md-card-content>
+                    <p>
+                        {{episode.air_date | date: 'EEEE, MMMM d, y'}}
+                    </p>
+                    </md-card-content>
+                    <md-card-actions layout="row" layout-align="end center">
+                        <md-button class="md-icon-button" aria-label="Favorite">
+                            <ng-md-icon icon="star"></ng-md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="Settings">
+                            <ng-md-icon icon="remove_red_eye"></ng-md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="Share">
+                            <ng-md-icon icon="star"></ng-md-icon>
+                        </md-button>
+                    </md-card-actions>
+                </md-card>
+            </div>
+        </div>
     </div>
 </div>
 

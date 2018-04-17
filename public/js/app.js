@@ -5,7 +5,6 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     $rootScope.getUser = function() {
         if(auth.isLoggedIn()){
             $rootScope.user = JSON.parse(session.getUser());
-            console.log($rootScope.user + "ssss");
             $rootScope.loggedIn = true;
         }
     }    
