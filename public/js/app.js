@@ -1,5 +1,5 @@
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages'])
-app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session){
+app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
     $rootScope.getUser = function() {
@@ -84,6 +84,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
 
     $routeProvider
     .when("/", {
+        controller: "MainController",
         templateUrl: "views/main.html"
     })
     .when("/topSeries",{

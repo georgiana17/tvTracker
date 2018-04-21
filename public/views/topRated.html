@@ -25,9 +25,10 @@
                             <div>{{item.first_air_date | date:'yyyy'}}</br/>Year</div>
                         </div>
                         <div class="padded hover-info" md-whiteframe="3" flex="50" flex-sm="100" flex-gt-sm="100" flex-gt-md="100" >
-                            <a>
+                            <a ng-href="{{loggedIn == true ? '#/' : '#/login'}}">
                                 <ng-md-icon icon="add"></ng-md-icon> <br/>
-                                <span>Follow</span>
+                                <span ng-show="loggedIn">Follow</span>
+                                <span ng-show="!loggedIn">Login to follow</span>
                             </a>
                         </div>
                     </div>
