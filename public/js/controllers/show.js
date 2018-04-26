@@ -45,6 +45,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         $scope.getSeason(season_no);
     };
 
+
     $scope.displayPosterPath = function(p) {
         if(p.poster_path === null) {
             return false;

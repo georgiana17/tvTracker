@@ -102,7 +102,7 @@ app.get('/login/:userName/:password', function (req, res) {
 });
 
 app.get('/randomImage/:id', function(req, res){
-  var imageUrl = `https://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}&language=en-US`;
+  var imageUrl = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}&language=en-US`;
   fetch(`${imageUrl}`)
       .then(response => response.json())
       .then(image => res.send(image))
@@ -111,7 +111,7 @@ app.get('/randomImage/:id', function(req, res){
 });
 
 app.get('/show/:id', function(req,res){
-  var showDetail = `https://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
+  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
   fetch(`${showDetail}`)
       .then(response => response.json())
       .then(info => res.send(info))
@@ -119,7 +119,7 @@ app.get('/show/:id', function(req,res){
 });
 
 app.get('/season/:serie_id/:season_id', function(req,res){
-  var seasonInfo = `https://api.themoviedb.org/3/tv/${req.params.serie_id}/season/${req.params.season_id}?api_key=${process.env.TMDB_KEY}`;
+  var seasonInfo = `http://api.themoviedb.org/3/tv/${req.params.serie_id}/season/${req.params.season_id}?api_key=${process.env.TMDB_KEY}`;
   fetch(`${seasonInfo}`)
       .then(response => response.json())
       .then(season => res.send(season))
@@ -127,7 +127,7 @@ app.get('/season/:serie_id/:season_id', function(req,res){
 });
 
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
-var greysUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
+var greysUrl = `http://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
 app.get('/topSeries', function (req, res) {
   fetch(`${greysUrl}`)
       .then(response => response.json())
