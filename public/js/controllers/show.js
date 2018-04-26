@@ -2,13 +2,6 @@
 var app = angular.module("tvTracker")
 app.controller("ShowController", function($scope, $http, $routeParams, $rootScope){
     
-    $scope.getPopularTvSeries = function() {
-        var popularData = $http.get("/topSeries").then(function(response){
-            $scope.popularSeries = response.data.results;
-        });
-        return popularData;
-    }
-    $scope.getPopularTvSeries();
 
     
     $scope.getSeason = function(season_id){

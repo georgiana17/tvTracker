@@ -18,6 +18,15 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     
     $rootScope.getUser();
 
+    
+    $scope.getPopularTvSeries = function() {
+        var popularData = $http.get("/topSeries").then(function(response){
+            $scope.popularSeries = response.data.results;
+            console.log($scope.popularSeries)
+        });
+        return popularData;
+    }
+    $scope.getPopularTvSeries();
 
     $rootScope.update = function(){
 
