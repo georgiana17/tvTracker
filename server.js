@@ -5,6 +5,7 @@ var bodyParser = require("body-parser");
 var fetch = require('isomorphic-fetch');
 var mongoose = require('mongoose');
 
+var oracledb = require('oracledb');
 
 
 app.use(function(req, res, next) {
@@ -22,17 +23,17 @@ require('dotenv').config({path: 'access_keys.env'})
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://127.0.0.1/db');
+// mongoose.connect('mongodb://127.0.0.1/db');
 
-var usersSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String
-});
+// var usersSchema = new mongoose.Schema({
+//   username: String,
+//   email: String,
+//   password: String
+// });
 
-var User = mongoose.model('user', usersSchema);
+// var User = mongoose.model('user', usersSchema);
 
-module.exports = User;
+// module.exports = User;
 
 app.get("/", function(req, res) {
   res.sendFile('index.html' , { root : path.join(__dirname, "public")});
@@ -46,18 +47,35 @@ app.post("/user", function(req,res){
   var userDetail = req.body;
     bcrypt.genSalt(saltRounds, function(err,salt){
       bcrypt.hash(userDetail.password, salt, function(err, hash){
-        var user = new User({id: userDetail.id, username: userDetail.username, email:userDetail.email, password: hash})
-        
-        user.save(function(err){
-          if(err)
-            console.log(err);
-            else
-            console.log("User successfully saved!");
-        });
+        oracledb.getConnection({  
+            user: process.env.ORACLE_USERNAME,  
+            password: process.env.ORACLE_PASSWORD,  
+            connectString: "localhost:1521/orcl"  
+        }, function(err, connection) {  
+            if (err) {  
+                console.error(err.message);  
+                return;  
+            }  
+            connection.execute("insert into users_logged values(:0,:1,:2,:3)",  
+            ['', userDetail.username, userDetail.email, hash], { autoCommit: true }, 
+            function(err, result) {  
+                if (err) {  
+                      console.error(err.message);  
+                      return;  
+                }  
+                console.log(result.metaData); 
+                console.log(result);
+            });  
+        });  
       })
     });
  
 });
+
+var databaseConfig = {  user: process.env.ORACLE_USERNAME,  
+                password: process.env.ORACLE_PASSWORD,  
+                connectString: "localhost:1521/orcl"  
+          };
 
 app.get('/users', function (req, res) {
   User.find((err, users) => {
@@ -67,38 +85,91 @@ app.get('/users', function (req, res) {
   });
 });
 
+app.get('/usersFROMSQL', function (req, res) {
+    oracledb.getConnection(databaseConfig, function(err, connection) {  
+      if (err) {  
+          console.error(err.message);  
+          return;  
+      }  
+      connection.execute( "SELECT * from users_logged",  
+      [],  
+      function(err, result) {  
+          if (err) {  
+                console.error(err.message);  
+                return;  
+          }  
+          console.log(result.metaData); 
+          console.log(result.rows);
+      });  
+  });  
+});
+
 app.get('/users/:userName', function (req, res) {
-  User.find({"username": req.params.userName}, (err, users) => {
-    if(err) 
-      return res.status(500).send(err);
-      return res.status(200).send(users);
-  });
+    oracledb.getConnection(databaseConfig, function(err, connection) {  
+      if (err) {  
+          console.error(err.message);  
+          return;  
+      }  
+      connection.execute("SELECT username from users_logged where username=LOWER('" + req.params.userName + "')",  
+      [],  
+      function(err, result) {  
+          if (err) {  
+                console.error(err.message);  
+                return;  
+          }  
+          console.log(result.metaData); 
+          console.log(result.rows);
+          res.send(result.rows);
+      });  
+  });  
 });
 
 app.get('/email/:email', function (req, res) {
-  User.find({"email": req.params.email}, (err, email) => {
-    if(err) 
-      return res.status(500).send(err);
-      return res.status(200).send(email);
+    oracledb.getConnection(databaseConfig, function(err, connection) {  
+      if (err) {  
+          console.error(err.message);  
+          return;  
+      }  
+      connection.execute("SELECT email from users_logged where email=LOWER('" + req.params.email + "')",  
+      [],  
+      function(err, result) {  
+          if (err) {  
+                console.error(err.message);  
+                return;  
+          }  
+          console.log(result.metaData); 
+          console.log(result.rows);
+          res.send(result.rows);
+      });  
   });
 });
 
 app.get('/login/:userName/:password', function (req, res) {
-  User.find({"username": req.params.userName}, (err, users) => {
-    if(err) 
-      return res.status(500).send();
-    else {
-        if(users.length != 0) {
-          bcrypt.compare(req.params.password, users[0].password, function(err, resp){
-            var data = {userData: users, passwordMatch: resp};
-            return res.status(200).send(data);
-          });
-        }
-        else {
-          res.status(200).send(users);
-        }
-      }
-  });
+    oracledb.getConnection(databaseConfig, function(err, connection) {  
+      if (err) {  
+          console.error(err.message);  
+          return;  
+      }  
+      connection.execute("SELECT username, password from users_logged where username=LOWER('" + req.params.userName + "')",  
+      [],  
+      function(err, result) {
+          if (err) {  
+                console.error(err.message);  
+                return;  
+          }  
+          console.log(result.metaData); 
+          console.log(result.rows);
+          if(result.rows.length != 0) {
+            bcrypt.compare(req.params.password, result.rows[0][1], function(err, resp){
+              var data = {userData: result.rows, passwordMatch: resp};
+              return res.status(200).send(data);
+            });
+          }
+          else {
+            res.status(200).send(users);
+          }
+    });
+});
 });
 
 app.get('/randomImage/:id', function(req, res){
@@ -134,17 +205,6 @@ app.get('/topSeries', function (req, res) {
       .then(movie => res.send(movie))
       .catch(error => res.send(error))
 });
-
-
-
-//  var user = new User({username:"test", email:"ggg@gmail.com", password:"123456"})
-
-// user.save(function(err){
-//   if(err)
-//     console.log(err);
-//     else 
-//     console.log(user);
-// });
 
 
 app.listen(3000);
