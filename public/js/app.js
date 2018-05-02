@@ -118,10 +118,11 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
             popularSeries :  function($http){
                 var allInfoEpisodes = new Array();
                 return $http.get("/topSeries").then(function(response) {
-                    for(var i = 0 ; i < response.data.results.length ; i++) {
-                        var show_id = response.data.results[i].id;
+                    for(let i = 0 ; i < response.data.results.length ; i++) {
+                        let show_id = response.data.results[i].id;
                         $http.get("/show/" + response.data.results[i].id).then(function(res) {
                             $http.get("/allEpisodes/" + show_id + "/" + res.data.number_of_seasons).then(function(resp) {
+                                console.log(show_id);
                                 allInfoEpisodes.push(resp.data);
                             });
                         });
