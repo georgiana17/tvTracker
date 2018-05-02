@@ -73,9 +73,9 @@ app.post("/user", function(req,res){
 });
 
 var databaseConfig = {  user: process.env.ORACLE_USERNAME,  
-                password: process.env.ORACLE_PASSWORD,  
-                connectString: "localhost:1521/orcl"  
-          };
+                        password: process.env.ORACLE_PASSWORD,  
+                        connectString: "localhost:1521/orcl"  
+                  };
 
 app.get('/users', function (req, res) {
   User.find((err, users) => {
@@ -85,29 +85,107 @@ app.get('/users', function (req, res) {
   });
 });
 
-app.get('/usersFROMSQL', function (req, res) {
+app.get('/tvShow/:show_id', function (req, res) {
     oracledb.getConnection(databaseConfig, function(err, connection) {  
-      if (err) {  
-          console.error(err.message);  
+      if (err) { 
           return;  
       }  
-      connection.execute( "SELECT * from users_logged",  
+      connection.execute( "SELECT show_name from TV_SHOW where show_id=LOWER('" + req.params.show_id + "')",  
       [],  
       function(err, result) {  
-          if (err) {  
-                console.error(err.message);  
+          if (err) { 
                 return;  
-          }  
-          console.log(result.metaData); 
-          console.log(result.rows);
+          }
+
+          if(result.rows.length != 0) {
+              res.send(result.rows);
+          } else {
+            res.send("false");
+          }
       });  
   });  
 });
 
+app.post('/addShow/:show_id', function(req, res) {
+  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.show_id}?api_key=${process.env.TMDB_KEY}`;
+  fetch(`${showDetail}`)
+      .then(response => response.json())
+      .then(function(response){
+          oracledb.getConnection(databaseConfig, function(err, connection) { 
+            if (err) {
+                return;  
+            }
+
+            var sql_tv_show = "INSERT INTO TV_SHOW values(:1, :2, :3, :4)";
+            var tv_show_binds = [req.params.show_id, response.name, response.number_of_episodes, response.number_of_seasons]
+            connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) { 
+              console.log("111111"); 
+              if (err) {  
+                console.error(err.message + " tv_show");
+                return;  
+              }
+              console.log(result);
+              res.send(result.rows);
+            }); 
+            
+            var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.show_id +`, :name, :season_number)`;
+            var binds_seasons = response.seasons;
+            var seasons_options = {
+              autoCommit:true, 
+              bindDefs: { 
+                id: { type: oracledb.NUMBER },
+                name: { type: oracledb.STRING, maxSize: 100 },
+                season_number: { type: oracledb.NUMBER }
+              }
+            }
+            connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) { 
+                if (err) {  
+                      console.error(err.message + " seasons");
+                      return;  
+                }
+                console.log(result);
+                res.send(result.rows);
+            });
+          
+          for(var i = 0; i < response.seasons.length; i++){
+            console.log(response.seasons[i].id);
+            var seasonInfo = `http://api.themoviedb.org/3/tv/${req.params.serie_id}/season/${response.seasons[i].id}?api_key=${process.env.TMDB_KEY}`;
+            fetch(`${seasonInfo}`)
+                .then(response => response.json())
+                .then(function(response){
+                    console.log(response);
+                    var sql_episodes = `INSERT INTO EPISODES values(:id, `+ response.seasons.id +`, :name, :season_number)`;
+                    var binds_episodes = response.seasons.episodes;
+                    var episodes_options = {
+                      autoCommit:true, 
+                      bindDefs: { 
+                        id: { type: oracledb.NUMBER },
+                        name: { type: oracledb.STRING, maxSize: 100 },
+                        season_number: { type: oracledb.NUMBER }
+                      }
+                    };
+
+                    connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) { 
+                      if (err) {  
+                            console.error(err.message);
+                            return;  
+                      }
+                      console.log(result);
+                      res.send(result.rows);
+                  });
+                })
+                .catch(error => res.send(error))  
+          }
+            
+        });   
+        res.send(response);
+      })
+      .catch(error => res.send(error))
+});
+
 app.get('/users/:userName', function (req, res) {
-    oracledb.getConnection(databaseConfig, function(err, connection) {  
-      if (err) {  
-          console.error(err.message);  
+    oracledb.getConnection(databaseConfig, function(err, connection) {
+      if (err) {
           return;  
       }  
       connection.execute("SELECT username from users_logged where username=LOWER('" + req.params.userName + "')",  
@@ -116,9 +194,7 @@ app.get('/users/:userName', function (req, res) {
           if (err) {  
                 console.error(err.message);  
                 return;  
-          }  
-          console.log(result.metaData); 
-          console.log(result.rows);
+          }
           res.send(result.rows);
       });  
   });  
@@ -126,8 +202,7 @@ app.get('/users/:userName', function (req, res) {
 
 app.get('/email/:email', function (req, res) {
     oracledb.getConnection(databaseConfig, function(err, connection) {  
-      if (err) {  
-          console.error(err.message);  
+      if (err) {
           return;  
       }  
       connection.execute("SELECT email from users_logged where email=LOWER('" + req.params.email + "')",  
@@ -136,9 +211,7 @@ app.get('/email/:email', function (req, res) {
           if (err) {  
                 console.error(err.message);  
                 return;  
-          }  
-          console.log(result.metaData); 
-          console.log(result.rows);
+          }
           res.send(result.rows);
       });  
   });
@@ -146,19 +219,15 @@ app.get('/email/:email', function (req, res) {
 
 app.get('/login/:userName/:password', function (req, res) {
     oracledb.getConnection(databaseConfig, function(err, connection) {  
-      if (err) {  
-          console.error(err.message);  
+      if (err) {
           return;  
       }  
       connection.execute("SELECT username, password from users_logged where username=LOWER('" + req.params.userName + "')",  
       [],  
       function(err, result) {
-          if (err) {  
-                console.error(err.message);  
+          if (err) { 
                 return;  
-          }  
-          console.log(result.metaData); 
-          console.log(result.rows);
+          }
           if(result.rows.length != 0) {
             bcrypt.compare(req.params.password, result.rows[0][1], function(err, resp){
               var data = {userData: result.rows, passwordMatch: resp};
@@ -169,7 +238,7 @@ app.get('/login/:userName/:password', function (req, res) {
             res.status(200).send(users);
           }
     });
-});
+  });
 });
 
 app.get('/randomImage/:id', function(req, res){
