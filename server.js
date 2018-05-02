@@ -106,7 +106,20 @@ app.get('/tvShow/:show_id', function (req, res) {
   });  
 });
 
-app.post('/addShow/:show_id', function(req, res) {
+app.post('/addShow/:show_id/:userName', function(req, res) {
+  // TODO: select count(*) pe episodes per user_id&show_id in tabel EPISODES_USERS => no_of_ep_watched
+  var no_of_ep_watched = 0;
+  var sql_userId = `SELECT user_id from users_logged where username=LOWER('` + req.params.userName + `')`;
+  var userId = "";
+  connection.executeMany(sql_userId, [], { autoCommit:true }, function(err, result) {
+      if (err) {  
+            console.error(err.message + " user_logged");
+            return;  
+      }
+      console.log(result);
+      userId = result.rows;
+  });
+
   var showDetail = `http://api.themoviedb.org/3/tv/${req.params.show_id}?api_key=${process.env.TMDB_KEY}`;
   fetch(`${showDetail}`)
       .then(response => response.json())
@@ -126,8 +139,20 @@ app.post('/addShow/:show_id', function(req, res) {
               }
               console.log(result);
               res.send(result.rows);
-            }); 
+            });
             
+            var sql_user_tv_show = `INSERT INTO USERS_TV_SHOW values(` + userId + `, `+ req.params.show_id +`,` + response.number_of_episodes + `, ` + response.number_of_episodes - no_of_ep_watched + `)`;
+            
+            connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) { 
+              console.log("111111"); 
+              if (err) {  
+                console.error(err.message + " tv_show");
+                return;  
+              }
+              console.log(result);
+              res.send(result.rows);
+            });
+
             var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.show_id +`, :name, :season_number)`;
             var binds_seasons = response.seasons;
             var seasons_options = {
@@ -147,7 +172,7 @@ app.post('/addShow/:show_id', function(req, res) {
                 res.send(result.rows);
             });
           
-          for(var i = 0; i < response.seasons.length; i++){
+          for(var i = 0; i < response.seasons.length; i++) {
             console.log(response.seasons[i].id);
             var seasonInfo = `http://api.themoviedb.org/3/tv/${req.params.serie_id}/season/${response.seasons[i].id}?api_key=${process.env.TMDB_KEY}`;
             fetch(`${seasonInfo}`)
@@ -155,7 +180,7 @@ app.post('/addShow/:show_id', function(req, res) {
                 .then(function(response){
                     console.log(response);
                     var sql_episodes = `INSERT INTO EPISODES values(:id, `+ response.seasons.id +`, :name, :season_number)`;
-                    var binds_episodes = response.seasons.episodes;
+                    var binds_episodes = response.seasons[i].episodes;
                     var episodes_options = {
                       autoCommit:true, 
                       bindDefs: { 

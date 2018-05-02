@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon server.js"
+    "serve": "nodemon server_mongoose.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,8 +14,11 @@
     "angular-animate": ">=1.4 <1.7",
     "angular-aria": ">=1.4 <1.7",
     "angular-material": "^1.1.7",
+    "angular-material-calendar": "^0.2.14",
     "angular-messages": ">=1.4 <1.7",
     "angular-route": "^1.6.9",
+    "angular-sanitize": "^1.6.10",
+    "angular-ui-calendar": "^1.0.2",
     "bcrypt": "^1.0.3",
     "body-parser": "1.18.2",
     "dotenv": "^5.0.1",

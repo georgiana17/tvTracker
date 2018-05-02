@@ -1,4 +1,4 @@
-var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages'])
+var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages','materialCalendar'])
 app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
@@ -18,7 +18,6 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     
     $rootScope.getUser();
 
-    
     $scope.getPopularTvSeries = function() {
         var popularData = $http.get("/topSeries").then(function(response){
             $scope.popularSeries = response.data.results;
@@ -43,10 +42,11 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
                 logged: $rootScope.loggedIn
             },
             {
-                link: 'http://google.es',
+                link: '#/calendar',
                 title: 'Calendar',
                 icon: 'date_range',
-                logged: $rootScope.loggedIn
+                // logged: $rootScope.loggedIn
+                logged: true
             }
         ]
         $scope.userItems = [
@@ -80,9 +80,9 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
       .accentPalette('pink');
     // $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
     $mdIconProvider
-        .iconSet('logout', 'images/logout.svg', 24)
+        .iconSet('logout', 'public/images/logout.svg', 24)
         .fontSet('md', 'material-icons')
-        .defaultIconSet('images/logout.svg', 24);
+        .defaultIconSet('public/images/logout.svg', 24);
     // $locationProvider.html5Mode({
     //     enabled: true,
     //     requireBase: false
@@ -93,22 +93,42 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $routeProvider
     .when("/", {
         controller: "MainController",
-        templateUrl: "views/main.html"
+        templateUrl: "public/views/main.html"
     })
     .when("/topSeries",{
         controller: "ShowController",
-        templateUrl: "views/topRated.html"
+        templateUrl: "public/views/topRated.html"
     })
     .when("/login",{
         controller: "LoginController",
-        templateUrl: "views/login.html"
+        templateUrl: "public/views/login.html"
     })
     .when("/signup",{
         controller: "RegisterController",
-        templateUrl: "views/signup.html"
+        templateUrl: "public/views/signup.html"
     })
     .when("/show/:id",{
         controller: "ShowController",
-        templateUrl: "views/show.html"
+        templateUrl: "public/views/show.html"
+    })
+    .when("/calendar",{
+        controller: "CalendarController",
+        templateUrl: "public/views/calendar.html",
+        resolve: {
+            popularSeries :  function($http){
+                var allInfoEpisodes = new Array();
+                return $http.get("/topSeries").then(function(response) {
+                    for(var i = 0 ; i < response.data.results.length ; i++) {
+                        var show_id = response.data.results[i].id;
+                        $http.get("/show/" + response.data.results[i].id).then(function(res) {
+                            $http.get("/allEpisodes/" + show_id + "/" + res.data.number_of_seasons).then(function(resp) {
+                                allInfoEpisodes.push(resp.data);
+                            });
+                        });
+                    }
+                    return allInfoEpisodes;
+                });
+            }
+        }
     })
   });

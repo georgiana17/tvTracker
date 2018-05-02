@@ -3,35 +3,41 @@
 <head >
 	<base href="/" /> 
 	<title>Tv Series Tracker</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+	<script src="node_modules/angular/angular.min.js"></script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+	<script src="node_modules/angular-route/angular-route.js"></script>
 
 	 <!-- Angular Material requires Angular.js Libraries -->
-	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
-	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
-	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+	 <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+	 <script src="node_modules/angular-aria/angular-aria.min.js"></script>
+	 <script src="node_modules/angular-messages/angular-messages.min.js"></script>
+	 <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
 
 	<!-- Angular Material Library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+	<script src="node_modules/angular-material/angular-material.min.js"></script>
 	
 	<!-- Angular Material style sheet -->
-	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+	<link rel="stylesheet" href="node_modules/angular-material/angular-material.min.css">
 	
 	<script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	
+	<script src="/node_modules/angular-material-calendar/angular-material-calendar.min.js"></script>
+	<link rel="stylesheet" href="/node_modules/angular-material-calendar/angular-material-calendar.min.css">
 	
 
-	<script src="./js/app.js"></script>
-	<script src="./js/controllers/home.js"></script>
-	<script src="./js/controllers/login.js"></script>
-	<script src="./js/controllers/register.js"></script>
-	<script src="./js/controllers/show.js"></script>
+	<script src="./public/js/app.js"></script>
+	<script src="./public/js/controllers/home.js"></script>
+	<script src="./public/js/controllers/login.js"></script>
+	<script src="./public/js/controllers/register.js"></script>
+	<script src="./public/js/controllers/show.js"></script>
+	<script src="./public/js/controllers/calendar.js"></script>
 
 
-	<script src="./js/services/localStorage.js"></script>
-	<script src="./js/services/session.js"></script>
-	<script src="./js/services/auth.js"></script>
+	<script src="./public/js/services/localStorage.js"></script>
+	<script src="./public/js/services/session.js"></script>
+	<script src="./public/js/services/auth.js"></script>
 	
 </head>
 <body  ng-controller="AppController" ng-cloak>
@@ -46,7 +52,7 @@
 				<span class="inset">{{user}}</span>
 			</md-button>
 			<md-button ng-show="loggedIn" class="md-toolbar-actions" ng-click="signout()">
-				<md-icon md-svg-src="images/logout.svg" aria-label="android "></md-icon>
+				<md-icon md-svg-src="public/images/logout.svg" aria-label="android "></md-icon>
 				<span class="inset">Logout</span>
 			</md-button>
 			<md-button class="md-toolbar-actions">
