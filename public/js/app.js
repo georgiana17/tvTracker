@@ -1,4 +1,4 @@
-var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages','materialCalendar'])
+var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages','materialCalendar', 'ui.calendar'])
 app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;

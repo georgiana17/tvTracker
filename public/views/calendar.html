@@ -1,3 +1,8 @@
+
+<button ng-click="setDirection('vertical')" class="md-fab md-mini md-primary"> 
+    <md-icon class="material-icons" style="top:4px!important">menu</md-icon>
+</button>
+<!-- 
 <calendar-md flex layout layout-fill
     calendar-direction="direction"
     on-prev-month="prevMonth"
@@ -13,8 +18,42 @@
     day-tooltip-format="'fullDate'"
     day-content="setDayContent"
     disable-future-selection="false"
-    md-theme="custom"
->
+    md-theme="custom">
 
 
-</calendar-md>
+</calendar-md> -->
+
+
+<div ui-calendar="uiConfig.calendar" ng-model="eventSources">
+
+</div>
+
+<style>
+    .titleShow {
+        color: darkmagenta;
+        font-size: 0.93em;
+    }
+
+    [tabindex = "0"] {
+        
+        color: rgba(0,0,0,.3) !important;
+    }
+
+    [tabindex = "0"] a {
+        text-decoration: none;
+        color: rgba(0,0,0,.3) !important;
+    }
+    
+    [tabindex] a {
+        text-decoration: none;
+        color: #4866cf;
+    }
+    
+    .episode {
+        font-size: 0.85em;
+    }
+
+    .episodeDiv {
+        padding-bottom: 3px !important;
+    }
+</style>
