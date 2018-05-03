@@ -53,30 +53,42 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.setDayContent = function(date) {
         var selectedDate = [date.getFullYear(), numFmt(date.getMonth() + 1), numFmt(date.getDate())].join("-");
         if ($rootScope.loggedIn == false) {
-            $scope.seasons.forEach(function(element){
-                if(element != undefined){
-                    element.episodes.forEach(episode => {
-                        if(episode.air_date == selectedDate){
-                            console.log(episode.air_date);
-                            return episode.name;
+            for(var i=0; i < $scope.seasons.length ; i++){
+                if($scope.seasons[i] != undefined) {
+                    for(var j=0; j < $scope.seasons[i].episodes.length; j++){
+                        if($scope.seasons[i].episodes[j].air_date == selectedDate){
+                            return $scope.seasons[i].episodes[j].name;
                         }
-                    })
+                    }
                 }
-            })
+            }
+
+            // $scope.seasons.forEach(function(element){
+            //     if(element != undefined){
+            //         element.episodes.forEach(episode => {
+            //             if(episode.air_date == selectedDate){
+            //                 console.log(episode.air_date + episode.name);
+            //                 return episode.name;
+            //             } 
+            //         })
+            //     }
+            // })
+        } else {
+            return "blablabla"
         }
-        // You would inject any HTML you wanted for
-        // that particular date here.
-        return "<p></p>";
+        // // You would inject any HTML you wanted for
+        // // that particular date here.
+        // return "<p></p>";
 
-        // You could also use an $http function directly.
-        return $http.get("/some/external/api");
+        // // You could also use an $http function directly.
+        // return $http.get("/some/external/api");
 
-        // You could also use a promise.
-        var deferred = $q.defer();
-        $timeout(function() {
-            deferred.resolve("<p></p>");
-        }, 1000);
-        return deferred.promise;
+        // // You could also use a promise.
+        // var deferred = $q.defer();
+        // $timeout(function() {
+        //     deferred.resolve("<p></p>");
+        // }, 1000);
+        // return deferred.promise;
 
     };
 
