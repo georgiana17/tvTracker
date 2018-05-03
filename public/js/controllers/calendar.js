@@ -1,5 +1,9 @@
 "use strict"
 var app = angular.module("tvTracker")
+app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
+    $mdThemingProvider.theme('custom')
+      .primaryPalette('cyan');
+})
 app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries,  $q) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
@@ -52,29 +56,37 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     
     $scope.setDayContent = function(date) {
         var selectedDate = [date.getFullYear(), numFmt(date.getMonth() + 1), numFmt(date.getDate())].join("-");
-        if ($rootScope.loggedIn == false) {
-            for(var i=0; i < $scope.seasons.length ; i++){
-                if($scope.seasons[i] != undefined) {
-                    for(var j=0; j < $scope.seasons[i].episodes.length; j++){
-                        if($scope.seasons[i].episodes[j].air_date == selectedDate){
-                            return $scope.seasons[i].episodes[j].name;
+        // if ($rootScope.loggedIn == false) {
+        //     for(var i=0; i < $scope.seasons.length ; i++){
+        //         if($scope.seasons[i] != undefined) {
+        //             for(var j=0; j < $scope.seasons[i].episodes.length; j++){
+        //                 if($scope.seasons[i].episodes[j].air_date == selectedDate){
+        //                     return $scope.seasons[i].episodes[j].name;
+        //                 }
+        //             }
+        //         }
+        //     }            
+        // } else {
+        //     return "blablabla"
+        // }
+
+        for(var i=0; i < $scope.popularSeries.length; i++){
+            if($scope.popularSeries[i] != undefined){
+                var p = 0;
+                let tvShowName = $scope.popularSeries[i].name;
+                while( p < $scope.popularSeries[i].number_of_seasons) {
+                    p++;
+                    for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++){
+                        if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined){
+                            if($scope.popularSeries[i]["season/" + p].episodes[k].air_date == selectedDate){
+                                data = $scope.popularSeries[i]["season/" + p].episodes[k].name;
+                                return "<p style='text-color: blue'>" + tvShowName + "</p>" + data;
+                            }
                         }
+                        
                     }
                 }
             }
-
-            // $scope.seasons.forEach(function(element){
-            //     if(element != undefined){
-            //         element.episodes.forEach(episode => {
-            //             if(episode.air_date == selectedDate){
-            //                 console.log(episode.air_date + episode.name);
-            //                 return episode.name;
-            //             } 
-            //         })
-            //     }
-            // })
-        } else {
-            return "blablabla"
         }
         // // You would inject any HTML you wanted for
         // // that particular date here.
