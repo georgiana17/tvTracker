@@ -139,8 +139,8 @@ app.get('/topSeries', function (req, res) {
 
 app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
   var append_to_response = "";
-  for(var i = 0 ; i < req.params.no_of_seasons ; i++) {
-    if(i==req.params.no_of_seasons - 1){
+  for(var i = 1 ; i <= req.params.no_of_seasons ; i++) {
+    if(i == req.params.no_of_seasons){
       append_to_response = append_to_response + "season/" + i;
     } else {
       append_to_response = append_to_response + "season/" + i + ",";

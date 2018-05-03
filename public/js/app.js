@@ -113,22 +113,57 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/calendar",{
         controller: "CalendarController",
-        templateUrl: "public/views/calendar.html",
+        templateUrl: "public/views/calendar.html", 
         resolve: {
-            popularSeries :  function($http){
-                var allInfoEpisodes = new Array();
-                return $http.get("/topSeries").then(function(response) {
-                    for(let i = 0 ; i < response.data.results.length ; i++) {
-                        let show_id = response.data.results[i].id;
-                        $http.get("/show/" + response.data.results[i].id).then(function(res) {
-                            $http.get("/allEpisodes/" + show_id + "/" + res.data.number_of_seasons).then(function(resp) {
-                                console.log(show_id);
-                                allInfoEpisodes.push(resp.data);
-                            });
-                        });
-                    }
-                    return allInfoEpisodes;
+            popularSeries :  function($http, $q){
+
+                var allInfoEpisodes = [];
+                var popularIds = [1399, 1402, 1418, 1396, 1412, 1622];
+                let j = 0;
+                let n = popularIds.length;
+                var promises =[];
+                
+                // angular.forEach(popularIds, function(elem){
+                //     promises.push($http.get("allEpisodes/" + elem + "/" + 6).then(function(resp){ 
+                //         return resp.data;                       
+                //     }))
+                // })
+
+                // return $q.all(promises).then(function(result){
+                //     return result;
+                // })
+
+                return $http.get("/topSeries").then(function(success){
+                    var shows = {};
+                    shows = success.data.results;
+
+                    return shows;
+                })
+                .then(function(shows){
+                    var contentPromises = [];
+                    angular.forEach(shows, function(elem) {
+                        contentPromises.push(
+                            $http.get("/show/" + elem.id).then(function(success){
+                                var show = {};
+                                show = success.data;
+                                return show;
+                            }).then(function(show){
+                                var promises = [];
+                                promises.push($http.get("/allEpisodes/" + show.id + "/" + show.number_of_seasons).then(function(succes){
+                                    return succes.data;
+                                }))
+                                return $q.all(promises).then(function(res) {
+                                    return res;
+                                });
+                                
+                            })
+                        );
+                    });
+                    return $q.all(contentPromises).then(function(res) {
+                        return res;
+                    });
                 });
+                
             }
         }
     })

@@ -1,14 +1,17 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries) {
+app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries,  $q) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
     $scope.firstDayOfWeek = 0;
     $scope.tooltips = true;
 
-    $scope.popularSeries = popularSeries;
+    // $scope.popularSeries = popularSeries;
+    // console.log(popularSeries);
     console.log(popularSeries);
     
+    
+
     //TODO : {status_code: 27, status_message: "Too many append to response objects: The maximum number of remote calls is 20."} 
 
     $scope.setDirection = function(direction) {
@@ -30,7 +33,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     
     $scope.setDayContent = function(date) {
         if ($rootScope.loggedIn == false) {
-            
+             return popularSeries[0][0].name;
         }
         // You would inject any HTML you wanted for
         // that particular date here.
