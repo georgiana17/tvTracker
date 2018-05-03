@@ -116,12 +116,6 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         templateUrl: "public/views/calendar.html", 
         resolve: {
             popularSeries :  function($http, $q){
-
-                var allInfoEpisodes = [];
-                var popularIds = [1399, 1402, 1418, 1396, 1412, 1622];
-                let j = 0;
-                let n = popularIds.length;
-                var promises =[];
                 
                 // angular.forEach(popularIds, function(elem){
                 //     promises.push($http.get("allEpisodes/" + elem + "/" + 6).then(function(resp){ 

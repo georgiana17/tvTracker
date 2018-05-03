@@ -6,11 +6,22 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.firstDayOfWeek = 0;
     $scope.tooltips = true;
 
-    // $scope.popularSeries = popularSeries;
-    // console.log(popularSeries);
-    console.log(popularSeries);
-    
-    
+    $scope.popularSeries = popularSeries.map(element => {return element[0]});
+    $scope.numberOfSeasons = $scope.popularSeries.map(element => {
+        return element.number_of_seasons;
+    });
+
+    var seasonsArr = new Array();
+    $scope.popularSeries.forEach( function(element, idx) {
+        var i = 0;
+        while( i <= element.number_of_seasons) {
+            i++;
+            seasonsArr.push(element["season/" + i]);
+        }
+        return seasonsArr;
+    })
+    $scope.seasons = seasonsArr;
+    console.log($scope.seasons);
 
     //TODO : {status_code: 27, status_message: "Too many append to response objects: The maximum number of remote calls is 20."} 
 
@@ -30,10 +41,28 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
       $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
     };
 
+    var numFmt = function(num) {
+        num = num.toString();
+        if (num.length < 2) {
+            num = "0" + num;
+        }
+        return num;
+    };
+
     
     $scope.setDayContent = function(date) {
+        var selectedDate = [date.getFullYear(), numFmt(date.getMonth() + 1), numFmt(date.getDate())].join("-");
         if ($rootScope.loggedIn == false) {
-             return popularSeries[0][0].name;
+            $scope.seasons.forEach(function(element){
+                if(element != undefined){
+                    element.episodes.forEach(episode => {
+                        if(episode.air_date == selectedDate){
+                            console.log(episode.air_date);
+                            return episode.name;
+                        }
+                    })
+                }
+            })
         }
         // You would inject any HTML you wanted for
         // that particular date here.
