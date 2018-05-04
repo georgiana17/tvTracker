@@ -1,59 +1,41 @@
 
-<button ng-click="setDirection('vertical')" class="md-fab md-mini md-primary"> 
-    <md-icon class="material-icons" style="top:4px!important">menu</md-icon>
-</button>
-<!-- 
-<calendar-md flex layout layout-fill
-    calendar-direction="direction"
-    on-prev-month="prevMonth"
-    on-next-month="nextMonth"
-    on-day-click="dayClick"
-    title-format="'MMMM y'"
-    ng-model='selectedDate'
-    week-starts-on="firstDayOfWeek"
-    tooltips="tooltips"
-    day-format="dayFormat"
-    day-label-format="'EEE'"
-    day-label-tooltip-format="'EEEE'"
-    day-tooltip-format="'fullDate'"
-    day-content="setDayContent"
-    disable-future-selection="false"
-    md-theme="custom">
+<div  class="ui-calendar">
+    <div ui-calendar="uiConfig.calendar" ng-model="eventSources">
 
-
-</calendar-md> -->
-
-
-<div ui-calendar="uiConfig.calendar" ng-model="eventSources">
-
+    </div>
 </div>
 
+
 <style>
-    .titleShow {
-        color: darkmagenta;
-        font-size: 0.93em;
+    .ui-calendar .fc-toolbar {
+        background-color: #471074;
+        color: white;
+        margin: 0;
     }
 
-    [tabindex = "0"] {
-        
-        color: rgba(0,0,0,.3) !important;
+    .ui-calendar .fc-toolbar .fc-button {
+        color: #fff;
+        box-shadow: none;
+        text-shadow: none;
+        background: 0 0;
+        border: none;
+        margin: 0;
+        height: 50px;
+        line-height: 28px;
+        padding: 10px;
     }
 
-    [tabindex = "0"] a {
-        text-decoration: none;
-        color: rgba(0,0,0,.3) !important;
-    }
-    
-    [tabindex] a {
-        text-decoration: none;
-        color: #4866cf;
-    }
-    
-    .episode {
-        font-size: 0.85em;
+    .ui-calendar .fc-view .fc-widget-header {
+        border-color: #e3eaef;
+        font-weight: 300;
     }
 
-    .episodeDiv {
-        padding-bottom: 3px !important;
+    .ui-calendar .fc-view .fc-day-header {
+        padding: 4px;
+    }
+
+    .ui-calendar .fc-view .fc-event {
+        padding: 4px 8px;
+        box-shadow: 0 1px 0 rgba(0,0,0,.05);
     }
 </style>

@@ -1,0 +1,55 @@
+
+<calendar-md flex layout layout-fill
+    calendar-direction="direction"
+    on-prev-month="prevMonth"
+    on-next-month="nextMonth"
+    on-day-click="dayClick"
+    title-format="'MMMM y'"
+    ng-model='selectedDate'
+    week-starts-on="firstDayOfWeek"
+    tooltips="tooltips"
+    day-format="dayFormat"
+    day-label-format="'EEE'"
+    day-label-tooltip-format="'EEEE'"
+    day-tooltip-format="'fullDate'"
+    day-content="setDayContent"
+    disable-future-selection="false"
+    md-theme="custom">
+
+
+</calendar-md>
+
+
+<style>
+    .titleShow {
+        color: darkmagenta;
+        font-size: 0.93em;
+    }
+
+    [tabindex = "0"] {
+        
+        color: rgba(0,0,0,.3) !important;
+    }
+
+    [tabindex = "0"] a {
+        text-decoration: none;
+        color: rgba(0,0,0,.3) !important;
+    }
+    
+    [tabindex] a {
+        text-decoration: none;
+        color: #4866cf;
+    }
+    
+    .episode {
+        font-size: 0.85em;
+    }
+
+    .episodeDiv {
+        padding-bottom: 3px !important;
+    }
+
+    
+
+
+</style>

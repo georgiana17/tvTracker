@@ -24,8 +24,8 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	
-	<script src="/node_modules/angular-material-calendar/angular-material-calendar.min.js"></script>
-	<link rel="stylesheet" href="/node_modules/angular-material-calendar/angular-material-calendar.min.css">
+	<!-- <script src="/node_modules/angular-material-calendar/angular-material-calendar.min.js"></script>
+	<link rel="stylesheet" href="/node_modules/angular-material-calendar/angular-material-calendar.min.css"> -->
 	
 	<script src="/node_modules/angular-ui-calendar/src/calendar.js"></script>
 	
@@ -72,7 +72,7 @@
 		</md-toolbar>
 	
 		<div layout="row" style="height:100%">
-			<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%; width:17%; font-size:0.9em;" md-is-locked-open="$mdMedia('gt-md')">
+			<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%; width:10.5%; font-size:0.9em;" md-is-locked-open="$mdMedia('gt-md')">
 				<md-list>
 					<md-list-item md-ink-ripple ng-repeat="item in menuItems" ng-show="item.logged">
 						<a ng-href="{{item.link}}">
