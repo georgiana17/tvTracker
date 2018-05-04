@@ -6,11 +6,17 @@
 </div>
 
 <script type="text/ng-template" id="cucu.html">
+    <div layout-padding>
+        <img ng-src="https://image.tmdb.org/t/p/original{{event.image}}"/>
+    </div>
     <p>Event</p>
     <p>event: {{event.title}}</p>
   </script>
 
 <style>
+    .ui-calendar .fc-event:active, .ui-calendar .fc-event:focus, .ui-calendar .fc-event:hover {
+        z-index: 1000;
+    }
     .ui-calendar .fc-toolbar {
         background-color: #471074;
         color: white;
