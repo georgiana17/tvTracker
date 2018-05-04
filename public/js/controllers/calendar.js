@@ -4,7 +4,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $mdThemingProvider.theme('custom')
       .primaryPalette('cyan');
 })
-app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, $q, uiCalendarConfig, $window) {
+app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, $q, uiCalendarConfig, $window, $popover, $timeout, $compile) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
     $scope.firstDayOfWeek = 0;
@@ -48,14 +48,15 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                                 'showName': tvShowName,
                                 'overview': $scope.popularSeries[i]["season/" + p].episodes[k].overview,
                                 'seasonNo':  p,
-                                'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number
+                                'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
+                                'image':  $scope.popularSeries[i].poster_path
                             });
                     }
                 }
             }               
         }
     }    
-
+    var popover;
     $scope.uiConfig = {
         calendar: {
             height:  $window.innerHeight - 70,
@@ -69,14 +70,33 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 right: 'next'
             },
             eventClick: function(date, jsEvent, view){
-                            $scope.alertMessage = (date.title + ' was clicked ');
-                            console.log($scope.alertMessage);
-                        },
+                $scope.alertMessage = (date.title + ' was clicked ');
+                console.log($scope.alertMessage);
+                tooltip.set({
+                    'content.text':$scope.alertMessage
+                }).reposition(jsEvent).show(jsEvent);
+            },
             eventDrop: $scope.alertOnDrop,
             windowResize: function() {
-                            $scope.height = $window.innerHeight - 70;
-                            $scope.uiConfig.calendar.height = $scope.height;
-                        }
+                $scope.height = $window.innerHeight - 70;
+                $scope.uiConfig.calendar.height = $scope.height;
+            },
+            eventMouseover: function(date, jsEvent, view) {
+                var element = $(jsEvent.target).closest('.fc-event');
+                    console.log(date);
+                    popover = $popover(element, {
+                    placement: 'bottom', 
+                    contentTemplate: 'cucu.html',
+                    foo: 'foo'                
+                });
+                delete date.source;
+                popover.$scope.event = date;
+                popover.$promise.then(popover.show);
+            },
+            eventMouseout: function() {
+                popover.hide();
+                popover = null;
+            }
         }
     }
 
