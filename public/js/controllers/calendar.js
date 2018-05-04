@@ -4,7 +4,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $mdThemingProvider.theme('custom')
       .primaryPalette('cyan');
 })
-app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, $q, uiCalendarConfig, $window, $popover, $timeout, $compile) {
+app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, $q, uiCalendarConfig, $window) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
     $scope.firstDayOfWeek = 0;
@@ -55,7 +55,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 }
             }               
         }
-    }    
+    }
     var popover;
     $scope.uiConfig = {
         calendar: {
@@ -63,7 +63,6 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             editable: true,
             fixedWeekCount: false,
             displayEventTime: false,
-            disableResizing: false,
             header: {
                 left: 'prev',
                 center: 'title',
@@ -76,29 +75,29 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                     'content.text':$scope.alertMessage
                 }).reposition(jsEvent).show(jsEvent);
             },
-            eventDrop: $scope.alertOnDrop,
             windowResize: function() {
                 $scope.height = $window.innerHeight - 70;
                 $scope.uiConfig.calendar.height = $scope.height;
             },
             eventMouseover: function(date, jsEvent, view) {
-                var element = $(jsEvent.target).closest('.fc-event');
-                    console.log(date);
-                    popover = $popover(element, {
-                    placement: 'bottom', 
-                    contentTemplate: 'cucu.html',
-                    foo: 'foo'                
-                });
-                delete date.source;
-                popover.$scope.event = date;
-                popover.$promise.then(popover.show);
-            },
-            eventMouseout: function() {
-                popover.hide();
-                popover = null;
+                console.log(date.title)
+                $scope.event = date;
+                $scope.tooltipDiv.removeClass("left right").find(".arrow").removeClass("left right top pull-up");
+                var elem = $(jsEvent.target).closest(".fc-event");
+                var calendarElem = elem.closest(".calendar");
+                var offset = elem.offset().left - calendarElem.offset().left;
+                var height = $scope.height - elem.offset().top;
+                var width = calendarElem.width() - (elem.offset().left - calendarElem.offset().left + elem.width());
+                width > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("left").find(".arrow").addClass("left") : offset > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("right").find(".arrow").addClass("right") : $scope.tooltipDiv.find(".arrow").addClass("top"),
+                $scope.tooltipDiv.height() > height ? $scope.tooltipDiv.addClass("top").find(".arrow").addClass("pull-down") : $scope.tooltipDiv.removeClass("top").find(".arrow").addClass("pull-up"),
+                0 == elem.find(".tooltipSerie").length && elem.append($scope.tooltipDiv)
             }
         }
     }
-
+    $scope.tooltipDiv = $('.tooltipSerie');
     $scope.eventSources = [$scope.airDateEpisodes];
+    (function() {
+        $scope.height = $window.innerHeight - 70;
+        $scope.uiConfig.calendar.height = $scope.height;
+    })();
 });

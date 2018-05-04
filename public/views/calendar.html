@@ -1,28 +1,148 @@
-
-<div  class="ui-calendar">
-    <div ui-calendar="uiConfig.calendar" ng-model="eventSources">
-
+<div class="ui-calendar">
+    <div class="tooltipSerie"> 
+        <div class="panel bg-white b-a pos-rlt"><span class="arrow"></span>
+            <div class="h4 font-thin m-b-sm">{{event.showName}}</div>
+            <div class="font-thin m-b-sm"><strong>{{event.seasonNo}}x{{event.episodeNo}}</strong> {{episode.title}}</div>
+            <div class="line b-b b-light"></div>
+            <div><i class="icon-calendar text-muted m-r-xs"></i>{{event.start}}</div>
+            <div class="m-t-sm"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}"  class="img-full" align="left">{{event.overview}}</div>
+        </div>
+        
     </div>
+    <div class="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
 </div>
 
-<script type="text/ng-template" id="cucu.html">
-    <div layout-padding>
-        <img ng-src="https://image.tmdb.org/t/p/original{{event.image}}"/>
-    </div>
-    <p>Event</p>
-    <p>event: {{event.title}}</p>
-  </script>
+
 
 <style>
-    .ui-calendar .fc-event:active, .ui-calendar .fc-event:focus, .ui-calendar .fc-event:hover {
-        z-index: 1000;
+    .bg-white {
+        color: #58666e;
+        background-color: #fff;
     }
-    .ui-calendar .fc-toolbar {
-        background-color: #471074;
-        color: white;
-        margin: 0;
+    .img-full,.img-full img {
+        width: 100%
+    }
+    .m-b-sm {
+        margin-bottom: 10px
+    }
+    .b-b {
+        border-bottom: 1px solid #dee5e7
+    }
+    .m-r-xs {
+        margin-right: 5px
+    }
+    .font-thin {
+        font-weight: 300
+    }
+    .m-t-sm {
+        margin-top: 10px
+    }
+    .b-light {
+        border-color: #edf1f2
+    }
+    .b-a {
+        border: 1px solid #dee5e7
+    }
+    .pos-rlt {
+        position: relative
+    }
+    .arrow:after,.butterbar .bar:before {
+        content: ""
+    }
+    .arrow {
+        border-width: 9px;
+        z-index: 10
+    }
+    .arrow,.arrow:after {
+        position: absolute;
+        display: block;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid
     }
 
+    .arrow:after {
+        border-width: 8px
+    } 
+
+    .arrow.top {
+        left: 50%;
+        margin-left: -9px;
+        border-top-width: 0;
+        border-bottom-color: rgba(0,0,0,.1);
+        top: -9px
+    }
+
+    .arrow.top:after {
+        top: 1px;
+        margin-left: -8px;
+        border-top-width: 0;
+        border-bottom-color: #fff
+    }
+
+    .arrow.right {
+        top: 50%;
+        right: -9px;
+        margin-top: -9px;
+        border-right-width: 0;
+        border-left-color: rgba(0,0,0,.1)
+    }
+
+    .arrow.right:after {
+        right: 1px;
+        bottom: -8px;
+        border-right-width: 0;
+        border-left-color: #fff
+    }
+
+    .arrow.bottom {
+        left: 50%;
+        bottom: -9px;
+        margin-left: -9px;
+        border-bottom-width: 0;
+        border-top-color: rgba(0,0,0,.1)
+    }
+
+    .arrow.bottom:after {
+        bottom: 1px;
+        margin-left: -8px;
+        border-bottom-width: 0;
+        border-top-color: #fff
+    }
+    .arrow.left {
+        top: 50%;
+        left: -9px;
+        margin-top: -9px;
+        border-left-width: 0;
+        border-right-color: rgba(0,0,0,.1)
+    }
+
+    .arrow.left:after {
+        left: 1px;
+        bottom: -8px;
+        border-left-width: 0;
+        border-right-color: #fff
+    }
+
+    .arrow.pull-left {
+        left: 19px
+    }
+
+    .arrow.pull-right {
+        left: auto;
+        right: 19px
+    }
+
+    .arrow.pull-up {
+        top: 19px
+    }
+
+    .arrow.pull-down {
+        top: auto;
+        bottom: 19px
+    } 
+    
     .ui-calendar .fc-toolbar .fc-button {
         color: #fff;
         box-shadow: none;
@@ -47,5 +167,84 @@
     .ui-calendar .fc-view .fc-event {
         padding: 4px 8px;
         box-shadow: 0 1px 0 rgba(0,0,0,.05);
+    }
+
+    .ui-calendar .tooltipSerie {
+        display: none;
+        position: absolute;
+        min-width: 300px;
+        padding: 17px 0;
+        top: auto;
+        left: 50%;
+        margin-left: -150px;
+        z-index: 1000;
+        color:black;
+    }
+
+    .ui-calendar .fc-event:active .tooltipSerie,.ui-calendar .fc-event:focus .tooltipSerie,.ui-calendar .fc-event:hover .tooltipSerie {
+        display: block
+    }
+
+    .ui-calendar .tooltipSerie img {
+        width: 100px;
+        margin-right: 10px;
+    }
+
+    .ui-calendar .tooltipSerie.left {
+        left: 100%;
+        top: -15px;
+        padding: 0 10px;
+        margin: 0;
+    }
+
+    .ui-calendar .tooltipSerie.right {
+        left: auto;
+        right: 100%;
+        top: -15px;
+        padding: 0 10px;
+        margin: 0
+    }
+
+    .ui-calendar .tooltipSerie.top {
+        top: auto;
+        bottom: -30px
+    }
+
+    .ui-calendar .tooltipSerie .panel {
+        min-height: 240px;
+        padding: 15px 20px;
+    }
+
+    .ui-calendar .tooltipSerie .pull-up {
+        top: 26px
+    }
+
+    .ui-calendar .tooltipSerie .pull-down {
+        bottom: 11px;
+    }
+    
+    .ui-calendar .fc-event:active, .ui-calendar .fc-event:focus, .ui-calendar .fc-event:hover {
+        z-index: 1000;
+    }
+    .ui-calendar .fc-row:active, .ui-calendar .fc-row:focus, .ui-calendar .fc-row:hover {
+        position: relative;
+        z-index: 1000
+    }
+    .ui-calendar .fc-event:active,.ui-calendar .fc-event:focus,.ui-calendar .fc-event:hover {
+        z-index: 1000
+    }
+    .ui-calendar .fc-toolbar {
+        background-color: #471074;
+        color: white;
+        margin: 0;
+    }
+    .ui-calendar .fc-time-grid .fc-event:hover {
+        z-index: 1000!important
+    }
+    .ui-calendar .fc-time-grid-event,.ui-calendar .fc-view {
+        overflow: visible
+    }
+    .ui-calendar .fc-event-inner {
+        position: relative
     }
 </style>
