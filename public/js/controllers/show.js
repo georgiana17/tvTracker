@@ -47,14 +47,21 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     }
 
-    $scope.followSeason = function(serie_id) {
-        $http.get("/tvShow/" + serie_id).then(function(response){
-            console.log(response.data + "bbbbbbb");
+    $scope.followSeason = function(showId) {
+        $http.get("/tvShow/" + showId).then(function(response){
+            return response;
+        }).then(function(response) {
             if(response.data == "false") {
-                console.log("aaaa");
-                $http.post("/addShow/" + serie_id).then(function(response){
-                    console.log(response);
-                });
+                $http.get("/show/" + showId).then(function(res){
+                    console.log("aaaa");
+                    var userName =  $rootScope.user;
+                    console.log(res.data.number_of_seasons + "AAAA");
+                    if(userName != undefined) {
+                        $http.post("/addShow/" + showId + "/" + res.data.number_of_seasons + "/" + userName).then(function(res) {
+                            console.log(res);
+                        });
+                    }
+                });                
             }
         });
     }

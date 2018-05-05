@@ -117,16 +117,6 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         resolve: {
             popularSeries :  function($http, $q){
                 
-                // angular.forEach(popularIds, function(elem){
-                //     promises.push($http.get("allEpisodes/" + elem + "/" + 6).then(function(resp){ 
-                //         return resp.data;                       
-                //     }))
-                // })
-
-                // return $q.all(promises).then(function(result){
-                //     return result;
-                // })
-
                 return $http.get("/topSeries").then(function(success){
                     var shows = {};
                     shows = success.data.results;

@@ -20,7 +20,7 @@ require('dotenv').config({path: 'access_keys.env'})
 // var TVDB = require('node-tvdb');
 // var tvdb = new TVDB(process.env.TVDB_KEY);
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "/")));
 app.use(bodyParser.json());
 
 // mongoose.connect('mongodb://127.0.0.1/db');
@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 // module.exports = User;
 
 app.get("/", function(req, res) {
-  res.sendFile('index.html' , { root : path.join(__dirname, "public")});
+  res.sendFile('index.html' , { root : path.join(__dirname, "/")});
 });
 
 var bcrypt = require("bcrypt");
@@ -86,7 +86,7 @@ app.get('/users', function (req, res) {
 });
 
 app.get('/tvShow/:show_id', function (req, res) {
-    oracledb.getConnection(databaseConfig, function(err, connection) {  
+  oracledb.getConnection(databaseConfig, function(err, connection) {  
       if (err) { 
           return;  
       }  
@@ -106,33 +106,48 @@ app.get('/tvShow/:show_id', function (req, res) {
   });  
 });
 
-app.post('/addShow/:show_id/:userName', function(req, res) {
+app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
   // TODO: select count(*) pe episodes per user_id&show_id in tabel EPISODES_USERS => no_of_ep_watched
   var no_of_ep_watched = 0;
-  var sql_userId = `SELECT user_id from users_logged where username=LOWER('` + req.params.userName + `')`;
   var userId = "";
-  connection.executeMany(sql_userId, [], { autoCommit:true }, function(err, result) {
-      if (err) {  
-            console.error(err.message + " user_logged");
-            return;  
-      }
-      console.log(result);
-      userId = result.rows;
+
+  var append_to_response = "";
+  for(var i = 1 ; i <= req.params.noOfSeasons ; i++) {
+    if(i == req.params.noOfSeasons){
+      append_to_response = append_to_response + "season/" + i;
+    } else {
+      append_to_response = append_to_response + "season/" + i + ",";
+    }
+  }
+
+  var getAllEpisodes = `http://api.themoviedb.org/3/tv/${req.params.showId}?api_key=${process.env.TMDB_KEY}&append_to_response=${append_to_response}`;
+    
+  
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    var sql_userId = `SELECT user_id from users_logged where username=LOWER('` + req.params.userName + `')`;
+    connection.execute(sql_userId, [], { autoCommit:true }, function(err, result) {
+        if (err) {  
+              console.error(err.message + " user_logged");
+              return;  
+        }
+        userId = result.rows;
+    });
   });
 
-  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.show_id}?api_key=${process.env.TMDB_KEY}`;
-  fetch(`${showDetail}`)
+  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.showId}?api_key=${process.env.TMDB_KEY}`;
+  fetch(`${getAllEpisodes}`)
       .then(response => response.json())
       .then(function(response){
-          oracledb.getConnection(databaseConfig, function(err, connection) { 
+          oracledb.getConnection(databaseConfig, function(err, connection) {
             if (err) {
                 return;  
             }
 
             var sql_tv_show = "INSERT INTO TV_SHOW values(:1, :2, :3, :4)";
-            var tv_show_binds = [req.params.show_id, response.name, response.number_of_episodes, response.number_of_seasons]
-            connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) { 
-              console.log("111111"); 
+            var tv_show_binds = [req.params.showId, response.name, response.number_of_episodes, response.number_of_seasons]
+            connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) {
+              console.log("\n");
+              console.log("Adaugam serial in BD");
               if (err) {  
                 console.error(err.message + " tv_show");
                 return;  
@@ -141,10 +156,12 @@ app.post('/addShow/:show_id/:userName', function(req, res) {
               res.send(result.rows);
             });
             
-            var sql_user_tv_show = `INSERT INTO USERS_TV_SHOW values(` + userId + `, `+ req.params.show_id +`,` + response.number_of_episodes + `, ` + response.number_of_episodes - no_of_ep_watched + `)`;
+            var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
+                                    + `,'` + response.name + `',` + parseInt(response.number_of_episodes) + `, ` + (parseInt(response.number_of_episodes) - no_of_ep_watched) + `)`;
             
-            connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) { 
-              console.log("111111"); 
+            connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) {
+              console.log("\n");
+              console.log("Adaugam user_id si show_id in BD");
               if (err) {  
                 console.error(err.message + " tv_show");
                 return;  
@@ -153,7 +170,7 @@ app.post('/addShow/:show_id/:userName', function(req, res) {
               res.send(result.rows);
             });
 
-            var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.show_id +`, :name, :season_number)`;
+            var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
             var binds_seasons = response.seasons;
             var seasons_options = {
               autoCommit:true, 
@@ -163,7 +180,8 @@ app.post('/addShow/:show_id/:userName', function(req, res) {
                 season_number: { type: oracledb.NUMBER }
               }
             }
-            connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) { 
+            connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) {
+              console.log("\nAdaugam sezoane in BD");
                 if (err) {  
                       console.error(err.message + " seasons");
                       return;  
@@ -171,38 +189,34 @@ app.post('/addShow/:show_id/:userName', function(req, res) {
                 console.log(result);
                 res.send(result.rows);
             });
-          
-          for(var i = 0; i < response.seasons.length; i++) {
-            console.log(response.seasons[i].id);
-            var seasonInfo = `http://api.themoviedb.org/3/tv/${req.params.serie_id}/season/${response.seasons[i].id}?api_key=${process.env.TMDB_KEY}`;
-            fetch(`${seasonInfo}`)
-                .then(response => response.json())
-                .then(function(response){
-                    console.log(response);
-                    var sql_episodes = `INSERT INTO EPISODES values(:id, `+ response.seasons.id +`, :name, :season_number)`;
-                    var binds_episodes = response.seasons[i].episodes;
-                    var episodes_options = {
-                      autoCommit:true, 
-                      bindDefs: { 
-                        id: { type: oracledb.NUMBER },
-                        name: { type: oracledb.STRING, maxSize: 100 },
-                        season_number: { type: oracledb.NUMBER }
-                      }
-                    };
-
-                    connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) { 
-                      if (err) {  
-                            console.error(err.message);
-                            return;  
-                      }
-                      console.log(result);
-                      res.send(result.rows);
-                  });
-                })
-                .catch(error => res.send(error))  
-          }
             
-        });   
+            var seasonsArr = [];
+            for(var i = 1; i <= response.number_of_seasons; i++) {
+              seasonsArr.push(response["season/" + i]);
+              console.log(seasonsArr);
+
+              var sql_episodes = `INSERT INTO EPISODES values(:id, `+ response.seasons[i-1].id +`, :name, :season_number)`;
+              var binds_episodes = response["season/" + i].episodes;
+              var episodes_options = {
+                autoCommit:true, 
+                bindDefs: { 
+                  id: { type: oracledb.NUMBER },
+                  name: { type: oracledb.STRING, maxSize: 100 },
+                  season_number: { type: oracledb.NUMBER }
+                }
+              };
+
+                connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) {
+                  console.log("\nAdaugam episoade in BD");
+                  if (err) {  
+                        console.error(err.message + " episodes");
+                        return;  
+                  }
+                  console.log(result);
+                  res.send(result.rows);
+              });
+            }
+        });        
         res.send(response);
       })
       .catch(error => res.send(error))
@@ -299,6 +313,26 @@ app.get('/topSeries', function (req, res) {
       .then(movie => res.send(movie))
       .catch(error => res.send(error))
 });
+
+app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
+  var append_to_response = "";
+  for(var i = 1 ; i <= req.params.no_of_seasons ; i++) {
+    if(i == req.params.no_of_seasons){
+      append_to_response = append_to_response + "season/" + i;
+    } else {
+      append_to_response = append_to_response + "season/" + i + ",";
+    }
+  }
+
+  var getAllEpisodes = `http://api.themoviedb.org/3/tv/${req.params.serie_id}?api_key=${process.env.TMDB_KEY}&append_to_response=${append_to_response}`;
+  fetch(`${getAllEpisodes}`)
+      .then(response => response.json())
+      .then(episodes => res.send(episodes))
+      .catch(error => res.send(error))      
+  });
+
+
+
 
 
 app.listen(3000);

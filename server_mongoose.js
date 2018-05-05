@@ -11,8 +11,6 @@ app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
-  res.setHeader('Access-Control-Expose-Headers','ETag, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After');
-  res.setHeader('X-RateLimit-Limit','200');
   next();
 });
 
@@ -152,18 +150,10 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
       .then(response => response.json())
       .then(episodes => res.send(episodes))
       .catch(error => res.send(error))      
-});
+  });
 
 
 
-//  var user = new User({username:"test", email:"ggg@gmail.com", password:"123456"})
-
-// user.save(function(err){
-//   if(err)
-//     console.log(err);
-//     else 
-//     console.log(user);
-// });
 
 
 app.listen(3000);
