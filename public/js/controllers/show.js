@@ -65,4 +65,9 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             }
         });
     }
+
+    //do some test with append to response more than 20
+    $http.post("/addShow/4779/64/georgy17").then(function(resp){
+        console.log(resp);
+    })
 });
