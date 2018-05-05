@@ -125,14 +125,8 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
       } else if(i%20 != 0) {
         appendString = appendString + "season/" + i + ",";
       }
-      // if(i == req.params.noOfSeasons) {
-      //   append_to_response = append_to_response + "season/" + i;
-      // } else {
-      //   append_to_response = append_to_response + "season/" + i + ",";
-      // }
     }
-  }  
-    
+  }
 
   oracledb.getConnection(databaseConfig, function(err, connection) {
     var sql_userId = `SELECT user_id from users_logged where username=LOWER('` + req.params.userName + `')`;
@@ -152,200 +146,98 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
 
   const multipleFetch = url => fetch(url)
      .then(res => res.json())
-    //  .then(function(response) {
-      //  console.log(response)
-        //   oracledb.getConnection(databaseConfig, function(err, connection) {
-        //     if (err) {
-        //         return;  
-        //     }
-
-        //     var sql_tv_show = "INSERT INTO TV_SHOW values(:1, :2, :3, :4)";
-        //     var tv_show_binds = [req.params.showId, response.name, response.number_of_episodes, req.params.noOfSeasons]
-        //     connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) {
-        //       console.log("\n");
-        //       console.log("Adaugam serial in BD");
-        //       if (err) {  
-        //         console.error(err.message + " tv_show");
-        //         return;  
-        //       }
-        //       console.log(result);
-        //       res.send(result.rows);
-        //     });
-            
-        //     var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
-        //                             + `,'` + response.name + `',` + parseInt(response.number_of_episodes) + `, ` + (parseInt(response.number_of_episodes) - no_of_ep_watched) + `)`;
-            
-        //     connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) {
-        //       console.log("\n");
-        //       console.log("Adaugam user_id si show_id in BD");
-        //       if (err) {  
-        //         console.error(err.message + " tv_show");
-        //         return;  
-        //       }
-        //       console.log(result);
-        //       res.send(result.rows);
-        //     });
-
-        //     var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
-        //     var binds_seasons = response.seasons;
-        //     var seasons_options = {
-        //       autoCommit:true, 
-        //       bindDefs: { 
-        //         id: { type: oracledb.NUMBER },
-        //         name: { type: oracledb.STRING, maxSize: 100 },
-        //         season_number: { type: oracledb.NUMBER }
-        //       }
-        //     }
-        //     connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) {
-        //       console.log("\nAdaugam sezoane in BD");
-        //         if (err) {  
-        //               console.error(err.message + " seasons");
-        //               return;  
-        //         }
-        //         console.log(result);
-        //         res.send(result.rows);
-        //     });
-            
-        //     var seasonsArr = [];
-        //     var seasonsStr = append_to_response[k].split(",");
-        //     console.log(seasonsStr);
-        //     for(var i = 0; i < seasonsStr.length; i++) {
-        //       seasonsArr.push(resp[seasonsStr[i]]);
-
-        //       var sql_episodes = `INSERT INTO EPISODES values(:id, `+ resp.seasons[i-1].id +`, :name, :season_number)`;
-        //       var binds_episodes = resp[seasonsStr[i]].episodes;
-        //       var episodes_options = {
-        //         autoCommit:true, 
-        //         bindDefs: { 
-        //           id: { type: oracledb.NUMBER },
-        //           name: { type: oracledb.STRING, maxSize: 100 },
-        //           season_number: { type: oracledb.NUMBER }
-        //         }
-        //       };
-
-        //         connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) {
-        //           console.log("\nAdaugam episoade in BD");
-        //           if (err) {  
-        //                 console.error(err.message + " episodes");
-        //                 return;  
-        //           }
-        //           console.log(result);
-        //           res.send(result.rows);
-        //       });
-        //     }
-        // });
-
-        
-        // res.send(response);
-      // })
       .catch(error => res.send(error))
 
-        
-  // })
-
+  
+  var done = false;
   Promise
       .all(urls.map(multipleFetch))
       .then(function(responses) {
-        var done = false;
-        console.log(responses[0].name);
-        responses.forEach(element => {
+        responses.forEach(function(element, idx) {
+          oracledb.getConnection(databaseConfig, function(err, connection) {
             if(responses.length > 1 && done == false) {
-              oracledb.getConnection(databaseConfig, function(err, connection) {
-                // console.log(responses[0]);
-                if (err) {
-                    return;  
+              if (err) {
+                  return;  
+              }
+              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, :2, :3, :4)";
+              var tv_show_binds = [req.params.showId, element.name, element.number_of_episodes, req.params.noOfSeasons]
+              connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) {
+                console.log("\n");
+                console.log("Adaugam serial in BD");
+                if (err) {  
+                  console.error(err.message + " tv_show");
+                  return;  
                 }
-                console.log(i)
-                var sql_tv_show = "INSERT INTO TV_SHOW values(:1, :2, :3, :4)";
-                var tv_show_binds = [req.params.showId, element.name, element.number_of_episodes, req.params.noOfSeasons]
-                connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) {
-                  console.log("\n");
-                  console.log("Adaugam serial in BD");
-                  if (err) {  
-                    console.error(err.message + " tv_show");
-                    return;  
-                  }
-                  console.log(result);
-                  // res.send(result.rows);
-                });
-                
-                var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
-                                        + `,'` + element.name + `',` + parseInt(element.number_of_episodes) + `, ` + (parseInt(element.number_of_episodes) - no_of_ep_watched) + `)`;
-                
-                connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) {
-                  console.log("\n");
-                  console.log("Adaugam user_id si show_id in BD");
-                  if (err) {  
-                    console.error(err.message + " tv_show");
-                    return;  
-                  }
-                  console.log(result);
-                  // res.send(result.rows);
-                });
+                console.log(result);
+                // res.send(result.rows);
+              });
+              
+              var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
+                                      + `,'` + element.name + `',` + parseInt(element.number_of_episodes) + `, ` + (parseInt(element.number_of_episodes) - no_of_ep_watched) + `)`;
+              
+              connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) {
+                console.log("\n");
+                console.log("Adaugam user_id si show_id in BD");
+                if (err) {  
+                  console.error(err.message + " tv_show");
+                  return;  
+                }
+                console.log(result);
+                // res.send(result.rows);
+              });
 
-                var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
-                var binds_seasons = element.seasons;
-                var seasons_options = {
-                  autoCommit:true, 
-                  bindDefs: { 
-                    id: { type: oracledb.NUMBER },
-                    name: { type: oracledb.STRING, maxSize: 100 },
-                    season_number: { type: oracledb.NUMBER }
-                  }
+              var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
+              var binds_seasons = element.seasons;
+              var seasons_options = {
+                autoCommit:true, 
+                bindDefs: { 
+                  id: { type: oracledb.NUMBER },
+                  name: { type: oracledb.STRING, maxSize: 100 },
+                  season_number: { type: oracledb.NUMBER }
                 }
-                connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) {
-                  console.log("\nAdaugam sezoane in BD");
-                    if (err) {  
-                          console.error(err.message + " seasons");
-                          return;  
-                    }
-                    console.log(result);
-                    // res.send(result.rows);
-                });
-            });
+              }
+              connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) {
+                console.log("\nAdaugam sezoane in BD");
+                  if (err) {  
+                        console.error(err.message + " seasons");
+                        return;  
+                  }
+                  console.log(result);
+                  // res.send(result.rows);
+              });
             done = true;
           }
+          
+          var seasonsArr = [];
+          var seasonsStr = append_to_response[idx].split(",");
+          seasonsStr.forEach(function(elem,idx){
+            seasonsArr.push(element[elem]);
+            var sql_episodes = `INSERT INTO EPISODES values(:id, `+ element.seasons[idx].id +`, :name, :season_number)`;
+            var binds_episodes = element[elem].episodes;
+            var episodes_options = {
+              autoCommit:true, 
+              bindDefs: { 
+                id: { type: oracledb.NUMBER },
+                name: { type: oracledb.STRING, maxSize: 100 },
+                season_number: { type: oracledb.NUMBER }
+              }
+            };
+
+            connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) {
+                console.log("\nAdaugam episoade in BD");
+                if (err) {  
+                      console.error(err.message + " episodes");
+                      return;  
+                }
+                console.log(result);
+            });
+          });
         });
-        
-        //     var seasonsArr = [];
-        //     var seasonsStr = append_to_response[k].split(",");
-        //     console.log(seasonsStr);
-        //     for(var i = 0; i < seasonsStr.length; i++) {
-        //       seasonsArr.push(resp[seasonsStr[i]]);
-
-        //       var sql_episodes = `INSERT INTO EPISODES values(:id, `+ resp.seasons[i-1].id +`, :name, :season_number)`;
-        //       var binds_episodes = resp[seasonsStr[i]].episodes;
-        //       var episodes_options = {
-        //         autoCommit:true, 
-        //         bindDefs: { 
-        //           id: { type: oracledb.NUMBER },
-        //           name: { type: oracledb.STRING, maxSize: 100 },
-        //           season_number: { type: oracledb.NUMBER }
-        //         }
-        //       };
-
-        //         connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) {
-        //           console.log("\nAdaugam episoade in BD");
-        //           if (err) {  
-        //                 console.error(err.message + " episodes");
-        //                 return;  
-        //           }
-        //           console.log(result);
-        //           res.send(result.rows);
-        //       });
-        //     }
-        
-        
+          
+      });
+        res.send(responses);
       })
 
-  // for(var k = 0; k < append_to_response.length; k++) {
-  //   var getAllEpisodes = `http://api.themoviedb.org/3/tv/${req.params.showId}?api_key=${process.env.TMDB_KEY}&append_to_response=${append_to_response[k]}`;
-
-    // fetch(`${getAllEpisodes}`)
-    //     .then(response => response.json())
-    //     .then(function(response) {
-            
-    //   }
 });
 
 app.get('/users/:userName', function (req, res) {
