@@ -25,7 +25,6 @@
 
 	<script src="/node_modules/angular-ui-calendar/src/calendar.js"></script>
 	
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" />
 	
 	<link rel="stylesheet" href="node_modules/fullcalendar/dist/fullcalendar.css"/>
 	<!-- jquery, moment, and angular have to get included before fullcalendar -->
@@ -49,23 +48,41 @@
 </head>
 <body  ng-controller="AppController" ng-cloak>
 	<div layout="column" class="relative" layout-fill role="main">
-		<md-toolbar class="md-theme md-toolbar-tools">
-			<h1>{{appName}}</h1>
+		<md-toolbar>
+			<div id="search-bar" class="md-theme md-toolbar-tools" ng-show="preSearchToolbar()">
+				<h1>{{appName}}</h1>
+	
+				<span flex></span>
+	
+				<md-button ng-show="loggedIn" class="md-toolbar-actions">
+					<md-icon md-font-set="md">person</md-icon>
+					<span class="inset">{{user}}</span>
+				</md-button>
+				<md-button ng-show="loggedIn" class="md-toolbar-actions" ng-click="signout()">
+					<md-icon md-svg-src="public/images/logout.svg" aria-label="android "></md-icon>
+					<span class="inset">Logout</span>
+				</md-button>
+				<md-button class="md-toolbar-actions" ng-click="initiateSearch()">
+					<md-icon md-font-set="md">search</md-icon>
+					<span class="inset">Search</span>
+				</md-button>
 
-			<span flex></span>
+			</div>
 
-			<md-button ng-show="loggedIn" class="md-toolbar-actions">
-				<md-icon md-font-set="md">person</md-icon>
-				<span class="inset">{{user}}</span>
-			</md-button>
-			<md-button ng-show="loggedIn" class="md-toolbar-actions" ng-click="signout()">
-				<md-icon md-svg-src="public/images/logout.svg" aria-label="android "></md-icon>
-				<span class="inset">Logout</span>
-			</md-button>
-			<md-button class="md-toolbar-actions">
-				<md-icon md-font-set="md">search</md-icon>
-				<span class="inset">Search</span>
-			</md-button>
+			<div ng-show="showSearchToolbar()" class="md-toolbar-tools search-bar">
+				<md-button class="md-icon-button" ng-click="searchTvShow()">
+					<md-icon>search</md-icon>
+				</md-button>
+		
+				<md-input-container flex>
+					<label for="search">Search your favorite show</label>
+					<input id="search-input" type="text" ng-model="search" ng-keyup="$event.keyCode == 13 ? searchTvShow() : null"/>
+				</md-input-container>
+		
+				<md-button class="md-icon-button" ng-click="endSearch()">
+					<md-icon>close</md-icon>
+				</md-button>
+			</div>
 		</md-toolbar>
 	
 		<div layout="row" style="height:100%">
@@ -107,5 +124,11 @@
 <script>
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
 	':35729/livereload.js?snipver=1"></' + 'script>')
-</script> 
+</script>
+<style>
+	.search-bar { background-color: #222; }
+	.search-bar * { color: white !important; }
+	.search-bar input { border-bottom-color: white; }
+	.md-errors-spacer { display:none; }
+</style> 
 </html>

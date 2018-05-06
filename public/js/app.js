@@ -26,6 +26,35 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     }
     $scope.getPopularTvSeries();
 
+    $scope.search = null;
+    $scope.preSearchToolbar = function() {
+        return $scope.search == null;
+    }
+    $scope.showSearchToolbar = function() {
+        return $scope.search != null;
+    }
+    $scope.initiateSearch = function() {
+        $scope.search = '';
+    }
+    $scope.endSearch = function() {
+        $scope.search = null;
+    }
+    $scope.searchTvShow = function() {
+        if($scope.search != null || $scope.search != "") {
+            $http.get("/search/" + $scope.search).then(function(res){
+                $scope.tvShows = res.data.results;
+                console.log(res);
+            });
+        }
+    }
+
+    $scope.$watch(function() {
+        return document.querySelector('#search-bar:not(.ng-hide)');
+      }, function(){
+          document.getElementById('search-input').focus();
+      });
+
+
     $rootScope.update = function(){
 
         $scope.menuItems = [
@@ -116,7 +145,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         templateUrl: "public/views/calendar.html", 
         resolve: {
             popularSeries :  function($http, $q){
-                
+
                 return $http.get("/topSeries").then(function(success){
                     var shows = {};
                     shows = success.data.results;

@@ -12,12 +12,12 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         });
     }
 
-    if($routeParams.id != undefined){
-        $http.get("/show/" + $routeParams.id).then(function(response){
+    if($routeParams.id != undefined) {
+        $http.get("/show/" + $routeParams.id).then(function(response) {
             $scope.data = response.data;
             console.log($scope.data);
             // remove the "Specials" season
-            if($scope.data.seasons[0].name == "Specials"){
+            if($scope.data.seasons[0].name == "Specials") {
                 $scope.data.seasons = $scope.data.seasons.slice(1, $scope.data.seasons.length);
                 $scope.selectSeason(1);
             } else {

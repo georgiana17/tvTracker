@@ -164,7 +164,6 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
   Promise
       .all(urls.map(multipleFetch))
       .then(function(responses) {
-        console.log(responses.length);
         responses.forEach(function(element, index){
           var noSpecials = -1;
           if(element.seasons[0].name == "Specials") {
@@ -182,7 +181,6 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
         if(responses[0].name.indexOf("'") >= 0) {
           
           showName = showName.replace("'","''");
-          console.log(showName);
         }
 
         let promise1 = new Promise (async function(resolve, reject) {
@@ -192,8 +190,8 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
 
               var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3)";
               var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons];
-
               console.log(sql_tv_show);
+
               let res = await conn1.execute(sql_tv_show, tv_show_binds, { autoCommit:true });
               resolve(res);
           } catch (err){
@@ -275,7 +273,6 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
                 console.log(res + "episodes");
                 let promises = [];
                   episodesInfo.forEach(function(elem){
-                    console.log(elem.id);
                     var sql_episodes = `INSERT INTO EPISODES values(:id, `+ elem.id +`, :name, :season_number)`;
                     console.log(sql_episodes);
                     var binds_episodes = elem.episodes_bind;
@@ -316,11 +313,9 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
               }).catch((err) => console.log(err));
           })
           .catch((err) => console.log(err))
-        }).catch((err) => console.log(err));
-
-          
+        }).catch((err) => console.log(err));          
                
-        res.send(responses);
+        res.send("Tv Show added to Database!");
       })
 
 });
@@ -434,8 +429,13 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
       .catch(error => res.send(error))      
   });
 
-
-
+  app.get('/search/:query', function(req, res){
+    var searchTvShow = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_KEY}&language=en-US&page=1&query=${req.params.query}`;
+    fetch(`${searchTvShow}`)
+      .then(resp => resp.json())
+      .then(search => res.send(search))
+      .catch(err => res.send(error))
+  });
 
 
 app.listen(3000);
