@@ -4,8 +4,9 @@ var path = require("path");
 var bodyParser = require("body-parser");
 var fetch = require('isomorphic-fetch');
 var mongoose = require('mongoose');
+var async = require('async');
 
-var oracledb = require('oracledb');
+var  oracledb = require('oracledb');
 
 
 app.use(function(req, res, next) {
@@ -126,6 +127,15 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
         appendString = appendString + "season/" + i + ",";
       }
     }
+  } else {
+    for(var i = 1 ; i <= req.params.noOfSeasons ; i++) {
+      if(i == req.params.noOfSeasons) {
+        appendString = appendString + "season/" + i;
+      } else {
+        appendString = appendString + "season/" + i + ",";
+      }
+    }
+    append_to_response.push(appendString);
   }
 
   oracledb.getConnection(databaseConfig, function(err, connection) {
@@ -149,92 +159,167 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
       .catch(error => res.send(error))
 
   
-  var done = false;
+  let done = false;
+  let episodesInfo = [];
   Promise
       .all(urls.map(multipleFetch))
       .then(function(responses) {
-        responses.forEach(function(element, idx) {
-          oracledb.getConnection(databaseConfig, function(err, connection) {
-            if(responses.length > 1 && done == false) {
-              if (err) {
-                  return;  
-              }
-              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, :2, :3, :4)";
-              var tv_show_binds = [req.params.showId, element.name, element.number_of_episodes, req.params.noOfSeasons]
-              connection.execute(sql_tv_show, tv_show_binds, { autoCommit:true }, function(err, result) {
-                console.log("\n");
-                console.log("Adaugam serial in BD");
-                if (err) {  
-                  console.error(err.message + " tv_show");
-                  return;  
-                }
-                console.log(result);
-                // res.send(result.rows);
-              });
-              
-              var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
-                                      + `,'` + element.name + `',` + parseInt(element.number_of_episodes) + `, ` + (parseInt(element.number_of_episodes) - no_of_ep_watched) + `)`;
-              
-              connection.execute(sql_user_tv_show, [], { autoCommit:true }, function(err, result) {
-                console.log("\n");
-                console.log("Adaugam user_id si show_id in BD");
-                if (err) {  
-                  console.error(err.message + " tv_show");
-                  return;  
-                }
-                console.log(result);
-                // res.send(result.rows);
-              });
-
-              var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
-              var binds_seasons = element.seasons;
-              var seasons_options = {
-                autoCommit:true, 
-                bindDefs: { 
-                  id: { type: oracledb.NUMBER },
-                  name: { type: oracledb.STRING, maxSize: 100 },
-                  season_number: { type: oracledb.NUMBER }
-                }
-              }
-              connection.executeMany(sql_seasons, binds_seasons, seasons_options, function(err, result) {
-                console.log("\nAdaugam sezoane in BD");
-                  if (err) {  
-                        console.error(err.message + " seasons");
-                        return;  
-                  }
-                  console.log(result);
-                  // res.send(result.rows);
-              });
-            done = true;
+        console.log(responses.length);
+        responses.forEach(function(element, index){
+          var noSpecials = -1;
+          if(element.seasons[0].name == "Specials") {
+            noSpecials = 0;
           }
-          
-          var seasonsArr = [];
-          var seasonsStr = append_to_response[idx].split(",");
-          seasonsStr.forEach(function(elem,idx){
-            seasonsArr.push(element[elem]);
-            var sql_episodes = `INSERT INTO EPISODES values(:id, `+ element.seasons[idx].id +`, :name, :season_number)`;
-            var binds_episodes = element[elem].episodes;
-            var episodes_options = {
-              autoCommit:true, 
-              bindDefs: { 
-                id: { type: oracledb.NUMBER },
-                name: { type: oracledb.STRING, maxSize: 100 },
-                season_number: { type: oracledb.NUMBER }
-              }
-            };
 
-            connection.executeMany(sql_episodes, binds_episodes, episodes_options, function(err, result) {
-                console.log("\nAdaugam episoade in BD");
-                if (err) {  
-                      console.error(err.message + " episodes");
-                      return;  
-                }
-                console.log(result);
-            });
-          });
+          var seasonsStr = append_to_response[index].split(",");
+          seasonsStr.forEach(function(elem,idx) {
+            var seasonId = parseInt(elem.split("/")[1]) + noSpecials;
+            episodesInfo.push({id: element.seasons[seasonId].id, episodes_bind: element[elem].episodes});
+          })
         });
+        
+        var showName = responses[0].name;
+        if(responses[0].name.indexOf("'") >= 0) {
           
-      });
+          showName = showName.replace("'","''");
+          console.log(showName);
+        }
+
+        let promise1 = new Promise (async function(resolve, reject) {
+          let conn1;
+          try{
+              conn1 = await oracledb.getConnection(databaseConfig);
+
+              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3)";
+              var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons];
+
+              console.log(sql_tv_show);
+              let res = await conn1.execute(sql_tv_show, tv_show_binds, { autoCommit:true });
+              resolve(res);
+          } catch (err){
+            console.log("error ocurred", err);
+            reject(err);
+          } finally {
+            if(conn1){
+              try{
+                await conn1.close();
+                console.log("connection close")
+              } catch(err) {
+                console.log("erro closing conn", err);
+              }
+            }
+          }
+        });
+
+        promise1.then(function(res){
+          let promise2 = new Promise(async function(resolve, reject) {
+            let conn;
+            try{
+                conn = await oracledb.getConnection(databaseConfig);
+                var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
+                                        + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + (parseInt(responses[0].number_of_episodes) - no_of_ep_watched) + `)`;
+                console.log(sql_user_tv_show);
+                let res = await conn.execute(sql_user_tv_show, [], { autoCommit:true });
+                resolve(res);
+            } catch (err) {
+              console.log("error ocurred", err);
+              // reject(err);
+            } finally {
+              if(conn){
+                try{
+                  await conn.close();
+                  console.log("connection close")
+                } catch(err) {
+                  console.log("erro closing conn", err);
+                }
+              }
+            }
+          });
+
+          promise2
+          .then(function(res){
+            console.log(res + "show_users");
+              let promise3 = new Promise(async function(resolve, reject) {
+                let connection;
+                try{
+                    connection = await oracledb.getConnection(databaseConfig);
+                    var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
+                    var binds_seasons = responses[0].seasons;
+                    var seasons_options = {
+                      autoCommit:true, 
+                      bindDefs: { 
+                        id: { type: oracledb.NUMBER },
+                        name: { type: oracledb.STRING, maxSize: 100 },
+                        season_number: { type: oracledb.NUMBER }
+                      }
+                    }
+                    console.log(sql_seasons);
+                    
+                    let res = await connection.executeMany(sql_seasons, binds_seasons, seasons_options);                    
+                    resolve(res);
+                  } catch (err) {
+                    console.log("error ocurred", err);
+                    reject(err);
+                  } finally {
+                    if(connection){
+                      try{
+                        await connection.close();
+                        console.log("connection close")
+                      } catch(err) {
+                        console.log("erro closing conn", err);
+                      }
+                    }
+                  }
+                }); 
+              promise3.then(function(res) {
+                console.log(res + "episodes");
+                let promises = [];
+                  episodesInfo.forEach(function(elem){
+                    console.log(elem.id);
+                    var sql_episodes = `INSERT INTO EPISODES values(:id, `+ elem.id +`, :name, :season_number)`;
+                    console.log(sql_episodes);
+                    var binds_episodes = elem.episodes_bind;
+                    var episodes_options = {
+                      autoCommit:true, 
+                      bindDefs: { 
+                        id: { type: oracledb.NUMBER },
+                        name: { type: oracledb.STRING, maxSize: 100 },
+                        season_number: { type: oracledb.NUMBER }
+                      }
+                    };
+                    let promise = new Promise(async function(resolve, reject) {
+                      let conn;                            
+                        try{
+                          conn = await oracledb.getConnection(databaseConfig);
+                            let res = await conn.executeMany(sql_episodes, binds_episodes, episodes_options);
+                            resolve(res);
+                        } catch (err){
+                          console.log("error ocurred", err);
+                          reject(err);
+                        } finally {
+                          if(conn){
+                            try{
+                              await conn.close();
+                              console.log("connection close")
+                            } catch(err) {
+                              console.log("erro closing conn", err);
+                            }
+                          }
+                        }
+                    });
+                    promises.push(promise); 
+                  })
+                Promise.all(promises)
+                  .then(function(res) {
+                    console.log(res + "episodes")
+                  })
+              }).catch((err) => console.log(err));
+          })
+          .catch((err) => console.log(err))
+        }).catch((err) => console.log(err));
+
+          
+               
         res.send(responses);
       })
 

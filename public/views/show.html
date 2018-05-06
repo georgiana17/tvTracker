@@ -65,6 +65,7 @@
         <div layout="row" layout-padding>
             <div layout-padding layout-wrap layout="row">
                 <md-card md-whiteframe="3" flex-xs flex-gt-xs="25" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
+                    <!-- TODO: add custom photo for still_path == null -->
                     <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "https://image.tmdb.org/t/p/original/85SWPq6UYPfAukLF6SXkTaRBC0O.jpg"}}' class="md-card-image" alt="Washed Out">
                     <md-card-title>
                     <md-card-title-text>

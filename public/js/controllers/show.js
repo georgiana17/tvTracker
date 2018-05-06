@@ -39,6 +39,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
 
     $scope.displayPosterPath = function(p) {
+        // TODO: add custom poster for poster_path == null
         if(p.poster_path === null) {
             return false;
         } else {
@@ -65,6 +66,10 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             }
         });
     }
+
+    // $http.post("/addShow/4779/64/georgy17").then(function(resp){
+    //     console.log(resp);
+    // })
 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);

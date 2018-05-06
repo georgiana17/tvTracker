@@ -20,6 +20,7 @@
     "angular-sanitize": "^1.6.10",
     "angular-strap": "^2.3.12",
     "angular-ui-calendar": "^1.0.2",
+    "async": "^2.6.0",
     "bcrypt": "^1.0.3",
     "body-parser": "1.18.2",
     "dotenv": "^5.0.1",
@@ -29,6 +30,7 @@
     "mongo": "^0.1.0",
     "mongodb": "^2.2.33",
     "mongoose": "^5.0.12",
-    "node-tvdb": "^4.0.0"
+    "node-tvdb": "^4.0.0",
+    "oracledb": "^2.2.0"
   }
 }
