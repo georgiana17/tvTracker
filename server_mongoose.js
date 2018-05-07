@@ -151,7 +151,14 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
       .then(episodes => res.send(episodes))
       .catch(error => res.send(error))      
   });
-
+  
+  app.get('/search/:query', function(req, res){
+    var searchTvShow = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_KEY}&language=en-US&page=1&query=${req.params.query}`;
+    fetch(`${searchTvShow}`)
+      .then(resp => resp.json())
+      .then(search => res.send(search))
+      .catch(err => res.send(error))
+  });
 
 
 

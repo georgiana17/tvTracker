@@ -1,5 +1,5 @@
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages', 'ui.calendar'])
-app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, auth, session) {
+app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, $routeParams, auth, session) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
     $rootScope.getUser = function() {
@@ -41,18 +41,19 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     }
     $scope.searchTvShow = function() {
         if($scope.search != null || $scope.search != "") {
-            $http.get("/search/" + $scope.search).then(function(res){
-                $scope.tvShows = res.data.results;
-                console.log(res);
-            });
+            $location.path("/search/" + $scope.search);
         }
+    }
+    console.log($routeParams.query);
+    if($routeParams.query !== null) {
+        $scope.search = $routeParams.query;
     }
 
     $scope.$watch(function() {
         return document.querySelector('#search-bar:not(.ng-hide)');
       }, function(){
           document.getElementById('search-input').focus();
-      });
+    });
 
 
     $rootScope.update = function(){
@@ -124,23 +125,27 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "MainController",
         templateUrl: "public/views/main.html"
     })
-    .when("/topSeries",{
+    .when("/topSeries", {
         controller: "ShowController",
         templateUrl: "public/views/topRated.html"
     })
-    .when("/login",{
+    .when("/login", {
         controller: "LoginController",
         templateUrl: "public/views/login.html"
     })
-    .when("/signup",{
+    .when("/signup", {
         controller: "RegisterController",
         templateUrl: "public/views/signup.html"
     })
-    .when("/show/:id",{
+    .when("/show/:id", {
         controller: "ShowController",
         templateUrl: "public/views/show.html"
     })
-    .when("/calendar",{
+    .when("/search/:query", {
+        controller: "SearchController",
+        templateUrl: "public/views/search.html"
+    })
+    .when("/calendar", {
         controller: "CalendarController",
         templateUrl: "public/views/calendar.html", 
         resolve: {

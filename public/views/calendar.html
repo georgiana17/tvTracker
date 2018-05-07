@@ -1,18 +1,18 @@
 <div class="ui-calendar">
-    <div class="tooltipSerie"> 
-        <div class="panel bg-white b-a pos-rlt"><span class="arrow"></span>
-            <div class="h4 font-thin m-b-sm">{{event.showName}}</div>
-            <div class="font-thin m-b-sm"><strong>{{event.seasonNo}}x{{event.episodeNo}}</strong> {{episode.title}}</div>
-            <div class="line b-b b-light"></div>
-            <div><i class="icon-calendar text-muted m-r-xs"></i>{{event.start}}</div>
-            <div class="m-t-sm"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}"  class="img-full" align="left">{{event.overview}}</div>
-        </div>
-        
-    </div>
+    <md-tooltip>
+        <div class="tooltipSerie"> 
+                <div class="panel bg-white b-a pos-rlt"><span class="arrow"></span>
+                    <div class="h4 font-thin m-b-sm">{{event.showName}}</div>
+                    <div class="font-thin m-b-sm"><strong>{{event.seasonNo}}x{{event.episodeNo}}</strong> {{episode.title}}</div>
+                    <div class="line b-b b-light"></div>
+                    <div><i class="icon-calendar text-muted m-r-xs"></i>{{event.start}}</div>
+                    <div class="m-t-sm"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}"  class="img-full" align="left">{{event.overview}}</div>
+                </div>        
+            </div>
+    </md-tooltip>
+    
     <div class="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
 </div>
-
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" />
 
 
 <style>

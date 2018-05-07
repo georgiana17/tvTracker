@@ -1,6 +1,35 @@
 <!-- TODO: LAYOUT for search page -->
-<div layout-padding>
-    <div>
-
+<div layout-padding ng-cloak>
+    <div layout="column">
+        <div layout="column">
+            <h1>Found {{tvShows.length}} results </h1>
+        </div>
+        <div layout="row" flex-xs flex-gt-xs="50" layout-wrap>
+            <md-card  md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-repeat="show in tvShows" layout-flex>
+                <a ng-href="#/show/{{show.id}}">
+                    <md-card-title>
+                        <md-card-title-text>
+                        <span class="md-headline">{{show.name}}</span>
+                        <span class="md-subhead">{{show.first_air_date | date:'yyyy'}}</span>
+                        </md-card-title-text>
+                        <md-card-title-media>
+                        <div class="md-media-lg card-media">
+                            <img ng-src="https://image.tmdb.org/t/p/original{{show.backdrop_path}}" class="md-card-image"/>
+                        </div>
+                        </md-card-title-media>
+                    </md-card-title>
+                </a>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button><md-icon>add</md-icon>Follow</md-button>
+                    <md-button>Action 2</md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
     </div>
 </div>
+
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
