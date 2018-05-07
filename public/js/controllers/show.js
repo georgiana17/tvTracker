@@ -14,19 +14,23 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     if($routeParams.id != undefined) {
         $http.get("/show/" + $routeParams.id).then(function(response) {
+            //TODO: 
             $scope.data = response.data;
             console.log($scope.data);
             // remove the "Specials" season
+            //TODO: if data.seasons == null 
             if($scope.data.seasons[0].name == "Specials") {
                 $scope.data.seasons = $scope.data.seasons.slice(1, $scope.data.seasons.length);
                 $scope.selectSeason(1);
             } else {
                 $scope.selectSeason(1);
             }
-
+            
+            // TODO: if backdrop_path == null => add a custom image.
             $scope.urlImage = "https://image.tmdb.org/t/p/original" + response.data.backdrop_path;
             $scope.releaseYear = response.data.first_air_date;
             $scope.showName = response.data.name;
+            // TODO: if poster_path == null => add a custom image.
             $scope.posterPath = "https://image.tmdb.org/t/p/original" + response.data.poster_path;
         });
     }
