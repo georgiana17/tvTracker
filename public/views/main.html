@@ -43,10 +43,10 @@
             </md-card>
         </div>
     </div>
-    <div layout="row" style="background-color:gray" layout-align="center center">
+    <div layout="row" md-colors="{background: 'navbar-primary-800'}" layout-align="center center">
         <h1>Here you can find all the TV Shows you like ... </h1>
     </div>
-    <div layout="row" style="background-color:gray" layout-align="center center" layout-padding>        
+    <div layout="row" md-colors="{background: 'navbar-primary-800'}" layout-align="center center" layout-padding>        
         <div layout="column" ng-repeat="item in popularSeries | limitTo : 5" layout-padding >
             <a ng-href="#/show/{{item.id}}">
                 <img style="width:150px;" ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}">

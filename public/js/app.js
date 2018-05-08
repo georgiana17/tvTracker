@@ -1,5 +1,5 @@
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages', 'ui.calendar'])
-app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, $routeParams, auth, session) {
+app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, $routeParams, auth, session, $window) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
     $rootScope.getUser = function() {
@@ -16,6 +16,12 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $rootScope.update();
     }
     
+    angular.element($window).bind('resize', function () {
+        if($window.innerWidth < 1280) {
+            $scope.endSearch();
+        }
+    });
+    
     $rootScope.getUser();
 
     $scope.getPopularTvSeries = function() {
@@ -27,6 +33,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     $scope.getPopularTvSeries();
 
     $scope.search = null;
+    $scope.sideNavSearch = null;
     $scope.preSearchToolbar = function() {
         return $scope.search == null;
     }
@@ -40,11 +47,14 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $scope.search = null;
     }
     $scope.searchTvShow = function() {
-        if($scope.search != null || $scope.search != "") {
+        $scope.toggleSidenav('left');
+        if(($scope.search != null ||  $scope.search !== undefined) && $scope.search != "") {
             $location.path("/search/" + $scope.search);
+        } else if(($scope.sideNavSearch != null && $scope.sideNavSearch !== undefined) && $scope.sideNavSearch != "") {
+            $location.path("/search/" + $scope.sideNavSearch);
         }
     }
-    console.log($routeParams.query);
+
     if($routeParams.query !== null) {
         $scope.search = $routeParams.query;
     }
@@ -55,9 +65,11 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
           document.getElementById('search-input').focus();
     });
 
+    $scope.toggleSidenav = function(menuId) {
+        $mdSidenav(menuId).toggle();
+    };
 
-    $rootScope.update = function(){
-
+    $rootScope.update = function() {
         $scope.menuItems = [
             {
                 link: '/',
@@ -66,7 +78,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
                 logged: true
             },
             {
-                link: 'http://google.es',
+                link: '#/',
                 title: 'My TV Shows',
                 icon: 'favorite',
                 logged: $rootScope.loggedIn
@@ -87,7 +99,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
                 logged: true
             },
             {
-                link: 'http://google.es',
+                link: '#/',
                 title: 'Recommendations',
                 icon: 'thumb_up',
                 logged: $rootScope.loggedIn
@@ -105,9 +117,13 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     $rootScope.update();
 })
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
-    $mdThemingProvider.theme('default')
-      .primaryPalette('deep-purple')
-      .accentPalette('pink');
+    // $mdThemingProvider.theme('default')
+    //   .primaryPalette('deep-purple')
+    //   .accentPalette('pink');
+    $mdThemingProvider.theme('navbar')
+      .primaryPalette('teal')
+      .accentPalette('grey')
+      .backgroundPalette('teal')
     // $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
     $mdIconProvider
         .iconSet('logout', 'public/images/logout.svg', 24)

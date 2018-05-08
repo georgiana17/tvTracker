@@ -49,7 +49,8 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                                 'overview': $scope.popularSeries[i]["season/" + p].episodes[k].overview,
                                 'seasonNo':  p,
                                 'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
-                                'image':  $scope.popularSeries[i].poster_path
+                                'image':  $scope.popularSeries[i].poster_path,
+                                'color': '#78909C'
                             });
                     }
                 }
@@ -60,7 +61,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.uiConfig = {
         calendar: {
             height:  $window.innerHeight - 70,
-            editable: true,
+            editable: false,
             fixedWeekCount: false,
             displayEventTime: false,
             header: {
@@ -71,16 +72,12 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             eventClick: function(date, jsEvent, view){
                 $scope.alertMessage = (date.title + ' was clicked ');
                 console.log($scope.alertMessage);
-                tooltip.set({
-                    'content.text':$scope.alertMessage
-                }).reposition(jsEvent).show(jsEvent);
             },
             windowResize: function() {
                 $scope.height = $window.innerHeight - 70;
                 $scope.uiConfig.calendar.height = $scope.height;
             },
             eventMouseover: function(date, jsEvent, view) {
-                console.log(date.title)
                 $scope.event = date;
                 $scope.tooltipDiv.removeClass("left right").find(".arrow").removeClass("left right top pull-up");
                 var elem = $(jsEvent.target).closest(".fc-event");

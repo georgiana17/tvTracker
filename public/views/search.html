@@ -4,7 +4,7 @@
         <div layout="column">
             <h1>Found {{tvShows.length}} results </h1>
         </div>
-        <div layout="row" flex-xs flex-gt-xs="50" layout-wrap>
+        <div layout="row"  flex-sm="45" flex-gt-xs="30" layout-wrap>
             <md-card  md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-repeat="show in tvShows" layout-flex>
                 <a ng-href="#/show/{{show.id}}">
                     <md-card-title>
