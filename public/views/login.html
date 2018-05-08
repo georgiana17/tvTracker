@@ -1,11 +1,11 @@
 <md-content ng-app="tvTracker" layout="row" layout-align="space-around" layout-padding="layout-padding" ng-cloak="ng-cloak" style="background:none">
     <md-card  flex="flex" class="middle-card" flex-gt-sm="50" flex-gt-md="33">
-        <md-toolbar>
+        <md-toolbar md-theme="navbar" md-colors="{background: 'navbar-primary-500'}">
             <div class="md-toolbar-tools">
             <h2><span>Sign in</span></h2>
             </div>
         </md-toolbar>
-        <md-card-content>
+        <md-card-content md-theme="navbar">
             <form name="Form">
                 <md-input-container class="md-block">
                     <label for="username">Username</label>
@@ -25,7 +25,7 @@
                         <div ng-message="minlength">Too short.</div>
                     </div>
                 </md-input-container>
-                <md-button ng-disabled="!Form.$valid" ng-click="signin()" class="md-raised md-primary">&nbsp Login &nbsp</md-button>
+                <md-button ng-disabled="!Form.$valid" ng-click="signin()" class="md-raised md-primary" md-theme="navbar">&nbsp Login &nbsp</md-button>
             </form>
             <footer style="float:right">
                 <p class="md-body-1" style="color:grey">Not a member?</p>

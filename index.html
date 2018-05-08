@@ -2,7 +2,8 @@
 <html ng-app="tvTracker">
 <head >
 	<base href="/" /> 
-	<title>Tv Series Tracker</title>
+	<title>EpisodeSpy</title>
+	<link rel="shortcut icon" type="image/png" href="public/images/favicon.png"/>
 	<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
 	<script src="node_modules/angular/angular.min.js"></script>
 
@@ -51,31 +52,32 @@
 	<div layout="column" class="relative" layout-fill role="main">
 		<md-toolbar class="md-whiteframe-z2" style="background-color: #FFFFFF; color:#00695C;">
 			<div id="search-bar" class="md-toolbar-tools" ng-show="preSearchToolbar()">
-				<h1>{{appName}}</h1>
+				<!-- <h1>{{appName}}</h1> -->
+				<a href="#/"><img src="public/images/logo_episode_spy_original.png" style="width:225px; height:37px;" alt="Episode Spy"/></a>
 	
 				<span flex></span>
 	
 				<md-button ng-show="loggedIn" class="md-toolbar-actions">
-					<md-icon md-font-set="md" style="color:#00695C">person</md-icon>
+					<md-icon md-font-set="md" class="tealCol">person</md-icon>
 					<span class="inset">{{user}}</span>
 				</md-button>
 				<md-button ng-show="loggedIn" class="md-toolbar-actions" ng-click="signout()" hide-xs>
-					<md-icon md-svg-src="public/images/logout.svg" aria-label="android " style="fill:#00695C"></md-icon>
+					<md-icon md-svg-src="public/images/logout.svg" aria-label="android " class="tealIcon"></md-icon>
 					<span class="inset">Logout</span>
 				</md-button>
 				<md-button class="md-toolbar-actions" ng-click="initiateSearch()" hide-md hide-sm hide-xs>
-					<md-icon md-font-set="md" style="color:#00695C">search</md-icon>
+					<md-icon md-font-set="md" class="tealCol">search</md-icon>
 					<span class="inset">Search</span>
 				</md-button>
 				<md-button ng-click="toggleSidenav('left')" hide-gt-md>
-					<md-icon style="color:#00695C">menu</md-icon>
+					<md-icon style="fill:#00695C">menu</md-icon>
 				</md-button>
 
 			</div>
 
 			<div ng-show="showSearchToolbar()" class="md-toolbar-tools search-bar">
 				<md-button class="md-icon-button" ng-click="searchTvShow()">
-					<md-icon style="fill:#00695C">search</md-icon>
+					<md-icon class="tealIcon">search</md-icon>
 				</md-button>
 		
 				<md-input-container flex>
@@ -84,12 +86,12 @@
 				</md-input-container>
 		
 				<md-button class="md-icon-button" ng-click="endSearch()">
-					<md-icon style="fill:#00695C">close</md-icon>
+					<md-icon class="tealIcon">close</md-icon>
 				</md-button>
 			</div>
 		</md-toolbar>
 		<div layout="row" style="height:100%">
-			<md-sidenav layout="column" md-theme="navbar" md-colors="{background: 'navbar-primary-500'}"  class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%;  font-size:0.9em;" md-is-locked-open="$mdMedia('gt-md')">
+			<md-sidenav layout="column" md-theme="navbar" md-colors="{background: 'navbar-primary-500'}" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%;  font-size:0.9em;" md-is-locked-open="$mdMedia('gt-md')">
 				<md-list>
 					<md-list-item hide-gt-md class="whiteCol">
 						<md-input-container flex>
@@ -154,6 +156,20 @@
 	}
 	.whiteCol {
 		color:#FFFFFF !important;
+	}
+	.tealIcon {
+		fill:#00695C !important;
+	}
+	.tealCol {
+		color:#00695C !important;
+	}
+	md-sidenav,
+	md-sidenav.md-locked-open-add-active,
+	md-sidenav.md-closed.md-locked-open-add-active,
+	md-sidenav.md-locked-open {
+		width: 240px;
+		min-width: 240px;
+		max-width: 240px;
 	}
 </style> 
 </html>
