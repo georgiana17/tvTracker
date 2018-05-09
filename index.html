@@ -62,7 +62,7 @@
 					<span class="inset">{{user}}</span>
 				</md-button>
 				<md-button ng-show="loggedIn" class="md-toolbar-actions" ng-click="signout()" hide-xs>
-					<md-icon md-svg-src="public/images/logout.svg" aria-label="android " class="tealIcon"></md-icon>
+					<md-icon md-svg-src="public/images/logout.svg" aria-label="android" class="tealIcon"></md-icon>
 					<span class="inset">Logout</span>
 				</md-button>
 				<md-button class="md-toolbar-actions" ng-click="initiateSearch()" hide-md hide-sm hide-xs>
@@ -70,7 +70,7 @@
 					<span class="inset">Search</span>
 				</md-button>
 				<md-button ng-click="toggleSidenav('left')" hide-gt-md>
-					<md-icon style="fill:#00695C">menu</md-icon>
+					<md-icon class="tealCol">menu</md-icon>
 				</md-button>
 
 			</div>
@@ -80,7 +80,7 @@
 					<md-icon class="tealIcon">search</md-icon>
 				</md-button>
 		
-				<md-input-container flex>
+				<md-input-container flex md-theme="navbar">
 					<label for="search">Search your favorite show</label>
 					<input id="search-input" type="text" ng-model="search" ng-keyup="$event.keyCode == 13 ? searchTvShow() : null"/>
 				</md-input-container>

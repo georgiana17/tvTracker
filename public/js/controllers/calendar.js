@@ -37,21 +37,23 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             let toReturn = "";
             while( p < $scope.popularSeries[i].number_of_seasons) {
                 p++;
-                for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++) {
-                    if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
-                        var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
-                        $scope.airDateEpisodes.push({
-                                'title': $scope.popularSeries[i]["season/" + p].episodes[k].name,
-                                'start': airDate,
-                                'end': airDate,
-                                'allDay': false,
-                                'showName': tvShowName,
-                                'overview': $scope.popularSeries[i]["season/" + p].episodes[k].overview,
-                                'seasonNo':  p,
-                                'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
-                                'image':  $scope.popularSeries[i].poster_path,
-                                'color': '#78909C'
-                            });
+                if($scope.popularSeries[i]["season/" + p] != undefined){
+                    for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++) {
+                        if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
+                            var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
+                            $scope.airDateEpisodes.push({
+                                    'title': $scope.popularSeries[i]["season/" + p].episodes[k].name,
+                                    'start': airDate,
+                                    'end': airDate,
+                                    'allDay': false,
+                                    'showName': tvShowName,
+                                    'overview': $scope.popularSeries[i]["season/" + p].episodes[k].overview,
+                                    'seasonNo':  p,
+                                    'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
+                                    'image':  $scope.popularSeries[i].poster_path,
+                                    'color': '#78909C'
+                                });
+                        }
                     }
                 }
             }               
