@@ -5,23 +5,25 @@
             <h1>Found {{tvShows.length}} results </h1>
         </div>
         <div layout="row"  flex-sm="45" flex-gt-xs="30" layout-wrap>
-            <md-card  md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch ng-repeat="show in tvShows" layout-flex>
-                <a ng-href="#/show/{{show.id}}">
-                    <md-card-title>
-                        <md-card-title-text>
-                        <span class="md-headline">{{show.name}}</span>
-                        <span class="md-subhead">{{show.first_air_date | date:'yyyy'}}</span>
-                        </md-card-title-text>
-                        <md-card-title-media>
+            <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"  md-theme-watch ng-repeat="show in tvShows" layout-flex layout-padding>
+                <md-card-title layout-padding>
+                    <md-card-title-media layout-padding>
                         <div class="md-media-lg card-media">
-                            <img ng-src="https://image.tmdb.org/t/p/original{{show.backdrop_path}}" class="md-card-image"/>
+                            <a ng-href="#/show/{{show.id}}">
+                                <img ng-src="https://image.tmdb.org/t/p/original{{show.poster_path}}" class="md-card-image"/>
+                            </a>
                         </div>
-                        </md-card-title-media>
-                    </md-card-title>
-                </a>
-                <md-card-actions layout="row" layout-align="end center">
-                    <md-button><md-icon>add</md-icon>Follow</md-button>
-                    <md-button>Action 2</md-button>
+                    </md-card-title-media>
+                    <md-card-title-text layout-align="start center" layout-padding>
+                        <a ng-href="#/show/{{show.id}}">
+                          <span class="md-headline" layout-wrap>{{show.name}}</span>
+                        </a>
+                        <span class="md-subhead">{{show.first_air_date | date:'yyyy'}}</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="end right" layout-padding>
+                    <md-button><md-icon>add</md-icon></md-button>
+                    <a ng-href="#/show/{{show.id}}" class="md-button"><md-icon ng_bind="'more_horiz'"></md-icon></a>
                 </md-card-actions>
             </md-card>
         </div>
