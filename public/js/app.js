@@ -2,6 +2,7 @@ var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMess
 app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, $routeParams, auth, session, $window) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
+    $scope.focusInput = false;
     $rootScope.getUser = function() {
         if(auth.isLoggedIn()){
             $rootScope.user = JSON.parse(session.getUser());
@@ -41,9 +42,11 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         return $scope.search != null;
     }
     $scope.initiateSearch = function() {
+        $scope.focusInput = true;
         $scope.search = '';
     }
     $scope.endSearch = function() {
+        $scope.focusInput = false;
         $scope.search = null;
     }
     $scope.searchTvShow = function() {
@@ -59,10 +62,13 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $scope.search = $routeParams.query;
     }
 
-    $scope.$watch(function() {
-        return document.querySelector('#search-bar:not(.ng-hide)');
-      }, function(){
-          document.getElementById('search-input').focus();
+    $scope.$watch(function(){
+            return $scope.focusInput;
+        }, function(newVal, oldVal){
+        console.log(newVal);
+          if(newVal == true ){
+              $('.search-input').focus();
+          }
     });
 
     $scope.toggleSidenav = function(menuId) {
@@ -116,6 +122,20 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     
     $rootScope.update();
 })
+
+app.directive('focusMe', function () {
+    return {
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.focusMe, function(value) {
+                if(value === true) {
+                    element[0].focus();
+                    element[0].select();
+                }
+            });
+        }
+    };
+});
+
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
     // $mdThemingProvider.theme('default')
     //   .primaryPalette('deep-purple')

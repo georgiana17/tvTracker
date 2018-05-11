@@ -81,8 +81,8 @@
 				</md-button>
 		
 				<md-input-container flex md-theme="navbar">
-					<label for="search">Search your favorite show</label>
-					<input id="search-input" type="text" ng-model="search" ng-keyup="$event.keyCode == 13 ? searchTvShow() : null"/>
+					<!-- <label for="search">Search your favorite show</label> -->
+					<input id="search-input" focus-me="{{focusInput}}" type="text" ng-model="search" ng-keyup="$event.keyCode == 13 ? searchTvShow() : null"/>
 				</md-input-container>
 		
 				<md-button class="md-icon-button" ng-click="endSearch()">
@@ -96,7 +96,7 @@
 					<md-list-item hide-gt-md class="whiteCol">
 						<md-input-container flex>
 							<label for="search" class="whiteCol">Search your favorite show</label>
-							<input id="search-input" class="whiteCol" type="text" ng-model="sideNavSearch" style="border-bottom-color:white;" ng-keyup="$event.keyCode == 13 ? searchTvShow()  : null"/>
+							<input  class="whiteCol" type="text" ng-model="sideNavSearch" style="border-bottom-color:white;" ng-keyup="$event.keyCode == 13 ? searchTvShow()  : null"/>
 						</md-input-container>
 					</md-list-item>
 					<md-list-item md-ink-ripple ng-repeat="item in menuItems" ng-show="item.logged">
@@ -146,7 +146,7 @@
 <style>
 	.search-bar { background-color: #222; }
 	.search-bar * { color: white !important; }
-	.search-bar input { border-bottom-color: white; }
+	/* .search-bar input { border-bottom-color: white; } */
 	.md-errors-spacer { display:none; }
 	.tocapitalize {
 		text-transform: capitalize;

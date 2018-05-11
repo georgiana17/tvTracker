@@ -10,7 +10,7 @@
                     <md-card-title-media layout-padding>
                         <div class="md-media-lg card-media">
                             <a ng-href="#/show/{{show.id}}">
-                                <img ng-src="https://image.tmdb.org/t/p/original{{show.poster_path}}" class="md-card-image"/>
+                                <img ng-src='{{show.poster_path != null ? "https://image.tmdb.org/t/p/original" + show.poster_path : "public/images/eye.png"}}' class="md-card-image"/>
                             </a>
                         </div>
                     </md-card-title-media>
