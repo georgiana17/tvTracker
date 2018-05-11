@@ -4,8 +4,8 @@
         <div layout="column">
             <h1>Found {{tvShows.length}} results </h1>
         </div>
-        <div layout="row"  flex-sm="45" flex-gt-xs="30" layout-wrap>
-            <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"  md-theme-watch ng-repeat="show in tvShows" layout-flex layout-padding>
+        <div layout="row" layout-wrap layout-padding>
+            <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" flex-gt-lg="30" flex-lg="45" flex-md="45" flex-sm="100" md-theme-watch ng-repeat="show in tvShows" layout-flex layout-padding>
                 <md-card-title layout-padding>
                     <md-card-title-media layout-padding>
                         <div class="md-media-lg card-media">
@@ -14,16 +14,17 @@
                             </a>
                         </div>
                     </md-card-title-media>
-                    <md-card-title-text layout-align="start center" layout-padding>
+                    <md-card-title-text layout-align="start center" style="text-align: center" layout-padding>
                         <a ng-href="#/show/{{show.id}}">
                           <span class="md-headline" layout-wrap>{{show.name}}</span>
                         </a>
                         <span class="md-subhead">{{show.first_air_date | date:'yyyy'}}</span>
+                        <p>{{show.overview | limitTo:200}}<span ng-if="show.overview.length > 200"> ...</span></p>
                     </md-card-title-text>
                 </md-card-title>
                 <md-card-actions layout="row" layout-align="end right" layout-padding>
-                    <md-button><md-icon>add</md-icon></md-button>
-                    <a ng-href="#/show/{{show.id}}" class="md-button"><md-icon ng_bind="'more_horiz'"></md-icon></a>
+                    <md-button><md-icon class="tealCol">add</md-icon></md-button>
+                    <a ng-href="#/show/{{show.id}}" class="md-button"><md-icon ng_bind="'more_horiz'" class="tealCol"></md-icon></a>
                 </md-card-actions>
             </md-card>
         </div>
@@ -33,5 +34,9 @@
 <style>
     a {
         text-decoration: none;
+        color: #00695C;
+    }
+    p {
+        font-family: Trebuchet MS, sans-serif;
     }
 </style>

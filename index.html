@@ -50,7 +50,7 @@
 </head>
 <body  ng-controller="AppController" ng-cloak>
 	<div layout="column" class="relative" layout-fill role="main">
-		<md-toolbar class="md-whiteframe-z2" style="background-color: #FFFFFF; color:#00695C;">
+		<md-toolbar class="md-whiteframe-z2 trebuchetFont" style="background-color: #FFFFFF; color:#00695C;">
 			<div id="search-bar" class="md-toolbar-tools" ng-show="preSearchToolbar()">
 				<!-- <h1>{{appName}}</h1> -->
 				<a href="#/"><img src="public/images/logo_episode_spy_original.png" style="width:225px; height:37px;" alt="Episode Spy"/></a>
@@ -90,7 +90,7 @@
 				</md-button>
 			</div>
 		</md-toolbar>
-		<div layout="row" style="height:100%">
+		<div layout="row" style="height:100%" class="trebuchetFont">
 			<md-sidenav layout="column" md-theme="navbar" md-colors="{background: 'navbar-primary-500'}" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="height:100%;  font-size:0.9em;" md-is-locked-open="$mdMedia('gt-md')">
 				<md-list>
 					<md-list-item hide-gt-md class="whiteCol">
@@ -170,6 +170,9 @@
 		width: 240px;
 		min-width: 240px;
 		max-width: 240px;
+	}
+	.trebuchetFont {
+		font-family: Trebuchet MS, sans-serif;
 	}
 </style> 
 </html>

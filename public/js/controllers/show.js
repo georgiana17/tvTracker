@@ -58,7 +58,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         }).then(function(response) {
             if(response.data == "false") {
                 $http.get("/show/" + showId).then(function(res){
-                    console.log("aaaa");
                     var userName =  $rootScope.user;
                     console.log(res.data.number_of_seasons + "AAAA");
                     if(userName != undefined) {

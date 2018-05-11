@@ -15,7 +15,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $rootScope.loggedIn = false;
         $rootScope.update();
     }
-    
+
     angular.element($window).bind('resize', function () {
         if($window.innerWidth < 1280) {
             $scope.endSearch();
@@ -47,7 +47,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $scope.search = null;
     }
     $scope.searchTvShow = function() {
-        $scope.toggleSidenav('left');
+        // $scope.toggleSidenav('left');
         if(($scope.search != null ||  $scope.search !== undefined) && $scope.search != "") {
             $location.path("/search/" + $scope.search);
         } else if(($scope.sideNavSearch != null && $scope.sideNavSearch !== undefined) && $scope.sideNavSearch != "") {
