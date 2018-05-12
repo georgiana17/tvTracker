@@ -84,7 +84,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
                 logged: true
             },
             {
-                link: '#/',
+                link: '#/myShows',
                 title: 'My TV Shows',
                 icon: 'favorite',
                 logged: $rootScope.loggedIn
@@ -181,11 +181,44 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "SearchController",
         templateUrl: "public/views/search.html"
     })
+    .when("/myShows/", {
+        controller: "MyShowsController",
+        templateUrl: "public/views/myTVShows.html",
+        resolve: {
+            myShows : function($http, $q, $rootScope) {
+                if($rootScope.loggedIn) {
+                    return $http.get("/myShows/" + $rootScope.user).then(function(res) {
+                        var shows = {};
+                        shows = res.data;
+                        return shows;
+                    })
+                    .then(function(shows) {
+                        var promises = [];
+                        for(var i = 0; i < shows.length; i++) {
+                            promises.push($http.get("/episodes/" + $rootScope.user + "/" + shows[i]).then(function(res){
+                                return res.data;
+                            }))
+                        }
+                        return $q.all(promises).then(function(result){
+                            return result;
+                        })
+                    })
+                }
+            }
+            // myWatchedEpisodes : function($http, $rootScope) {
+            //     if($rootScope.loggedIn) {
+            //         return $http.get("/episodes/" + $rootScope.user).then(function(res) {
+            //             return res.data;
+            //         })
+            //     }
+            // }
+        }
+    })
     .when("/calendar", {
         controller: "CalendarController",
         templateUrl: "public/views/calendar.html", 
         resolve: {
-            popularSeries :  function($http, $q){
+            popularSeries :  function($http, $q) {
 
                 return $http.get("/topSeries").then(function(success){
                     var shows = {};
