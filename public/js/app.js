@@ -195,7 +195,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     .then(function(shows) {
                         var promises = [];
                         for(var i = 0; i < shows.length; i++) {
-                            promises.push($http.get("/episodes/" + $rootScope.user + "/" + shows[i]).then(function(res){
+                            promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i]).then(function(res){
                                 return res.data;
                             }))
                         }

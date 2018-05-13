@@ -76,6 +76,17 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         });
     }
 
+    $scope.checkEpisode = function(episodeId) {
+        console.log(episodeId);
+        if($routeParams.id != undefined) {
+            $http.post("/addEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
+                console.log(response);
+            })
+
+        }
+
+    }
+
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);
     // })

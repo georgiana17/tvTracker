@@ -61,17 +61,17 @@
         </ul>
     </div>
     <div layout-padding>
-        <h1>{{seasonName}}</h1>
+        <h1 layout="row" layout-padding>{{seasonName}}</h1>
         <div layout="row" layout-padding>
             <div layout-padding layout-wrap layout="row">
                 <md-card md-whiteframe="3" flex-xs flex-gt-xs="25" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
                     <!-- TODO: add custom photo for still_path == null -->
                     <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "https://image.tmdb.org/t/p/original/85SWPq6UYPfAukLF6SXkTaRBC0O.jpg"}}' class="md-card-image" alt="Washed Out">
                     <md-card-title>
-                    <md-card-title-text>
-                        <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
-                        <span>{{episode.name}}</span>
-                    </md-card-title-text>
+                        <md-card-title-text>
+                            <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
+                            <span>{{episode.name}}</span>
+                        </md-card-title-text>
                     </md-card-title>
                     <md-card-content>
                     <p>
@@ -79,14 +79,11 @@
                     </p>
                     </md-card-content>
                     <md-card-actions layout="row" layout-align="end center">
-                        <md-button class="md-icon-button" aria-label="Favorite">
+                        <!-- <md-button class="md-icon-button" aria-label="Favorite">
                             <ng-md-icon icon="star"></ng-md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button" aria-label="Settings">
+                        </md-button> -->
+                        <md-button class="md-icon-button" aria-label="Settings" ng-click="checkEpisode(episode.id)">
                             <ng-md-icon icon="remove_red_eye"></ng-md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button" aria-label="Share">
-                            <ng-md-icon icon="star"></ng-md-icon>
                         </md-button>
                     </md-card-actions>
                 </md-card>

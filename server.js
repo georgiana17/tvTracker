@@ -95,7 +95,6 @@ app.get('/tvShow/:show_id', function (req, res) {
 
 app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
   // TODO: select count(*) pe episodes per user_id&show_id in tabel EPISODES_USERS => no_of_ep_watched
-  var no_of_ep_watched = 0;
   var userId = "";
   var append_to_response = [];
 
@@ -174,8 +173,8 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
           try{
               conn1 = await oracledb.getConnection(databaseConfig);
 
-              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3)";
-              var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons];
+              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3, :4)";
+              var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons, responses[0].poster_path];
 
               let res = await conn1.execute(sql_tv_show, tv_show_binds, { autoCommit:true });
               resolve(res);
@@ -200,7 +199,7 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
             try{
                 conn = await oracledb.getConnection(databaseConfig);
                 var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
-                                        + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + (parseInt(responses[0].number_of_episodes) - no_of_ep_watched) + `)`;
+                                        + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + 0 + `)`;
                 let res = await conn.execute(sql_user_tv_show, [], { autoCommit:true });
                 resolve(res);
             } catch (err) {
@@ -383,6 +382,7 @@ app.get('/myShows/:userName', function(req, res) {
   })
 });
 
+// get all episodes from users_tv_show of a specific show_id and username
 app.get('/episodes/:userName/:show_id', function(req, res){
   oracledb.getConnection(databaseConfig, function(err, connection){
     if(err) {
@@ -404,6 +404,50 @@ app.get('/episodes/:userName/:show_id', function(req, res){
       }
       
     })
+  })
+});
+
+//get last and next episode of a specific show which is followed by a user
+app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
+  oracledb.getConnection(databaseConfig, function(err, connection){
+    if(err) {
+      return ;
+    }
+    var my_episodes = `SELECT * FROM (
+                       SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path
+                       FROM tv_show t, users_tv_shows u, episodes e, seasons s
+                       WHERE u.username = '`+ req.params.userName + `' AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date < to_char(sysdate, 'yyyy-mm-dd')
+                       order by air_date desc, episode_number desc )
+                       WHERE rownum <=1 
+                       UNION ALL 
+                       SELECT * FROM (
+                       SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path
+                       FROM tv_show t, users_tv_shows u, episodes e, seasons s
+                       WHERE u.username = '`+ req.params.userName + `' AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date >= to_char(sysdate, 'yyyy-mm-dd')
+                       order by air_date asc, episode_number asc )
+                       WHERE rownum <= 1`;
+    connection.execute(my_episodes, [], function(err, result){
+      if (err) { 
+            return;  
+      }
+      if(result.rows.length != 0) {
+        res.send(result.rows);
+      }
+      else {
+        res.send("No episodes in database for this user!");
+      }
+      
+    })
+  })
+});
+
+// add episode to user who checked it 
+app.post("/addEpisode/:userName/:episodeId", function(req, res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var add_episode = 'INSERT INTO users_episodes values()'
   })
 });
 
