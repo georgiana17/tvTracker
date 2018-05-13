@@ -1,7 +1,9 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope){
-        
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes){
+    
+    $scope.checkedEpisodes = episodes;
+
     $scope.getSeason = function(season_id){
         console.log(season_id)
         $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
@@ -58,33 +60,34 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     }
 
-    $scope.followSeason = function(showId) {
-        $http.get("/tvShow/" + showId).then(function(response){
-            return response;
-        }).then(function(response) {
-            if(response.data == "false") {
-                $http.get("/show/" + showId).then(function(res){
-                    var userName =  $rootScope.user;
-                    console.log(res.data.number_of_seasons + "AAAA");
-                    if(userName != undefined) {
-                        $http.post("/addShow/" + showId + "/" + res.data.number_of_seasons + "/" + userName).then(function(res) {
-                            console.log(res);
-                        });
-                    }
-                });                
-            }
-        });
+    $scope.addEpisode = function(episodeId) {
+        if($routeParams.id != undefined) {
+            $http.post("/addEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
+                // console.log(response);
+                $scope.checkedEpisodes.push([episodeId]);
+                console.log($scope.checkedEpisodes);
+            });
+        }
     }
 
     $scope.checkEpisode = function(episodeId) {
+        for(var i = 0; i < $scope.checkedEpisodes.length; i++){
+            if(episodeId == $scope.checkedEpisodes[i][0])
+                return true;
+        }
+    }
+
+    $scope.deleteEpisode = function(episodeId) {
         console.log(episodeId);
         if($routeParams.id != undefined) {
-            $http.post("/addEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
-                console.log(response);
-            })
-
+            $http.post("/deleteEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
+                for(var i=0; i<$scope.checkedEpisodes.length; i++){
+                    if(episodeId == $scope.checkedEpisodes[i][0]) {
+                        $scope.checkedEpisodes.splice(i,1);
+                    }
+                }
+            });
         }
-
     }
 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){

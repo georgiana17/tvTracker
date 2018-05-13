@@ -416,14 +416,14 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
     var my_episodes = `SELECT * FROM (
                        SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s
-                       WHERE u.username = '`+ req.params.userName + `' AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date < to_char(sysdate, 'yyyy-mm-dd')
+                       WHERE u.username = LOWER('`+ req.params.userName + `') AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date < to_char(sysdate, 'yyyy-mm-dd')
                        order by air_date desc, episode_number desc )
                        WHERE rownum <=1 
                        UNION ALL 
                        SELECT * FROM (
                        SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s
-                       WHERE u.username = '`+ req.params.userName + `' AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date >= to_char(sysdate, 'yyyy-mm-dd')
+                       WHERE u.username = LOWER('`+ req.params.userName + `') AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date >= to_char(sysdate, 'yyyy-mm-dd')
                        order by air_date asc, episode_number asc )
                        WHERE rownum <= 1`;
     connection.execute(my_episodes, [], function(err, result){
@@ -437,8 +437,8 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
         res.send("No episodes in database for this user!");
       }
       
-    })
-  })
+    });
+  });
 });
 
 // add episode to user who checked it 
@@ -447,8 +447,76 @@ app.post("/addEpisode/:userName/:episodeId", function(req, res){
     if(err) {
       return ;
     }
-    var add_episode = 'INSERT INTO users_episodes values()'
-  })
+    var add_episode = `INSERT INTO USERS_EPISODES 
+                       SELECT a.user_id, a.username, b.episode_id, b.air_date
+                       FROM (select username, user_id from users_logged where username = LOWER('` + req.params.userName + `')) a, 
+                            (select air_date, episode_id from episodes where episode_id = `+ req.params.episodeId +`) b`;
+    
+    connection.execute(add_episode, [], { autoCommit:true }, function(err,result) {
+      console.log(result);
+      if(result.rowsAffected != undefined) {
+        res.send("Episode added to user!"); 
+      } else 
+          res.send("Cannot link episode to user!");
+    }); 
+  });
+});
+
+// delete episode from user who unchecked it 
+app.post("/deleteEpisode/:userName/:episodeId", function(req, res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var delete_episode = `DELETE FROM USERS_EPISODES 
+                          WHERE username = LOWER('` + req.params.userName + `') and episode_id = `+ req.params.episodeId;
+    console.log(delete_episode);
+    connection.execute(delete_episode, [], { autoCommit:true }, function(err,result) {
+      if(result.rowsAffected != undefined) {
+        res.send("Episode deleted from user!"); 
+      } else 
+          res.send("Cannot delete episode!");
+    });
+  });
+});
+
+//check if episode is on DB
+app.get("/checkEpisode/:userName/:episodeId", function(req, res){
+  oracledb.getConnection(databaseConfig, function(err, connection){
+    if(err){
+      return;
+    }
+    var check_episode = `SELECT * FROM users_episodes WHERE username = LOWER('` + req.params.userName + `') and episode_id = ` + req.params.episodeId;
+    connection.execute(check_episode, [], function(err,result){
+      if(result.rows != undefined) {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    });
+  });
+});
+
+//get episodes of a user of a specific show
+app.get("/userEpisodes/:userName/:show_id", function(req, res){
+  oracledb.getConnection(databaseConfig, function(err, connection){
+    if(err){
+      return;
+    }
+    var check_episode = `SELECT e.episode_id 
+                         FROM users_episodes e, seasons s, episodes ep, tv_show t
+                         WHERE e.episode_id = ep.episode_id AND ep.season_id = s.season_id AND s.serie_id = t.show_id 
+                                              AND t.show_id = ` + req.params.show_id + ` 
+                                              AND user_id = (SELECT user_id FROM users_logged WHERE username = LOWER('` + req.params.userName + `'))`;
+    
+      connection.execute(check_episode, [], function(err,result){
+      if(result.rows != undefined) {
+        res.send(result.rows);
+      } else {
+        res.send("No episodes for this user!");
+      }
+    });
+  });
 });
 
 // API CALLS 

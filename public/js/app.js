@@ -31,7 +31,25 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         });
         return popularData;
     }
+    
     $scope.getPopularTvSeries();
+
+    $scope.followSeason = function(showId) {
+        $http.get("/tvShow/" + showId).then(function(response){
+            return response;
+        }).then(function(response) {
+            if(response.data == "false") {
+                $http.get("/show/" + showId).then(function(res){
+                    var userName =  $rootScope.user;
+                    if(userName != undefined) {
+                        $http.post("/addShow/" + showId + "/" + res.data.number_of_seasons + "/" + userName).then(function(res) {
+                            console.log(res);
+                        });
+                    }
+                });                
+            }
+        });
+    }
 
     $scope.search = null;
     $scope.sideNavSearch = null;
@@ -65,7 +83,6 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     $scope.$watch(function(){
             return $scope.focusInput;
         }, function(newVal, oldVal){
-        console.log(newVal);
           if(newVal == true ){
               $('.search-input').focus();
           }
@@ -162,7 +179,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         templateUrl: "public/views/main.html"
     })
     .when("/topSeries", {
-        controller: "ShowController",
+        // controller: "ShowController",
         templateUrl: "public/views/topRated.html"
     })
     .when("/login", {
@@ -175,7 +192,16 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/show/:id", {
         controller: "ShowController",
-        templateUrl: "public/views/show.html"
+        templateUrl: "public/views/show.html",
+        resolve: {
+            episodes : function($http, $rootScope, $route) {
+                if($rootScope.loggedIn) {
+                    return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
+                        return resp.data;
+                    })
+                }
+            }
+        }
     })
     .when("/search/:query", {
         controller: "SearchController",

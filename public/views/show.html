@@ -82,8 +82,11 @@
                         <!-- <md-button class="md-icon-button" aria-label="Favorite">
                             <ng-md-icon icon="star"></ng-md-icon>
                         </md-button> -->
-                        <md-button class="md-icon-button" aria-label="Settings" ng-click="checkEpisode(episode.id)">
+                        <md-button class="md-icon-button" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
                             <ng-md-icon icon="remove_red_eye"></ng-md-icon>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
+                                <ng-md-icon icon="done"></ng-md-icon>
                         </md-button>
                     </md-card-actions>
                 </md-card>
