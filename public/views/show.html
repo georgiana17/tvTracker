@@ -31,7 +31,7 @@
         <md-button ng-show="loggedIn" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="followSeason(data.id)">
                 <md-icon md-font-set="md">add</md-icon>
                 <span class="inset" >Follow</span>
-            </md-button>
+        </md-button>
         </h1>
     </div>
     <div layout="row" layout-sm="column" layout-xs="column" >
@@ -61,7 +61,11 @@
         </ul>
     </div>
     <div layout-padding>
-        <h1 layout="row" layout-padding>{{seasonName}}</h1>
+        <div layout="row" layout-align="end center">
+            <h1 layout-padding>{{seasonName}}</h1>
+            <span flex></span>
+            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked" ng-click="markSeason()">Mark season as watched</md-button>
+        </div>
         <div layout="row" layout-padding>
             <div layout-padding layout-wrap layout="row">
                 <md-card md-whiteframe="3" flex-xs flex-gt-xs="25" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>

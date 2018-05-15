@@ -3,14 +3,32 @@ var app = angular.module("tvTracker")
 app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes){
     
     $scope.checkedEpisodes = episodes;
+    $scope.marked = false;
 
-    $scope.getSeason = function(season_id){
-        console.log(season_id)
+    $scope.isMarked = function() {
+        let n = 0;
+        for(var i=0; i< $scope.seasonData.episodes.length; i++) {
+            for(var j=0; j<$scope.checkedEpisodes.length; j++) {
+                if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
+                    n++;
+                }
+            }
+        }
+        if(n == $scope.seasonData.episodes.length) {
+            $scope.marked = true;
+        } else {
+            $scope.marked = false;
+        }
+    }
+
+    $scope.getSeason = function(season_id) {
         $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
             //TODO
             $scope.seasonData = response.data;
             $scope.seasonName = $scope.seasonData.name;
             $scope.episodes = $scope.seasonData.episodes;
+
+            $scope.isMarked();
         });
     }
 
@@ -18,7 +36,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         $http.get("/show/" + $routeParams.id).then(function(response) {
             //TODO: 
             $scope.data = response.data;
-            console.log($scope.data);
             // remove the "Specials" season
             //TODO: if data.seasons == null 
             if($scope.data.seasons.length > 0) {
@@ -66,6 +83,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                 // console.log(response);
                 $scope.checkedEpisodes.push([episodeId]);
                 console.log($scope.checkedEpisodes);
+                $scope.isMarked();
             });
         }
     }
@@ -88,7 +106,21 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                 }
             });
         }
+        $scope.marked = false;
     }
+
+    $scope.markSeason= function() {
+        for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
+            $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
+                console.log("season marked");
+            });
+            if($scope.checkedEpisodes.hasOwnProperty([$scope.seasonData.episodes[i].id]) == false) {
+                $scope.checkedEpisodes.push([$scope.seasonData.episodes[i].id]);
+            }
+        }
+        $scope.marked = true;
+    }
+
 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);
