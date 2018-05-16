@@ -192,16 +192,16 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/show/:id", {
         controller: "ShowController",
-        templateUrl: "public/views/show.html",
-        resolve: {
-            episodes : function($http, $rootScope, $route) {
-                if($rootScope.loggedIn) {
-                    return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
-                        return resp.data;
-                    })
-                }
-            }
-        }
+        templateUrl: "public/views/show.html"//,
+        // resolve: {
+        //     episodes : function($http, $rootScope, $route) {
+        //         if($rootScope.loggedIn) {
+        //             return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
+        //                 return resp.data;
+        //             })
+        //         }
+        //     }
+        // }
     })
     .when("/search/:query", {
         controller: "SearchController",

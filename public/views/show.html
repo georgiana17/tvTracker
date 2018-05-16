@@ -64,7 +64,8 @@
         <div layout="row" layout-align="end center">
             <h1 layout-padding>{{seasonName}}</h1>
             <span flex></span>
-            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked" ng-click="markSeason()">Mark season as watched</md-button>
+            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked && loggedIn" ng-click="markSeason()">Mark season as watched</md-button>
+            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
         </div>
         <div layout="row" layout-padding>
             <div layout-padding layout-wrap layout="row">
@@ -82,7 +83,7 @@
                         {{episode.air_date | date: 'EEEE, MMMM d, y'}}
                     </p>
                     </md-card-content>
-                    <md-card-actions layout="row" layout-align="end center">
+                    <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn">
                         <!-- <md-button class="md-icon-button" aria-label="Favorite">
                             <ng-md-icon icon="star"></ng-md-icon>
                         </md-button> -->

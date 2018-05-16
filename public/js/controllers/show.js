@@ -1,8 +1,8 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope/*, episodes*/){
     
-    $scope.checkedEpisodes = episodes;
+    // $scope.checkedEpisodes = episodes;
     $scope.marked = false;
 
     $scope.isMarked = function() {
@@ -119,6 +119,21 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             }
         }
         $scope.marked = true;
+    }
+
+    $scope.unMarkSeason = function() {
+        for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
+            $http.post("/deleteEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
+                console.log("season deleted");
+            });
+            for(var j = 0; j < $scope.checkedEpisodes.length; i++){
+                if(episodeId == $scope.checkedEpisodes[j][0]) {
+                    $scope.checkedEpisodes.splice(j,1);
+                }
+            }
+        }
+
+        $scope.marked = false;        
     }
 
 
