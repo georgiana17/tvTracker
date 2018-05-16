@@ -92,6 +92,16 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $mdSidenav(menuId).toggle();
     };
 
+    $scope.isShowFollowed = function(showId) {
+        $http.get("/myShows/" + $rootScope.user).then(function(shows){
+            for(var i = 0; i < shows.data.length; i++) {
+                if(shows.data[i] == showId) {
+                    $scope.followed = true;
+                }
+            }
+        });
+    }
+
     $rootScope.update = function() {
         $scope.menuItems = [
             {

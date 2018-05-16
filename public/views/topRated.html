@@ -29,10 +29,16 @@
                                 <ng-md-icon icon="add"></ng-md-icon> <br/>
                                 <span ng-show="!loggedIn">Login to follow</span>
                             </a>
+                            <!-- if loggedin and Show not followed -->
                             <a ng-show="loggedIn" ng-click="followSeason(item.id)">
                                 <ng-md-icon icon="add"></ng-md-icon> <br/>
                                 <span ng-show="loggedIn">Follow</span>
                             </a>
+                            <!-- if loggedin and Show followed -->
+                            <!-- <a ng-show="isShowFollowed(item.id)">
+                                <ng-md-icon icon="add"></ng-md-icon> <br/>
+                                <span ng-show="loggedIn">Following</span>
+                            </a> -->
                         </div>
                     </div>
                 </md-card-content>

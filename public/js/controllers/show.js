@@ -136,6 +136,8 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         $scope.marked = false;        
     }
 
+    
+
 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);

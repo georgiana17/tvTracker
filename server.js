@@ -379,7 +379,7 @@ app.get('/myShows/:userName', function(req, res) {
             res.send("No user in database with this name!");
           }
     });
-  })
+  });
 });
 
 // get all episodes from users_tv_show of a specific show_id and username
