@@ -224,13 +224,6 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     })
                 }
             }
-            // myWatchedEpisodes : function($http, $rootScope) {
-            //     if($rootScope.loggedIn) {
-            //         return $http.get("/episodes/" + $rootScope.user).then(function(res) {
-            //             return res.data;
-            //         })
-            //     }
-            // }
         }
     })
     .when("/calendar", {
@@ -270,6 +263,13 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     });
                 });
                 
+            },
+            myWatchedEpisodes : function($http, $rootScope) {
+                if($rootScope.loggedIn) {
+                    return $http.get("/episodes/" + $rootScope.user).then(function(res) {
+                        return res.data;
+                    })
+                }
             }
         }
     })

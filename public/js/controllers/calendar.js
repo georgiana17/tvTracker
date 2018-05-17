@@ -29,7 +29,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.airDateEpisodes = new Array();    
 
     for(var i=0; i < $scope.popularSeries.length; i++) {
-        if($scope.popularSeries[i] != undefined){
+        if($scope.popularSeries[i] != undefined) {
             var p = 0;
             let tvShowName = $scope.popularSeries[i].name;
             let tvShowId = $scope.popularSeries[i].id;
@@ -42,7 +42,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
                             var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
                             $scope.airDateEpisodes.push({
-                                    'title': $scope.popularSeries[i]["season/" + p].episodes[k].name,
+                                    'title': $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
                                     'start': airDate,
                                     'end': airDate,
                                     'allDay': false,
@@ -50,6 +50,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                                     'overview': $scope.popularSeries[i]["season/" + p].episodes[k].overview,
                                     'seasonNo':  p,
                                     'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
+                                    'episodeName': $scope.popularSeries[i]["season/" + p].episodes[k].name,
                                     'image':  $scope.popularSeries[i].poster_path,
                                     'color': '#78909C'
                                 });
