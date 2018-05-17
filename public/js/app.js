@@ -3,6 +3,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
     $scope.focusInput = false;
+
     $rootScope.getUser = function() {
         if(auth.isLoggedIn()){
             $rootScope.user = JSON.parse(session.getUser());
@@ -10,7 +11,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         }
     }    
 
-    $scope.signout = function(){
+    $scope.signout = function() {
         session.destroy();
         $location.path("/login");
         $rootScope.loggedIn = false;
@@ -34,22 +35,6 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     
     $scope.getPopularTvSeries();
 
-    $scope.followSeason = function(showId) {
-        $http.get("/tvShow/" + showId).then(function(response){
-            return response;
-        }).then(function(response) {
-            if(response.data == "false") {
-                $http.get("/show/" + showId).then(function(res){
-                    var userName =  $rootScope.user;
-                    if(userName != undefined) {
-                        $http.post("/addShow/" + showId + "/" + res.data.number_of_seasons + "/" + userName).then(function(res) {
-                            console.log(res);
-                        });
-                    }
-                });                
-            }
-        });
-    }
 
     $scope.search = null;
     $scope.sideNavSearch = null;
@@ -92,15 +77,6 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $mdSidenav(menuId).toggle();
     };
 
-    $scope.isShowFollowed = function(showId) {
-        $http.get("/myShows/" + $rootScope.user).then(function(shows){
-            for(var i = 0; i < shows.data.length; i++) {
-                if(shows.data[i] == showId) {
-                    $scope.followed = true;
-                }
-            }
-        });
-    }
 
     $rootScope.update = function() {
         $scope.menuItems = [
@@ -189,8 +165,15 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         templateUrl: "public/views/main.html"
     })
     .when("/topSeries", {
-        // controller: "ShowController",
-        templateUrl: "public/views/topRated.html"
+        controller: "TopRatedController",
+        templateUrl: "public/views/topRated.html",
+        resolve: {
+            userShows : function($http, $rootScope) {
+                return $http.get("/myShows/" + $rootScope.user).then(function(shows) {
+                    return shows.data;
+                });
+            }
+        }
     })
     .when("/login", {
         controller: "LoginController",
@@ -202,16 +185,16 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/show/:id", {
         controller: "ShowController",
-        templateUrl: "public/views/show.html"//,
-        // resolve: {
-        //     episodes : function($http, $rootScope, $route) {
-        //         if($rootScope.loggedIn) {
-        //             return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
-        //                 return resp.data;
-        //             })
-        //         }
-        //     }
-        // }
+        templateUrl: "public/views/show.html",
+        resolve: {
+            episodes : function($http, $rootScope, $route) {
+                if($rootScope.loggedIn) {
+                    return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
+                        return resp.data;
+                    });
+                }
+            }
+        }
     })
     .when("/search/:query", {
         controller: "SearchController",

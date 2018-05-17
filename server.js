@@ -452,9 +452,7 @@ app.post("/addEpisode/:userName/:episodeId", function(req, res){
                        FROM (select username, user_id from users_logged where username = LOWER('` + req.params.userName + `')) a, 
                             (select air_date, episode_id from episodes where episode_id = `+ req.params.episodeId +`) b
                        WHERE NOT EXISTS (SELECT 1 FROM USERS_EPISODES e where e.episode_id = b.episode_id and a.user_id = e.user_id)`;
-    console.log(add_episode);
     connection.execute(add_episode, [], { autoCommit:true }, function(err,result) {
-      console.log(result);
       if(result.rowsAffected != undefined) {
         res.send("Episode added to user!"); 
       } else 

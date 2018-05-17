@@ -1,25 +1,11 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope/*, episodes*/){
-    
-    // $scope.checkedEpisodes = episodes;
-    $scope.marked = false;
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes){
 
-    $scope.isMarked = function() {
-        let n = 0;
-        for(var i=0; i< $scope.seasonData.episodes.length; i++) {
-            for(var j=0; j<$scope.checkedEpisodes.length; j++) {
-                if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
-                    n++;
-                }
-            }
-        }
-        if(n == $scope.seasonData.episodes.length) {
-            $scope.marked = true;
-        } else {
-            $scope.marked = false;
-        }
-    }
+    $scope.checkedEpisodes = episodes;
+    $scope.marked = false;
+    $scope.unmarked = false;
+    $scope.followed = false;
 
     $scope.getSeason = function(season_id) {
         $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
@@ -29,6 +15,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             $scope.episodes = $scope.seasonData.episodes;
 
             $scope.isMarked();
+            $scope.isShowFollowed();
         });
     }
 
@@ -66,7 +53,34 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         $scope.getSeason(season_no);
     };
 
+    $scope.isMarked = function() {
+        let n = 0;
+        for(var i=0; i< $scope.seasonData.episodes.length; i++) {
+            for(var j=0; j<$scope.checkedEpisodes.length; j++) {
+                if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
+                    n++;
+                }
+            }
+        }
+        if(n == $scope.seasonData.episodes.length) {
+            $scope.marked = true;
+            $scope.unmarked = true;
+        } else {
+            $scope.marked = false;
+            $scope.unmarked = false;
+        }
+    }
 
+    $scope.isShowFollowed = function() {
+        $http.get("/myShows/" + $rootScope.user).then(function(shows){
+            for(var i = 0; i < shows.data.length; i++) {
+                if(shows.data[i] == $scope.data.id) {
+                    $scope.followed = true;
+                }
+            }
+        });
+    }
+    
     $scope.displayPosterPath = function(p) {
         // TODO: add custom poster for poster_path == null
         if(p.poster_path === null) {
@@ -82,7 +96,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             $http.post("/addEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
                 // console.log(response);
                 $scope.checkedEpisodes.push([episodeId]);
-                console.log($scope.checkedEpisodes);
                 $scope.isMarked();
             });
         }
@@ -112,7 +125,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.markSeason= function() {
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
             $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
-                console.log("season marked");
+                // console.log("season marked");
             });
             if($scope.checkedEpisodes.hasOwnProperty([$scope.seasonData.episodes[i].id]) == false) {
                 $scope.checkedEpisodes.push([$scope.seasonData.episodes[i].id]);
@@ -123,17 +136,10 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     $scope.unMarkSeason = function() {
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
-            $http.post("/deleteEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
-                console.log("season deleted");
-            });
-            for(var j = 0; j < $scope.checkedEpisodes.length; i++){
-                if(episodeId == $scope.checkedEpisodes[j][0]) {
-                    $scope.checkedEpisodes.splice(j,1);
-                }
-            }
+            $scope.deleteEpisode($scope.seasonData.episodes[i].id);
         }
 
-        $scope.marked = false;        
+        $scope.unmarked = true;        
     }
 
     

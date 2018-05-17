@@ -21,16 +21,20 @@
         font-family:Georgia, 'Times New Roman', Times, serif;
     }
 </style>
-<div class="show" ng-app="tvTracker">
+<div class="show" ng-app="tvTracker" ng-cloak>
     <div class="poster-image" ng-style="{'background-image': 'url(' + urlImage + ')'}">
         <h1>
             {{showName}}
             <br/>
             ({{releaseYear | date:'yyyy'}})
             <br/>
-        <md-button ng-show="loggedIn" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="followSeason(data.id)">
+        <md-button ng-show="loggedIn && !followed" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="followSeason(data.id)">
                 <md-icon md-font-set="md">add</md-icon>
                 <span class="inset" >Follow</span>
+        </md-button>
+        <md-button ng-show="loggedIn && followed" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="unfollowSeason(data.id)">
+                <md-icon md-font-set="md">clear</md-icon>
+                <span class="inset">Unfollow</span>
         </md-button>
         </h1>
     </div>
