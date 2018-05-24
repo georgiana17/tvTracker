@@ -1,3 +1,4 @@
+"use strict"
 var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages', 'ui.calendar'])
 app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, $routeParams, auth, session, $window) {
     $scope.appName = "TvTracker";
@@ -230,46 +231,44 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "CalendarController",
         templateUrl: "public/views/calendar.html", 
         resolve: {
-            popularSeries :  function($http, $q) {
-
-                return $http.get("/topSeries").then(function(success){
-                    var shows = {};
-                    shows = success.data.results;
-
-                    return shows;
-                })
-                .then(function(shows){
-                    var contentPromises = [];
-                    angular.forEach(shows, function(elem) {
-                        contentPromises.push(
-                            $http.get("/show/" + elem.id).then(function(success){
-                                var show = {};
-                                show = success.data;
-                                return show;
-                            }).then(function(show){
-                                var promises = [];
-                                promises.push($http.get("/allEpisodes/" + show.id + "/" + show.number_of_seasons).then(function(succes){
-                                    return succes.data;
-                                }))
-                                return $q.all(promises).then(function(res) {
-                                    return res;
-                                });
-                                
-                            })
-                        );
-                    });
-                    return $q.all(contentPromises).then(function(res) {
-                        return res;
-                    });
-                });
-                
-            },
-            myWatchedEpisodes : function($http, $rootScope) {
-                if($rootScope.loggedIn) {
-                    return $http.get("/episodes/" + $rootScope.user).then(function(res) {
-                        return res.data;
+            popularSeries :  function($http, $q, $rootScope) {
+                if($rootScope.loggedIn == false) {
+                    return $http.get("/topSeries").then(function(success){
+                        var shows = {};
+                        shows = success.data.results;
+    
+                        return shows;
                     })
+                    .then(function(shows){
+                        var contentPromises = [];
+                        angular.forEach(shows, function(elem) {
+                            contentPromises.push(
+                                $http.get("/show/" + elem.id).then(function(success){
+                                    var show = {};
+                                    show = success.data;
+                                    return show;
+                                }).then(function(show){
+                                    var promises = [];
+                                    promises.push($http.get("/allEpisodes/" + show.id + "/" + show.number_of_seasons).then(function(succes){
+                                        return succes.data;
+                                    }))
+                                    return $q.all(promises).then(function(res) {
+                                        return res;
+                                    });
+                                    
+                                })
+                            );
+                        });
+                        return $q.all(contentPromises).then(function(res) {
+                            return res;
+                        });
+                    });
+                } else {                    
+                    return $http.get("/episodesOfUser/" + $rootScope.user).then(function(res) {
+                        return res.data;
+                    });
                 }
+                
             }
         }
     })

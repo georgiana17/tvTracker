@@ -93,6 +93,7 @@ app.get('/tvShow/:show_id', function (req, res) {
   });  
 });
 
+// add show to Database
 app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
   // TODO: select count(*) pe episodes per user_id&show_id in tabel EPISODES_USERS => no_of_ep_watched
   var userId = "";
@@ -271,7 +272,7 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
                     let promise = new Promise(async function(resolve, reject) {
                       let conn;                            
                         try{
-                          conn = await oracledb.getConnection(databaseConfig);
+                            conn = await oracledb.getConnection(databaseConfig);  
                             let res = await conn.executeMany(sql_episodes, binds_episodes, episodes_options);
                             resolve(res);
                         } catch (err){
@@ -302,6 +303,50 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
         res.send("Tv Show added to Database!");
       })
 
+});
+
+//add show to User
+app.post("/addShowToUser/:userName/:showId", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if (err) {
+        return;  
+    }
+    var addShow = `INSERT INTO USERS_TV_SHOWS 
+                   SELECT u.user_id, u.username, s.show_id, s.show_name, s.no_of_episodes, s.no_of_episodes
+                   FROM (select username, user_id from users_logged where username = '` + req.params.userName + `') u, 
+                        (select show_id, show_name, no_of_episodes from tv_show where show_id=` + req.params.showId + `) s`;
+    connection.execute(addShow, [], { autoCommit:true}, function(err,result){
+      console.log(err);
+      if(err){
+        console.error(err.message);
+        res.send("TV show failed to be added!");
+      } else if(result.rowsAffected != undefined) {
+        res.send("TV show added to user succesfully!");
+      } else {
+        res.send("TV show failed to be added!");
+      }
+      
+    })
+
+  });
+});
+
+//delete show from User
+app.post("/deleteShowFromUser/:userName/:showId", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if (err) {
+        return;  
+    }
+    var deleteShow = "DELETE from users_tv_shows where username = LOWER('" + req.params.userName + "') and show_id=" + req.params.showId;
+    connection.execute(deleteShow, [], { autoCommit:true }, function(err,result){
+      if(err){
+        console.error(err.message);
+        return;
+      }
+      res.send("TV show deleted successfully!");
+    })
+
+  });
 });
 
 app.get('/users/:userName', function (req, res) {
@@ -507,15 +552,37 @@ app.get("/userEpisodes/:userName/:show_id", function(req, res){
                                               AND t.show_id = ` + req.params.show_id + ` 
                                               AND user_id = (SELECT user_id FROM users_logged WHERE username = LOWER('` + req.params.userName + `'))`;
     
-      connection.execute(check_episode, [], function(err,result){
-      if(result.rows != undefined) {
-        res.send(result.rows);
-      } else {
-        res.send("No episodes for this user!");
-      }
+    connection.execute(check_episode, [], function(err,result){
+        if(result.rows != undefined) {
+          res.send(result.rows);
+        } else {
+          res.send("No episodes for this user!");
+        }
     });
   });
 });
+
+//get all episodes of all user's followed shows
+app.get("/episodesOfUser/:userName", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection){
+    if(err){
+      console.log(err.message);
+      return;
+    }
+    var allUserEpisodes =  `SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path
+                            FROM tv_show t, users_tv_shows u, episodes e, seasons s
+                            WHERE u.username = LOWER('` + req.params.userName + `') AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id 
+                                  AND u.show_id in (select show_id from users_tv_shows where  username = LOWER('` + req.params.userName + `'))
+                            order by air_date asc`;
+    connection.execute(allUserEpisodes, [], function(err,result){
+        if(result.rows != undefined) {
+          res.send(result.rows);
+        } else {
+          res.send("No episodes for this user!");
+        }
+    });
+  })
+}) 
 
 // API CALLS 
 

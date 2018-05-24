@@ -23,7 +23,7 @@ app.controller("TopRatedController", function($scope, $http, $rootScope, userSho
         }
     };
 
-    $scope.followSeason = function(showId) {
+    $scope.followShow = function(showId) {
         $http.get("/tvShow/" + showId).then(function(response){
             return response;
         }).then(function(response) {
@@ -32,12 +32,22 @@ app.controller("TopRatedController", function($scope, $http, $rootScope, userSho
                     var userName =  $rootScope.user;
                     if(userName != undefined) {
                         $http.post("/addShow/" + showId + "/" + res.data.number_of_seasons + "/" + userName).then(function(res) {
-                            console.log(res);
+                            if(res.data == "Tv Show added to Database!") {
+                                $scope.userShows.push([showId]);
+                            }
                         });
                     }
                 });                
+            } else {
+                var userName =  $rootScope.user;
+                if(userName != undefined) {
+                    $http.post("/addShowToUser/" + userName + "/" + showId).then(function(resp){
+                        if(resp.data == "TV show added to user succesfully!") {
+                            $scope.userShows.push([showId]);
+                        }
+                    })
+                }
             }
-            $scope.userShows.push([showId]);
         });
     }
 });
