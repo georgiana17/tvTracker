@@ -36,8 +36,14 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
         $scope.events = new Array();
         for(var i = 0; i < $scope.userEpisodes.length; i++) {
             var airDate = new Date($scope.userEpisodes[i][5]);
+            var title =  $scope.userEpisodes[i][0] + " - " +   $scope.userEpisodes[i][3] + "x" +  $scope.userEpisodes[i][4];
+            if(airDate < Date.now()) {
+                var className = "striked";
+            } else {
+                var className = "";
+            }
             $scope.events.push({
-                'title': $scope.userEpisodes[i][0] + " - " +   $scope.userEpisodes[i][3] + "x" +  $scope.userEpisodes[i][4],
+                'title': title,
                 'start':  airDate,
                 'end': airDate,
                 'allDay': false,
@@ -47,11 +53,11 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 'episodeNo': $scope.userEpisodes[i][4],
                 'episodeName': $scope.userEpisodes[i][2],
                 'image':  $scope.userEpisodes[i][7],
-                'color': '#78909C'
+                'color': '#78909C',
+                'className': className
             });
         }
     } else {
-
         $scope.airDateEpisodes = new Array();    
     
         for(var i=0; i < $scope.popularSeries.length; i++) {
@@ -67,8 +73,14 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++) {
                             if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
                                 var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
+                                // if(airDate < Date.now()) {
+                                //     var title = ($scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number).strike();
+                                // } else {
+                                //     var title = $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number;
+                                // }
+                                // console.log(title);
                                 $scope.airDateEpisodes.push({
-                                        'title': $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
+                                        'title': title,
                                         'start': airDate,
                                         'end': airDate,
                                         'allDay': false,
