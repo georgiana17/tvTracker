@@ -4,16 +4,34 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $mdThemingProvider.theme('custom')
       .primaryPalette('cyan');
 })
-app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, $q, uiCalendarConfig, $window) {
+app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, watchedEpisodes, $q, uiCalendarConfig, $window) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
     $scope.firstDayOfWeek = 0;
     $scope.tooltips = true;
+    $scope.watched = true;
 
     
     
     if($rootScope.loggedIn) {
         $scope.userEpisodes = popularSeries;
+        $scope.watchedEpisodes = watchedEpisodes;
+        // console.log($scope.userEpisodes);
+        
+        //if episode is watched add true to episodes
+        for(var i = 0; i < $scope.userEpisodes.length; i++) {
+            var watched = false;
+            for(var j=0; j < $scope.watchedEpisodes.length; j++) {
+                if($scope.userEpisodes[i][8] == $scope.watchedEpisodes[j][0]) {
+                    watched = true;
+                } 
+            }
+            if(watched == true) {                
+                $scope.userEpisodes[i].push("true");
+            } else {
+                $scope.userEpisodes[i].push("false");
+            }
+        }
     } else {
         $scope.popularSeries = popularSeries.map(element => {return element[0]});
         $scope.numberOfSeasons = $scope.popularSeries.map(element => {
@@ -31,13 +49,12 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     //     return seasonsArr;
     // })
     // $scope.seasons = seasonsArr;
-    console.log("userrr" + $rootScope.user);
     if($rootScope.user != undefined) {
         $scope.events = new Array();
         for(var i = 0; i < $scope.userEpisodes.length; i++) {
             var airDate = new Date($scope.userEpisodes[i][5]);
             var title =  $scope.userEpisodes[i][0] + " - " +   $scope.userEpisodes[i][3] + "x" +  $scope.userEpisodes[i][4];
-            if(airDate < Date.now()) {
+            if($scope.userEpisodes[i][9] == "true") {
                 var className = "striked";
             } else {
                 var className = "";
@@ -53,8 +70,10 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 'episodeNo': $scope.userEpisodes[i][4],
                 'episodeName': $scope.userEpisodes[i][2],
                 'image':  $scope.userEpisodes[i][7],
-                'color': '#78909C',
-                'className': className
+                'color': '#00897B',
+                'className': className,
+                'watched': $scope.userEpisodes[i][9],
+                'id': $scope.userEpisodes[i][8]
             });
         }
     } else {
@@ -73,12 +92,6 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++) {
                             if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
                                 var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
-                                // if(airDate < Date.now()) {
-                                //     var title = ($scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number).strike();
-                                // } else {
-                                //     var title = $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number;
-                                // }
-                                // console.log(title);
                                 $scope.airDateEpisodes.push({
                                         'title': title,
                                         'start': airDate,
@@ -114,10 +127,6 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 center: 'title',
                 right: 'next'
             },
-            eventClick: function(date, jsEvent, view){
-                $scope.alertMessage = (date.title + ' was clicked ');
-                console.log($scope.alertMessage);
-            },
             windowResize: function() {
                 $scope.height = $window.innerHeight - 70;
                 $scope.uiConfig.calendar.height = $scope.height;
@@ -133,14 +142,44 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 width > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("left").find(".arrow").addClass("left") : offset > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("right").find(".arrow").addClass("right") : $scope.tooltipDiv.find(".arrow").addClass("top"),
                 $scope.tooltipDiv.height() > height ? $scope.tooltipDiv.addClass("top").find(".arrow").addClass("pull-down") : $scope.tooltipDiv.removeClass("top").find(".arrow").addClass("pull-up"),
                 0 == elem.find(".tooltipSerie").length && elem.append($scope.tooltipDiv)
+            },
+            eventRender: function(event, element, view) {
+                // console.log(element);
+                if($rootScope.loggedIn){
+                    if(event.watched == "true"){
+                        var checked = "checked";
+                    } else {
+                        var checked = "unchecked";
+                    }
+                    element.find('.fc-title').prepend('<input class="checkBox" type="checkbox" ' + checked + '></input>');
+                    element.find(".checkBox").bind('click', function() {
+                        if(event.watched == "false") {
+                            $http.post("/addEpisode/" + $rootScope.user + "/" + event.id).then(function(response) {
+                                // console.log(response.data);
+                                if(response.data == "Episode added to user!") {
+                                    element.addClass("striked");
+                                }
+                            });
+                            event.watched = "true";
+                        } else if (event.watched == "true") {
+                            $http.post("/deleteEpisode/" + $rootScope.user + "/" + event.id).then(function(response) {
+                                // console.log(response.data);
+                                if(response.data == "Episode deleted from user!") {
+                                    element.removeClass("striked");
+                                }
+                            });
+                            event.watched = "false";
+                        }
+                    });
+                }
             }
         }
     }
+
     $scope.tooltipDiv = $('.tooltipSerie');
     if($rootScope.user == undefined) {
         $scope.eventSources = [$scope.airDateEpisodes];
     } else {
-        console.log($scope.events);
         $scope.eventSources = [$scope.events];
     }
     (function() {

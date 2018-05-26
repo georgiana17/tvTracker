@@ -269,6 +269,13 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     });
                 }
                 
+            },
+            watchedEpisodes : function($http, $rootScope) {
+                if($rootScope.loggedIn){
+                    return $http.get("/watchedEpisodes/" + $rootScope.user).then(function(res) {
+                        return res.data;
+                    });
+                }
             }
         }
     })
