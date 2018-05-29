@@ -92,6 +92,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++) {
                             if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
                                 var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
+                                var title =  $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number;
                                 $scope.airDateEpisodes.push({
                                         'title': title,
                                         'start': airDate,

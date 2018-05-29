@@ -32,7 +32,7 @@
                 <md-icon md-font-set="md">add</md-icon>
                 <span class="inset" >Follow</span>
         </md-button>
-        <md-button ng-show="loggedIn && followed" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="unfollowSeason(data.id)">
+        <md-button ng-show="loggedIn && followed" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="unfollowShow(data.id)">
                 <md-icon md-font-set="md">clear</md-icon>
                 <span class="inset">Unfollow</span>
         </md-button>
@@ -87,7 +87,7 @@
                         {{episode.air_date | date: 'EEEE, MMMM d, y'}}
                     </p>
                     </md-card-content>
-                    <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn">
+                    <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn && followed">
                         <!-- <md-button class="md-icon-button" aria-label="Favorite">
                             <ng-md-icon icon="star"></ng-md-icon>
                         </md-button> -->

@@ -78,7 +78,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         });
     }
 
-    $scope.unfollowSeason = function(showId) {
+    $scope.unfollowShow = function(showId) {
         $http.post("/deleteShowFromUser/" + $rootScope.user + "/" + showId).then(function(resp){
             if(resp.data == "TV show deleted successfully!") {
                 $scope.followed = false;
@@ -176,7 +176,8 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     }
 
     
-
+    console.log($scope.followed);
+    console.log($scope.loggedIn);
 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);
