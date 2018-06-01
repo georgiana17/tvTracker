@@ -44,6 +44,21 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             }
             // TODO: if poster_path == null => add a custom image.
             $scope.posterPath = "https://image.tmdb.org/t/p/original" + response.data.poster_path;
+
+            
+            if($scope.data.videos.results.length != 0) {
+                $scope.youtubeUrl = "https://www.youtube.com/watch?v=" + $scope.data.videos.results[0].key;
+                $scope.trailer = true;
+            } else {
+                $scope.trailer = false;
+            }
+
+            if($scope.data.external_ids.imdb_id) {
+                $scope.imdbUrl = "https://www.imdb.com/title/" + $scope.data.external_ids.imdb_id;
+                $scope.imdb = true;
+            } else {
+                $scope.imdb = false;
+            }
         });
     }
 
@@ -87,20 +102,22 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     }
 
     $scope.isMarked = function() {
-        let n = 0;
-        for(var i=0; i< $scope.seasonData.episodes.length; i++) {
-            for(var j=0; j<$scope.checkedEpisodes.length; j++) {
-                if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
-                    n++;
+        if($scope.followed == true) {
+            let n = 0;
+            for(var i=0; i< $scope.seasonData.episodes.length; i++) {
+                for(var j=0; j<$scope.checkedEpisodes.length; j++) {
+                    if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
+                        n++;
+                    }
                 }
             }
-        }
-        if(n == $scope.seasonData.episodes.length) {
-            $scope.marked = true;
-            $scope.unmarked = true;
-        } else {
-            $scope.marked = false;
-            $scope.unmarked = false;
+            if(n == $scope.seasonData.episodes.length) {
+                $scope.marked = true;
+                $scope.unmarked = true;
+            } else {
+                $scope.marked = false;
+                $scope.unmarked = false;
+            }
         }
     }
 
@@ -135,9 +152,11 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     }
 
     $scope.checkEpisode = function(episodeId) {
-        for(var i = 0; i < $scope.checkedEpisodes.length; i++){
-            if(episodeId == $scope.checkedEpisodes[i][0])
-                return true;
+        if($scope.followed == true) {
+            for(var i = 0; i < $scope.checkedEpisodes.length; i++){
+                if(episodeId == $scope.checkedEpisodes[i][0])
+                    return true;
+            }
         }
     }
 
@@ -174,10 +193,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
         $scope.unmarked = true;        
     }
-
-    
-    console.log($scope.followed);
-    console.log($scope.loggedIn);
 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);

@@ -68,14 +68,17 @@
         <div layout="row" layout-align="end center">
             <h1 layout-padding>{{seasonName}}</h1>
             <span flex></span>
-            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked && loggedIn" ng-click="markSeason()">Mark season as watched</md-button>
-            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
+            <md-button md-theme="navbar" ng-show="imdb" class="md-raised md-primary"><a target="_blank" ng-href="{{imdbUrl}}">IMDB<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></a></md-button>
+            <md-button md-theme="navbar" ng-show="trailer" class="md-raised md-primary"><a target="_blank" ng-href="{{youtubeUrl}}">Trailer<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></a></md-button>
+            <span flex></span>
+            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked && loggedIn && followed" ng-click="markSeason()">Mark season as watched</md-button>
+            <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn && followed" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
         </div>
         <div layout="row" layout-padding>
             <div layout-padding layout-wrap layout="row">
                 <md-card md-whiteframe="3" flex-xs flex-gt-xs="25" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
                     <!-- TODO: add custom photo for still_path == null -->
-                    <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "https://image.tmdb.org/t/p/original/85SWPq6UYPfAukLF6SXkTaRBC0O.jpg"}}' class="md-card-image" alt="Washed Out">
+                    <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
                     <md-card-title>
                         <md-card-title-text>
                             <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
@@ -142,5 +145,9 @@
 
     .border {
         border-width: 2px;
+    }
+    a {
+        text-decoration: none;
+        color: white;
     }
 </style>

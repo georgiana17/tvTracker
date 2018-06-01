@@ -50,6 +50,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     // })
     // $scope.seasons = seasonsArr;
     if($rootScope.user != undefined) {
+        console.log($scope.userEpisodes)
         $scope.events = new Array();
         for(var i = 0; i < $scope.userEpisodes.length; i++) {
             var airDate = new Date($scope.userEpisodes[i][5]);
@@ -65,14 +66,14 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 'end': airDate,
                 'allDay': false,
                 'showName': $scope.userEpisodes[i][0],
-                'overview': "TODO - OVERVIEW",
+                'overview': $scope.userEpisodes[i][9],
                 'seasonNo':  $scope.userEpisodes[i][3],
                 'episodeNo': $scope.userEpisodes[i][4],
                 'episodeName': $scope.userEpisodes[i][2],
                 'image':  $scope.userEpisodes[i][7],
                 'color': '#00897B',
                 'className': className,
-                'watched': $scope.userEpisodes[i][9],
+                'watched': $scope.userEpisodes[i][10],
                 'id': $scope.userEpisodes[i][8]
             });
         }

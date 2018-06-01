@@ -174,8 +174,8 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
           try{
               conn1 = await oracledb.getConnection(databaseConfig);
 
-              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3, :4)";
-              var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons, responses[0].poster_path];
+              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3, :4, :5)";
+              var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons, responses[0].poster_path, responses[0].overview];
 
               let res = await conn1.execute(sql_tv_show, tv_show_binds, { autoCommit:true });
               resolve(res);
@@ -256,7 +256,7 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
                 console.log(res + "episodes");
                 let promises = [];
                   episodesInfo.forEach(function(elem){
-                    var sql_episodes = `INSERT INTO EPISODES values(:id, `+ elem.id +`, :name, :episode_number, :air_date)`;
+                    var sql_episodes = `INSERT INTO EPISODES values(:id, `+ elem.id +`, :name, :episode_number, :air_date, :overview)`;
                     // console.log(elem.episodes_bind)
                     var binds_episodes = elem.episodes_bind;
                     var episodes_options = {
@@ -265,7 +265,8 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
                         id: { type: oracledb.NUMBER },
                         name: { type: oracledb.STRING, maxSize: 100 },
                         episode_number: { type: oracledb.NUMBER },
-                        air_date: {type: oracledb.STRING, maxSize: 20 }
+                        air_date: {type: oracledb.STRING, maxSize: 20 },
+                        overview: {type: oracledb.STRING, maxSize: 1000}
                       }
                     };
                     let promise = new Promise(async function(resolve, reject) {
@@ -360,7 +361,6 @@ app.post("/deleteShowFromUser/:userName/:showId", function(req,res){
   });
   
   promise1.then(function(){
-    console.log(promise1);
     let promise2 = new Promise(async function(resolve, reject) {
       let conn;
       try{
@@ -459,7 +459,6 @@ app.get('/myShows/:userName', function(req, res) {
           if (err) { 
                 return;  
           }
-          console.log(result.rows)
           if(result.rows.length != 0) {
             res.send(result.rows);
           }
@@ -548,7 +547,6 @@ app.post("/addEpisode/:userName/:episodeId", function(req, res){
                        WHERE NOT EXISTS (SELECT 1 FROM USERS_EPISODES e where e.episode_id = b.episode_id and a.user_id = e.user_id)`;
     connection.execute(add_episode, [], { autoCommit:true }, function(err,result) {
       if(result.rowsAffected != 0) {
-        console.log(result.rowsAffected);
         res.send("Episode added to user!"); 
       } else 
           res.send("Cannot link episode to user!");
@@ -619,7 +617,7 @@ app.get("/episodesOfUser/:userName", function(req,res) {
       console.log(err.message);
       return;
     }
-    var allUserEpisodes =  `SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path, e.episode_id
+    var allUserEpisodes =  `SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, u.NO_OF_EPISODES - u.NO_OF_EPISODES_WATCHED AS no_of_ep_unwatched, t.poster_path, e.episode_id, e.overview
                             FROM tv_show t, users_tv_shows u, episodes e, seasons s
                             WHERE u.username = LOWER('` + req.params.userName + `') AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id 
                                   AND u.show_id in (select show_id from users_tv_shows where  username = LOWER('` + req.params.userName + `'))
@@ -666,7 +664,7 @@ app.get('/randomImage/:id', function(req, res){
 });
 
 app.get('/show/:id', function(req,res){
-  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
+  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}&append_to_response=videos,external_ids`;
   fetch(`${showDetail}`)
       .then(response => response.json())
       .then(info => res.send(info))
@@ -682,9 +680,9 @@ app.get('/season/:serie_id/:season_id', function(req,res){
 });
 
 // var greysUrl = `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`;
-var greysUrl = `http://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
+var tvShow = `http://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&page=1`;
 app.get('/topSeries', function (req, res) {
-  fetch(`${greysUrl}`)
+  fetch(`${tvShow}`)
       .then(response => response.json())
       .then(movie => res.send(movie))
       .catch(error => res.send(error))
@@ -714,6 +712,14 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
       .then(search => res.send(search))
       .catch(err => res.send(error))
   });
+
+  app.get('/videos/:show_id', function(req,res){
+    var videosTvShow = `https://api.themoviedb.org/3/tv/${req.params.show_id}/videos?api_key=${process.env.TMDB_KEY}&language=en-US`;
+    fetch(`${videosTvShow}`)
+      .then(resp => resp.json())
+      .then(videos => res.send(videos))
+      .catch(err => res.send(error))
+  })
 
 
 app.listen(3000);
