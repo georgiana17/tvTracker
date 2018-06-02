@@ -6,6 +6,9 @@ var fetch = require('isomorphic-fetch');
 var mongoose = require('mongoose');
 // var async = require('async');
 var  oracledb = require('oracledb');
+var jwt = require('jsonwebtoken');
+var nodemailer = require('nodemailer');
+var sgTransport = require('nodemailer-sendgrid-transport');
 
 
 app.use(function(req, res, next) {
@@ -32,19 +35,22 @@ const saltRounds = 10;
 
 app.post("/user", function(req,res){
   var userDetail = req.body;
-    bcrypt.genSalt(saltRounds, function(err,salt){
+  var status = 'inactive';
+  let token = jwt.sign({ username: userDetail.username, email: userDetail.email}, process.env.secret_jwt,{expiresIn: '24h'});
+  console.log(token);
+    bcrypt.genSalt(saltRounds, function(err,salt) {
       bcrypt.hash(userDetail.password, salt, function(err, hash){
         oracledb.getConnection({  
             user: process.env.ORACLE_USERNAME,  
             password: process.env.ORACLE_PASSWORD,  
-            connectString: "localhost:1521/orcl"  
+            connectString: "localhost:1521/orcl"
         }, function(err, connection) {  
             if (err) {  
                 console.error(err.message);  
                 return;  
             }  
-            connection.execute("insert into users_logged values(:0,:1,:2,:3)",  
-            ['', userDetail.username, userDetail.email, hash], { autoCommit: true }, 
+            connection.execute("insert into users_logged values(:0,:1,:2,:3,:4,:5)",  
+            ['', userDetail.username, userDetail.email, hash, token, status], { autoCommit: true }, 
             function(err, result) {  
                 if (err) {  
                       console.error(err.message);  
@@ -52,6 +58,36 @@ app.post("/user", function(req,res){
                 }  
                 console.log(result.metaData); 
                 console.log(result);
+                if(result.rowsAffected) {
+                  var smtpTransport = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    secureConnection: true,
+                    port: 465,
+                    secure: true,
+                    auth: {
+                      user: process.env.GMAIL_USER,
+                      pass: process.env.GMAIL_PASSWORD
+                    }
+                  });
+
+                  var mailOptions = {
+                    from : 'episodespy@gmail.com',
+                    to: 'georgiana.nicolae17@gmail.com',
+                    subject: 'Activation link',
+                    text: `Hello <strong>` + userDetail.username + `, </strong><br/><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
+                          ` complete your activation: <br/><br/> <a href='http://localhost:3000/#/activate/'` + token +  `'>http://localhost:3000/activate</a>`,
+                    html: `Hello <strong>` + userDetail.username + `, </strong><br/><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
+                          ` complete your activation: <br/><br/> <a href="http://localhost:3000/#/activate/` + token +  `">http://localhost:3000/activate</a>`
+                  }
+                  
+                  smtpTransport.sendMail(mailOptions, function(error, response){
+                      if(error){
+                          res.send("Email could not sent due to error: " + error);
+                      }else{
+                          res.send("Requerimiento enviado con éxito");
+                      } 
+                  }); 
+                }
             });  
         });  
       })
@@ -72,8 +108,50 @@ app.get('/users', function (req, res) {
   });
 });
 
+
+app.get('/activate/:token', function(req,res) {
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+      if (err) { 
+          return;  
+      }  
+      connection.execute( "SELECT token, username from users_logged where token='" + req.params.token + "'",  
+      [],  
+      function(err, result) {  
+          if (err) { 
+                return;
+          }
+
+          if(result.rows.length != 0) {
+              jwt.verify(result.rows[0][0], process.env.secret_jwt, function(err, decoded){
+                if(err) {
+                  res.json({success: false, message: 'Activation link has expired!'});
+                } else {
+                  oracledb.getConnection(databaseConfig, function(err, connection) {
+                    if (err) { 
+                        return;  
+                    }  
+                    var updateUser = "UPDATE users_logged SET token='false', status='active' WHERE username = LOWER('" + result.rows[0][1] + "')";
+                    console.log(updateUser);
+                    connection.execute(updateUser, [],  {autoCommit:true}, function(err, result) {  
+                        if (err) { 
+                              return;
+                        }
+                        console.log(result);
+                    });  
+                  });
+                  res.json({success: true, message: 'Account activated!'});
+                }
+              })
+          } else {
+            res.json({success: false, message: 'Activation link has expired!'});
+          }
+      });  
+  });
+});
+
+
 app.get('/tvShow/:show_id', function (req, res) {
-  oracledb.getConnection(databaseConfig, function(err, connection) {  
+  oracledb.getConnection(databaseConfig, function(err, connection) {
       if (err) { 
           return;  
       }  

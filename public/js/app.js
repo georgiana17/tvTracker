@@ -184,6 +184,10 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "RegisterController",
         templateUrl: "public/views/signup.html"
     })
+    .when("/activate/:token", {
+        controller: "ActivateController",
+        templateUrl: "public/views/activate.html"
+    })
     .when("/show/:id", {
         controller: "ShowController",
         templateUrl: "public/views/show.html",
