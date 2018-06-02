@@ -57,9 +57,9 @@
     </div>
     <div class="seasons" layout-padding>
         <ul layout="row">                
-            <li ng-repeat="season in data.seasons | filter: displayPosterPath" layout-padding>
+            <li ng-repeat="season in data.seasons | filter: displayPosterPath" layout-padding flex="flex">
                 <a href ng-click="selectSeason(season.season_number)">
-                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
+                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}" style="width: 150px; height: 216px;" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
                 </a>
             </li>
         </ul>
@@ -75,33 +75,67 @@
             <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn && followed" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
         </div>
         <div layout="row" layout-padding>
-            <div layout-padding layout-wrap layout="row">
-                <md-card md-whiteframe="3" flex-xs flex-gt-xs="25" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
-                    <!-- TODO: add custom photo for still_path == null -->
-                    <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
-                    <md-card-title>
-                        <md-card-title-text>
-                            <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
-                            <span>{{episode.name}}</span>
-                        </md-card-title-text>
-                    </md-card-title>
-                    <md-card-content>
-                    <p>
-                        {{episode.air_date | date: 'EEEE, MMMM d, y'}}
-                    </p>
-                    </md-card-content>
-                    <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn && followed">
-                        <!-- <md-button class="md-icon-button" aria-label="Favorite">
-                            <ng-md-icon icon="star"></ng-md-icon>
-                        </md-button> -->
-                        <md-button class="md-icon-button" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
-                            <ng-md-icon icon="remove_red_eye"></ng-md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
-                                <ng-md-icon icon="done"></ng-md-icon>
-                        </md-button>
-                    </md-card-actions>
-                </md-card>
+            <div layout="row" layout-padding>
+                <div layout-padding layout-wrap layout="row">
+                    <md-card md-whiteframe="3" flex-xs flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
+                        <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
+                                <span>{{episode.name}}</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                        <p>
+                            {{episode.air_date | date: 'EEEE, MMMM d, y'}}
+                        </p>
+                        </md-card-content>
+                        <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn && followed">
+                            <!-- <md-button class="md-icon-button" aria-label="Favorite">
+                                <ng-md-icon icon="star"></ng-md-icon>
+                            </md-button> -->
+                            <md-button class="md-icon-button" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
+                                <ng-md-icon icon="remove_red_eye"></ng-md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
+                                    <ng-md-icon icon="done"></ng-md-icon>
+                            </md-button>
+                        </md-card-actions>
+                    </md-card>
+                </div>
+                <div layout-padding layout="column" ng-cloak ng-if="followed">
+                    <div layout="column" layout-align="start center" style="position:relative">
+                        <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
+                        <h4 id="progress">{{progress}}%</h4>
+                    </div>
+                    <div layout="column">
+                        <md-card md-whiteframe="3" flex-xs flex-gt-xs="30" layout-flex layout-padding>
+                                <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
+                                <md-card-title>
+                                    <md-card-title-text>
+                                        <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
+                                        <span>{{episode.name}}</span>
+                                    </md-card-title-text>
+                                </md-card-title>
+                                <md-card-content>
+                                <p>
+                                    {{episode.air_date | date: 'EEEE, MMMM d, y'}}
+                                </p>
+                                </md-card-content>
+                                <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn && followed">
+                                    <!-- <md-button class="md-icon-button" aria-label="Favorite">
+                                        <ng-md-icon icon="star"></ng-md-icon>
+                                    </md-button> -->
+                                    <md-button class="md-icon-button" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
+                                        <ng-md-icon icon="remove_red_eye"></ng-md-icon>
+                                    </md-button>
+                                    <md-button class="md-icon-button" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
+                                            <ng-md-icon icon="done"></ng-md-icon>
+                                    </md-button>
+                                </md-card-actions>
+                            </md-card>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -149,5 +183,13 @@
     a {
         text-decoration: none;
         color: white;
+    }
+    #progress {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
     }
 </style>

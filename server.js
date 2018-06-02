@@ -266,7 +266,7 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
                         name: { type: oracledb.STRING, maxSize: 100 },
                         episode_number: { type: oracledb.NUMBER },
                         air_date: {type: oracledb.STRING, maxSize: 20 },
-                        overview: {type: oracledb.STRING, maxSize: 1000}
+                        overview: {type: oracledb.STRING, maxSize: 2000}
                       }
                     };
                     let promise = new Promise(async function(resolve, reject) {
@@ -501,7 +501,7 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
       return ;
     }
     var my_episodes = `SELECT * FROM (
-                       SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, t.NO_OF_EPISODES - f.episode_watched AS no_of_ep_unwatched, t.poster_path
+                       SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, t.NO_OF_EPISODES - f.episode_watched AS no_of_ep_unwatched, t.poster_path, t.NO_OF_EPISODES
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s,
                        (SELECT count(*) as episode_watched
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s, users_episodes a
@@ -511,7 +511,7 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
                        WHERE rownum <=1 
                        UNION ALL 
                        SELECT * FROM (
-                       SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, t.NO_OF_EPISODES - f.episode_watched AS no_of_ep_unwatched, t.poster_path
+                       SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, t.NO_OF_EPISODES - f.episode_watched AS no_of_ep_unwatched, t.poster_path, t.NO_OF_EPISODES
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s,
                        (SELECT count(*) as episode_watched
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s, users_episodes a

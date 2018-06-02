@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, $mdDialog){
 
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
@@ -45,6 +45,12 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             // TODO: if poster_path == null => add a custom image.
             $scope.posterPath = "https://image.tmdb.org/t/p/original" + response.data.poster_path;
 
+            if($scope.checkedEpisodes.length != 0) {
+                $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
+                console.log($scope.progress);
+            } else {
+                $scope.progress = 0;
+            }
             
             if($scope.data.videos.results.length != 0) {
                 $scope.youtubeUrl = "https://www.youtube.com/watch?v=" + $scope.data.videos.results[0].key;
@@ -69,7 +75,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     };
     
     $scope.followShow = function(showId) {
-        $http.get("/tvShow/" + showId).then(function(response){
+        $http.get("/tvShow/" + showId).then(function(response) {
             return response;
         }).then(function(response) {
             if(response.data == "false") {
@@ -84,7 +90,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                     }
                 });                
             } else {
-                $http.post("/addShowToUser/" + userName + "/" + showId).then(function(resp){                    
+                $http.post("/addShowToUser/" + $rootScope.user + "/" + showId).then(function(resp){                    
                     if(resp.data == "TV show added to user succesfully!") {
                         $scope.followed = true;
                     }
@@ -94,11 +100,23 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     }
 
     $scope.unfollowShow = function(showId) {
-        $http.post("/deleteShowFromUser/" + $rootScope.user + "/" + showId).then(function(resp){
-            if(resp.data == "TV show deleted successfully!") {
-                $scope.followed = false;
-            }
-        })
+        $mdDialog.show(
+            $mdDialog.confirm()
+            .title('Do you want to delete from list this show? ')
+            .ariaLabel('Confirm')
+            .textContent('You will loose all of your tracking.')
+            .targetEvent(event)
+            .clickOutsideToClose(true)
+            .ok('Yes')
+            .cancel('No')
+        ).then(function() {
+            $http.post("/deleteShowFromUser/" + $rootScope.user + "/" + showId).then(function(resp){
+                if(resp.data == "TV show deleted successfully!") {
+                    $scope.followed = false;
+                }
+            });  
+        }, function() {
+        });
     }
 
     $scope.isMarked = function() {
@@ -148,6 +166,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                 $scope.checkedEpisodes.push([episodeId]);
                 $scope.isMarked();
             });
+            $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
         }
     }
 
@@ -161,7 +180,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     }
 
     $scope.deleteEpisode = function(episodeId) {
-        console.log(episodeId);
         if($routeParams.id != undefined) {
             $http.post("/deleteEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
                 for(var i=0; i<$scope.checkedEpisodes.length; i++){
@@ -169,6 +187,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                         $scope.checkedEpisodes.splice(i,1);
                     }
                 }
+                $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
             });
         }
         $scope.marked = false;
@@ -183,6 +202,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                 $scope.checkedEpisodes.push([$scope.seasonData.episodes[i].id]);
             }
         }
+        $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
         $scope.marked = true;
     }
 
@@ -190,10 +210,9 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
             $scope.deleteEpisode($scope.seasonData.episodes[i].id);
         }
-
-        $scope.unmarked = true;        
+        $scope.unmarked = true;
     }
-
+    
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);
     // })
