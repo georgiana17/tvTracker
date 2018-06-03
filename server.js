@@ -84,7 +84,7 @@ app.post("/user", function(req,res){
                       if(error){
                           res.send("Email could not sent due to error: " + error);
                       }else{
-                          res.send("Requerimiento enviado con éxito");
+                          res.send("Email successfully sent!");
                       } 
                   }); 
                 }
@@ -93,6 +93,16 @@ app.post("/user", function(req,res){
       })
     });
  
+});
+
+app.post("/resendLink/:userName", function(req, res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+      if (err) { 
+          return;  
+      }  
+      // var update
+  });
+
 });
 
 var databaseConfig = {  user: process.env.ORACLE_USERNAME,  
@@ -508,7 +518,7 @@ app.get('/login/:userName/:password', function (req, res) {
       if (err) {
           return;  
       }  
-      connection.execute("SELECT username, password from users_logged where username=LOWER('" + req.params.userName + "')",  
+      connection.execute("SELECT username, password, status from users_logged where username=LOWER('" + req.params.userName + "')",  
       [],  
       function(err, result) {
           if (err) { 
@@ -516,12 +526,17 @@ app.get('/login/:userName/:password', function (req, res) {
           }
           if(result.rows.length != 0) {
             bcrypt.compare(req.params.password, result.rows[0][1], function(err, resp){
-              var data = {userData: result.rows, passwordMatch: resp};
+              if(result.rows[0][2] == 'active') {
+                var status = 'active';
+              } else if (result.rows[0][2] == 'inactive') {
+                var status = 'inactive';
+              }
+              var data = {userData: result.rows, passwordMatch: resp, userStatus: status};
               return res.status(200).send(data);
             });
           }
           else {
-            res.status(200).send(users);
+            res.status(200).send("User not found!");
           }
     });
   });

@@ -5,14 +5,20 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
     vm.userData = "";
     $scope.signin = function($scope) {
         vm.failed = false;
+        vm.notActivated = false;
+        vm.userNotFound = false;
         $http.get("/login/" + Form.username.value + "/" + Form.newPassword.value).then(function(response){
-            if(response.data.length != 0){
-                if(response.data.userData.length != 0 && response.data.passwordMatch == true) {
+            if(response.data == "User not found!") {
+                vm.userNotFound = true;
+            } else if(response.data.length != 0 && typeof response.data == "object"){
+                if(response.data.userData.length != 0 && response.data.passwordMatch == true && response.data.userStatus == 'active') {
                     session.setUser(Form.username.value);
                     $location.path("/");
                     $rootScope.loggedIn = true;
                     $rootScope.user = Form.username.value;
                     $rootScope.update();
+                } else if(response.data.userStatus == 'inactive') {
+                    vm.notActivated = true;
                 } else {
                     vm.failed = true;
                 }
@@ -30,7 +36,43 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
                     .ariaLabel('Alert Dialog Demo')
                     .ok('Got it!')
                 );
+            } else if (vm.notActivated == true) {
+                $mdDialog.show({
+                    parent: angular.element(document.body),
+                    clickOutsideToClose:true,
+                    template:
+                      '<md-dialog>' +
+                      '  <md-dialog-content class="md-dialog-content">'+
+                           '<div class="test"><p>Account not activated! Please check your email for activation.</p></div>'+
+                      '		 <md-button ng-click="resendActivationLink()">Resend Activation</md-button> <md-button md-theme="navbar" ng-click="closeDialog();">Close</md-button>'+
+                     '  </md-dialog-content>' +
+                     '</md-dialog>',
+                   controller: DialogController
+                 });
+                     
+                 function DialogController($scope, $mdDialog) {
+                   $scope.closeDialog = function() {
+                     $mdDialog.hide();
+                   };
+                   $scope.resendActivationLink = function() {
+                       console.log(Form.username.value);
+                       $http.post("/resendLink/:userName").then(function(res){
+                           console.log(res);
+                       })
+                   };
+                 };
+            } else if (vm.userNotFound == true) {
+                $mdDialog.show(
+                    $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Error')
+                    .textContent('Username not found in database!')
+                    .ariaLabel('Alert Dialog Demo')
+                    .ok('Got it!')
+                );
             }
-        });        
-    }    
+        });
+    }
+    
 });
