@@ -97,8 +97,13 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
                 link: '#/calendar',
                 title: 'Calendar',
                 icon: 'date_range',
-                // logged: $rootScope.loggedIn
-                logged: true
+                logged: $rootScope.loggedIn
+            },
+            {
+                link: '#/calendar',
+                title: 'Try Out Calendar',
+                icon: 'date_range',
+                logged: !$rootScope.loggedIn
             }
         ]
         $scope.userItems = [

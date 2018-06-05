@@ -10,7 +10,7 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
         $http.get("/login/" + Form.username.value + "/" + Form.newPassword.value).then(function(response){
             if(response.data == "User not found!") {
                 vm.userNotFound = true;
-            } else if(response.data.length != 0 && typeof response.data == "object"){
+            } else if(response.data != undefined && typeof response.data == "object"){
                 if(response.data.userData.length != 0 && response.data.passwordMatch == true && response.data.userStatus == 'active') {
                     session.setUser(Form.username.value);
                     $location.path("/");
@@ -55,9 +55,28 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
                      $mdDialog.hide();
                    };
                    $scope.resendActivationLink = function() {
-                       console.log(Form.username.value);
-                       $http.post("/resendLink/:userName").then(function(res){
-                           console.log(res);
+                       $http.post("/resendLink/" + Form.username.value + "/" + response.data.email).then(function(res){
+                           if(res.data == "Email successfully sent!") {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                .parent(angular.element(document.querySelector('#popupContainer')))
+                                .clickOutsideToClose(true)
+                                .title('Info')
+                                .textContent('Email sent! Please check your email for activation.')
+                                .ariaLabel('Alert Dialog Demo')
+                                .ok('Got it!')
+                            );
+                           } else if (res.data.indexOf("Email could not sent due to error") > -1 ){
+                                $mdDialog.show(
+                                    $mdDialog.alert()
+                                    .parent(angular.element(document.querySelector('#popupContainer')))
+                                    .clickOutsideToClose(true)
+                                    .title('Error')
+                                    .textContent('Email not sent! Please try again later.')
+                                    .ariaLabel('Alert Dialog Demo')
+                                    .ok('Got it!')
+                                );
+                           }
                        })
                    };
                  };

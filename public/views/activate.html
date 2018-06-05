@@ -2,4 +2,5 @@
     <h1>Account Activation</h1>
     <p ng-show="success">{{successMessage}}</p>
     <p ng-show="error">{{errorMessage}}</p>
+    <md-button md-theme="navbar" class="md-raised md-primary" ng-show="resendButton" ng-click="resendActivationLink()">Resend Activation Link</md-button>
 </div>

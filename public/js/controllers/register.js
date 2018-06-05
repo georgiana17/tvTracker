@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("RegisterController", function($scope, $http, $location, $mdDialog){
+app.controller("RegisterController", function($scope, $http, $location, $mdDialog, $timeout, $mdToast){
     var vm = this;
 
     vm.getAllUsers = function($scope){
@@ -57,6 +57,18 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
     
                         $http.post("/user", vm.userData)
                             .then(function(result){
+                                if(result.data == "Email successfully sent!"){
+                                    $mdToast.show(
+                                        $mdToast
+                                          .simple()
+                                          .content("Please check your email for confirmation! Redirecting...")
+                                          .position('bottom left')
+                                          .hideDelay(4000)
+                                      );
+                                    $timeout(function() {
+                                        $location.path('/login');
+                                    }, 3000);
+                                }                               
                             },function(result) {});
                         // $location.path("/login")
                     }

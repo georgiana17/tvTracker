@@ -72,7 +72,7 @@ app.post("/user", function(req,res){
 
                   var mailOptions = {
                     from : 'episodespy@gmail.com',
-                    to: 'georgiana.nicolae17@gmail.com',
+                    to: userDetail.email,
                     subject: 'Activation link',
                     text: `Hello <strong>` + userDetail.username + `, </strong><br/><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
                           ` complete your activation: <br/><br/> <a href='http://localhost:3000/#/activate/'` + token +  `'>http://localhost:3000/activate</a>`,
@@ -95,12 +95,50 @@ app.post("/user", function(req,res){
  
 });
 
-app.post("/resendLink/:userName", function(req, res){
+app.post("/resendLink/:userName/:email", function(req, res){
   oracledb.getConnection(databaseConfig, function(err, connection) {
       if (err) { 
           return;  
-      }  
-      // var update
+      }
+      let token = jwt.sign({ username: req.params.userName}, process.env.secret_jwt,{expiresIn: '24h'});
+      console.log(token);
+      var update_user = `UPDATE users_logged SET token='` + token + `' WHERE username = LOWER('` + req.params.userName + `')`;
+      connection.execute(update_user, [], {autoCommit:true},  
+      function(err, result) {
+          if (err) { 
+                return;
+          }
+          if(result.rowsAffected) {
+            var smtpTransport = nodemailer.createTransport({
+              host: "smtp.gmail.com",
+              secureConnection: true,
+              port: 465,
+              secure: true,
+              auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASSWORD
+              }
+            });
+
+            var mailOptions = {
+              from : 'episodespy@gmail.com',
+              to: req.params.email,
+              subject: 'Activation link',
+              text: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
+                    ` complete your activation: <br/><br/> <a href='http://localhost:3000/#/activate/'` + token +  `'>http://localhost:3000/activate</a>`,
+              html: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
+                    ` complete your activation: <br/><br/> <a href="http://localhost:3000/#/activate/` + token +  `">http://localhost:3000/activate</a>`
+            }
+            
+            smtpTransport.sendMail(mailOptions, function(error, response){
+                if(error){
+                    res.send("Email could not sent due to error: " + error);
+                }else{
+                    res.send("Email successfully sent!");
+                } 
+            }); 
+          }
+      });
   });
 
 });
@@ -132,9 +170,9 @@ app.get('/activate/:token', function(req,res) {
           }
 
           if(result.rows.length != 0) {
-              jwt.verify(result.rows[0][0], process.env.secret_jwt, function(err, decoded){
+              jwt.verify(result.rows[0][0], process.env.secret_jwt, function(err, decoded) {
                 if(err) {
-                  res.json({success: false, message: 'Activation link has expired!'});
+                  res.json({success: false, message: 'Activation link has expired!', user: result.rows[0][1]});
                 } else {
                   oracledb.getConnection(databaseConfig, function(err, connection) {
                     if (err) { 
@@ -518,7 +556,7 @@ app.get('/login/:userName/:password', function (req, res) {
       if (err) {
           return;  
       }  
-      connection.execute("SELECT username, password, status from users_logged where username=LOWER('" + req.params.userName + "')",  
+      connection.execute("SELECT username, password, status, email from users_logged where username=LOWER('" + req.params.userName + "')",  
       [],  
       function(err, result) {
           if (err) { 
@@ -531,7 +569,7 @@ app.get('/login/:userName/:password', function (req, res) {
               } else if (result.rows[0][2] == 'inactive') {
                 var status = 'inactive';
               }
-              var data = {userData: result.rows, passwordMatch: resp, userStatus: status};
+              var data = {userData: result.rows, passwordMatch: resp, userStatus: status, email: result.rows[0][3]};
               return res.status(200).send(data);
             });
           }
