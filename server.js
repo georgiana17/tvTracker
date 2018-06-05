@@ -850,6 +850,14 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
       .catch(err => res.send(error))
   })
 
+  app.get('/recommendantions/:show_id', function(req, res){
+    var recommendantionsTvShow = `https://api.themoviedb.org/3/tv/${req.params.show_id}/recommendations?api_key=${process.env.TMDB_KEY}&language=en-US`;
+    fetch(`${recommendantionsTvShow}`)
+      .then(resp => resp.json())
+      .then(recommendantions => res.send({recommendantions, show_id:req.params.show_id}))
+      .catch(err => res.send(error))
+  })
+
 
 app.listen(3000);
 

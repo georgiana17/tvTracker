@@ -114,7 +114,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
                 logged: true
             },
             {
-                link: '#/',
+                link: '#/recommendantions',
                 title: 'Recommendations',
                 icon: 'thumb_up',
                 logged: $rootScope.loggedIn
@@ -292,5 +292,35 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                 }
             }
         }
+    })
+    .when("/recommendantions/",  {
+        controller: "RecommendantionsController",
+        templateUrl: "/public/views/recommendantions.html",
+        resolve: {
+            recommendantions: function($http, $rootScope, $q) {
+                if($rootScope.loggedIn){
+                    return $http.get("/myShows/" + $rootScope.user).then(function(res){
+                        var usersShows = {};
+                        usersShows = res.data;
+                        return usersShows;
+                    })
+                    .then(function(usersShows){
+                        var contentPromises = [];
+                        if(usersShows.length !=0) {
+                            for(var i=0; i < usersShows.length; i++){
+                                contentPromises.push(
+                                    $http.get("/recommendantions/" + usersShows[i][0]).then(function(success){
+                                        return success.data;
+                                    })
+                                );
+                            }
+                        }
+                        return $q.all(contentPromises).then(function(res) {
+                            return res;
+                        });
+                    })
+                }
+            }
+        }        
     })
   });
