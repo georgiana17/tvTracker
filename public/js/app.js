@@ -151,7 +151,8 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     //   .accentPalette('pink');
     $mdThemingProvider.theme('navbar')
       .primaryPalette('teal')
-      .accentPalette('grey')
+    //   .accentPalette('grey')
+      .accentPalette('purple')
       .backgroundPalette('teal')
     // $mdIconProvider.icon('md-toggle-arrow', 'img/icons/toggle-arrow.svg', 48);
     $mdIconProvider
@@ -213,7 +214,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     .when("/myShows/", {
         controller: "MyShowsController",
         templateUrl: "public/views/myTVShows.html",
-        resolve: {
+        /* resolve: {
             myShows : function($http, $q, $rootScope) {
                 if($rootScope.loggedIn) {
                     return $http.get("/myShows/" + $rootScope.user).then(function(res) {
@@ -234,7 +235,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     })
                 }
             }
-        }
+        } */
     })
     .when("/calendar", {
         controller: "CalendarController",

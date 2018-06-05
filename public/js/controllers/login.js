@@ -11,6 +11,7 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
             if(response.data == "User not found!") {
                 vm.userNotFound = true;
             } else if(response.data != undefined && typeof response.data == "object"){
+                response.data.userStatus = 'active'; // for testing when server_mongoose.js
                 if(response.data.userData.length != 0 && response.data.passwordMatch == true && response.data.userStatus == 'active') {
                     session.setUser(Form.username.value);
                     $location.path("/");

@@ -1,8 +1,9 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("MyShowsController", function($scope, myShows, $http, $rootScope, $mdDialog) {
-    $scope.myShows = myShows;
-    $scope.unfollowed = false;
+app.controller("MyShowsController", function($scope, /* myShows, */ $http, $rootScope, $mdDialog) {
+    $scope.progress = 50;
+    // $scope.myShows = myShows;
+    /* $scope.unfollowed = false;
     $scope.totalEpisodes = 0;
     $scope.totalEpisodesWatched = 0;
     for(var i=0; i < myShows.length; i++) {
@@ -37,7 +38,7 @@ app.controller("MyShowsController", function($scope, myShows, $http, $rootScope,
         }, function() {
             event.currentTarget.className = "";
         });
-    }
+    } */
 
     // $scope.checked = function(show) {
     //     for(var i = 0; i < myShows.length; i++) {

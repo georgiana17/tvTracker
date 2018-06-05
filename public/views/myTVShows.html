@@ -1,17 +1,17 @@
 <div layout-padding>
     <h4>You have watched {{totalEpisodesWatched}} out of {{totalEpisodes}} episodes.</h4>
-    <md-progress-linear md-heigth="200" md-mode="determinate" value="{{progress}}"></md-progress-linear>
+    <md-progress-linear md-height="200" md-mode="determinate" value="{{progress}}"></md-progress-linear>
     <h4>You have spent x watching TV shows.</h4>
 
-    <table layout-padding layout-align="center center" layout="row">
+    <table layout-padding layout-align="center center" layout="row" cellpadding="0" cellspacing="0">
         <tr>
-            <th></th>
-            <th>Show</th>
-            <th>Last Episode</th>
-            <th>Next Episode</th>
-            <th>Unfollow</th>
+            <th width="10%"></th>
+            <th width="30%">Show</th>
+            <th width="30%">Last Episode</th>
+            <th width="30%">Next Episode</th>
+            <th width="10%">Unfollow</th>
         </tr>
-        <tr ng-repeat="show in myShows" layout-padding>
+        <!-- <tr ng-repeat="show in myShows" layout-padding>
             <td><img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/original" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
                 <span><md-icon  class="tealCol">{{ show[0][6] == 0 ? "done" : "remove_red_eye"}}</md-icon></span> &nbsp;
@@ -23,6 +23,35 @@
             <td> {{ show[1][3] ? "s" + show[1][3] : "" }}{{ show[1][4] ? "e" + show[1][4] + "-" : "" }}  {{show[1][2] ? show[1][2] : "-" }}</td>
             <td>
                 <md-checkbox md-checked="{{unfollowed}}" ng-click="unfollowShow(show[0][1], $event)" aria-label="Unfollow show"></md-checkbox>
+            </td>
+        </tr> -->
+        
+        <tr layout-padding>
+            <td><img ng-src='/public/images/eye.png' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
+            <td>
+                <span><md-icon  class="tealCol">remove_red_eye</md-icon></span> &nbsp;
+                <a ng-href="#/show/1399">Game of thrones</a>
+                <br/>
+                <span class="tealCol">45 unwatched episodes</span>
+            </td>
+            <td> s05e12 - title 1 </td>
+            <td>  s05e13 - title 2</td>
+            <td>
+                <md-checkbox md-checked="false"  aria-label="Unfollow show"></md-checkbox>
+            </td>
+        </tr>
+        <tr layout-padding>
+            <td><img ng-src='/public/images/eye.png' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
+            <td>
+                <span><md-icon  class="tealCol">remove_red_eye</md-icon></span> &nbsp;
+                <a ng-href="#/show/1399">Game of thrones</a>
+                <br/>
+                <span class="tealCol">45 unwatched episodes</span>
+            </td>
+            <td> s05e12 - title 1 </td>
+            <td>  s05e13 - title 2</td>
+            <td>
+                <md-checkbox md-checked="false"  aria-label="Unfollow show"></md-checkbox>
             </td>
         </tr>
     </table>
@@ -38,12 +67,27 @@
     }
     md-progress-linear .md-container {
         height: 25px !important;
+        background-color: #c89eb68f;
     }
     md-progress-linear .md-container .md-bar {
         height: 25px !important;
     }
+    md-progress-linear .md-bar {
+        background-color :#c89eb6 !important;
+    }
     a {
         text-decoration: none;
-        color: teal;
+        color: rgb(15, 170, 170);
     }
+    th {
+        vertical-align: bottom;
+        background-color: #c89eb6; /* #f98f45; /* sau #c4421a*/
+        text-align: left;
+        padding: 7px 12px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #fff;
+        line-height: 16px;
+    }   
+    
 </style>
