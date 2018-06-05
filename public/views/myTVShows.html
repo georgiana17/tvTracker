@@ -11,47 +11,67 @@
             <th width="30%">Next Episode</th>
             <th width="10%">Unfollow</th>
         </tr>
-        <!-- <tr ng-repeat="show in myShows" layout-padding>
+        <!-- TODO: SORT HEADERS & SEND JSON FROM SERVER -->
+        <!-- <tr ng-repeat="show in myShows">
             <td><img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/original" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
-                <span><md-icon  class="tealCol">{{ show[0][6] == 0 ? "done" : "remove_red_eye"}}</md-icon></span> &nbsp;
+                <span><md-icon class="tealCol">{{ show[0][6] == 0 ? "done" : "remove_red_eye"}}</md-icon></span> &nbsp;
                 <a ng-href="#/show/{{show[0][1]}}">{{show[0][0] ? show[0][0] : "-" }}</a>
                 <br/>
-                <span class="tealCol">{{show[0][6]}} unwatched episodes</span>
+                <span class="pinkCol">{{show[0][6]}} unwatched episodes</span>
             </td>
-            <td> s{{ show[0][3] }}e{{ show[0][4] }} - {{show[0][2] ? show[0][2] : "-" }}</td>
-            <td> {{ show[1][3] ? "s" + show[1][3] : "" }}{{ show[1][4] ? "e" + show[1][4] + "-" : "" }}  {{show[1][2] ? show[1][2] : "-" }}</td>
+            <td> 
+                <strong> s{{ show[0][3] }}e{{ show[0][4] }} - {{show[0][2] ? show[0][2] : "-" }} </strong>
+                <em class="airDate">19 May 2018 - TODO</em>
+            </td>
+            <td> 
+                <strong> {{ show[1][3] ? "s" + show[1][3] : "" }}{{ show[1][4] ? "e" + show[1][4] + "-" : "" }}  {{show[1][2] ? show[1][2] : "-" }} </strong>
+                <em class="airDate">19 May 2018 - TODO</em>
+            </td>
             <td>
                 <md-checkbox md-checked="{{unfollowed}}" ng-click="unfollowShow(show[0][1], $event)" aria-label="Unfollow show"></md-checkbox>
+                 <md-button md-theme="navbar" ng-click="unfollowShow(show[0][1], $event)" class="md-fab md-mini md-primary"><md-icon size="28">clear</md-icon></md-button> 
             </td>
         </tr> -->
         
-        <tr layout-padding>
+        <tr>
             <td><img ng-src='/public/images/eye.png' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
-                <span><md-icon  class="tealCol">remove_red_eye</md-icon></span> &nbsp;
+                <span><md-icon class="tealCol">remove_red_eye</md-icon></span> &nbsp;
                 <a ng-href="#/show/1399">Game of thrones</a>
                 <br/>
-                <span class="tealCol">45 unwatched episodes</span>
+                <span class="pinkCol">45 unwatched episodes</span>
             </td>
-            <td> s05e12 - title 1 </td>
-            <td>  s05e13 - title 2</td>
+            <td> 
+                    <strong>s05e13 - title 2</strong>
+                    <em class="airDate">19 May 2018</em>    
+            </td>
+            <td> 
+                    <strong>s05e13 - title 2</strong>
+                    <em class="airDate">19 May 2018</em>
+            </td>
             <td>
-                <md-checkbox md-checked="false"  aria-label="Unfollow show"></md-checkbox>
+                <md-button md-theme="navbar" class="md-fab md-mini md-primary"><md-icon>clear</md-icon></md-button>
             </td>
         </tr>
-        <tr layout-padding>
+        <tr>
             <td><img ng-src='/public/images/eye.png' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
                 <span><md-icon  class="tealCol">remove_red_eye</md-icon></span> &nbsp;
                 <a ng-href="#/show/1399">Game of thrones</a>
                 <br/>
-                <span class="tealCol">45 unwatched episodes</span>
+                <span class="pinkCol">45 unwatched episodes</span>
             </td>
-            <td> s05e12 - title 1 </td>
-            <td>  s05e13 - title 2</td>
+            <td> 
+                    <strong>s05e13 - title 2</strong>
+                    <em class="airDate">19 May 2018</em>   
+                </td>
+            <td>  
+                    <strong>s05e13 - title 2</strong>
+                    <em class="airDate">19 May 2018</em>  
+                </td>
             <td>
-                <md-checkbox md-checked="false"  aria-label="Unfollow show"></md-checkbox>
+                <md-button md-theme="navbar" class="md-fab md-mini md-primary"><md-icon size="28">clear</md-icon></md-button>
             </td>
         </tr>
     </table>
@@ -64,6 +84,9 @@
         border: 1px solid #ddd;
         width: 48px;
         margin: 16px;
+    }
+    md-progress-linear {
+        width: 99%!important;
     }
     md-progress-linear .md-container {
         height: 25px !important;
@@ -89,5 +112,14 @@
         color: #fff;
         line-height: 16px;
     }   
-    
+    .airDate {
+        color: #999;
+        font-size: 11px;
+        font-style: normal;
+        display: block;
+        margin: 3px 0 0 0;
+    }
+    .pinkCol {
+        color:#c89eb6;
+    }
 </style>

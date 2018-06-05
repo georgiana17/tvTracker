@@ -1,7 +1,7 @@
 "use strict"
 var app = angular.module("tvTracker")
 app.controller("MyShowsController", function($scope, /* myShows, */ $http, $rootScope, $mdDialog) {
-    $scope.progress = 50;
+    $scope.progress = 34;
     // $scope.myShows = myShows;
     /* $scope.unfollowed = false;
     $scope.totalEpisodes = 0;
@@ -15,7 +15,7 @@ app.controller("MyShowsController", function($scope, /* myShows, */ $http, $root
 
     $scope.unfollowShow = function(showId, event) {
         // console.log(event);
-        event.currentTarget.className = "md-checked";
+        event.currentTarget.className = "md-checked"; //NOT NEEDED FOR BUTTON ANYMORE
         $mdDialog.show(
             $mdDialog.confirm()
             .title('Do you want to delete from list this show? ')
@@ -36,7 +36,7 @@ app.controller("MyShowsController", function($scope, /* myShows, */ $http, $root
                 }
             });  
         }, function() {
-            event.currentTarget.className = "";
+            event.currentTarget.className = ""; //NOT NEEDED FOR BUTTON ANYMORE
         });
     } */
 

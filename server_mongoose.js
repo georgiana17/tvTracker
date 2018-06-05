@@ -111,7 +111,8 @@ app.get('/randomImage/:id', function(req, res){
 });
 
 app.get('/show/:id', function(req,res){
-  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}`;
+  var showDetail = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}&append_to_response=videos,external_ids`;
+  console.log(showDetail);
   fetch(`${showDetail}`)
       .then(response => response.json())
       .then(info => res.send(info))
