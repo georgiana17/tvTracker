@@ -55,7 +55,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     }
     $scope.searchTvShow = function() {
         // $scope.toggleSidenav('left');
-        if(($scope.search != null ||  $scope.search !== undefined) && $scope.search != "") {
+        if(($scope.search != null &&  $scope.search !== undefined) && $scope.search != "") {
             $location.path("/search/" + $scope.search);
         } else if(($scope.sideNavSearch != null && $scope.sideNavSearch !== undefined) && $scope.sideNavSearch != "") {
             $location.path("/search/" + $scope.sideNavSearch);
@@ -214,7 +214,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     .when("/myShows/", {
         controller: "MyShowsController",
         templateUrl: "public/views/myTVShows.html",
-        /* resolve: {
+         resolve: {
             myShows : function($http, $q, $rootScope) {
                 if($rootScope.loggedIn) {
                     return $http.get("/myShows/" + $rootScope.user).then(function(res) {
@@ -223,19 +223,23 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         return shows;
                     })
                     .then(function(shows) {
-                        var promises = [];
-                        for(var i = 0; i < shows.length; i++) {
-                            promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i]).then(function(res){
-                                return res.data;
-                            }))
+                        if(shows == "No shows for this user!"){
+                            return "No shows for this user!";
+                        } else {
+                            var promises = [];
+                            for(var i = 0; i < shows.length; i++) {
+                                promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i]).then(function(res){
+                                    return res.data;
+                                }))
+                            }
+                            return $q.all(promises).then(function(result){
+                                return result;
+                            })
                         }
-                        return $q.all(promises).then(function(result){
-                            return result;
-                        })
                     })
                 }
             }
-        } */
+        } 
     })
     .when("/calendar", {
         controller: "CalendarController",

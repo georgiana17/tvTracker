@@ -32,7 +32,7 @@
                 <md-icon md-font-set="md">add</md-icon>
                 <span class="inset" >Follow</span>
         </md-button>
-        <md-button ng-show="loggedIn && followed" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="unfollowShow(data.id)">
+        <md-button ng-show="loggedIn && followed" class="md-raised md-primary" style="background-color: #c89eb6" ng-click="unfollowShow(data.id)">
                 <md-icon md-font-set="md">clear</md-icon>
                 <span class="inset">Unfollow</span>
         </md-button>
@@ -107,33 +107,6 @@
                     <div layout="column" layout-align="start center" style="position:relative">
                         <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
                         <h4 id="progress">{{progress}}%</h4>
-                    </div>
-                    <div layout="column">
-                        <md-card md-whiteframe="3" flex-xs flex-gt-xs="30" layout-flex layout-padding>
-                                <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
-                                <md-card-title>
-                                    <md-card-title-text>
-                                        <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>
-                                        <span>{{episode.name}}</span>
-                                    </md-card-title-text>
-                                </md-card-title>
-                                <md-card-content>
-                                <p>
-                                    {{episode.air_date | date: 'EEEE, MMMM d, y'}}
-                                </p>
-                                </md-card-content>
-                                <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn && followed">
-                                    <!-- <md-button class="md-icon-button" aria-label="Favorite">
-                                        <ng-md-icon icon="star"></ng-md-icon>
-                                    </md-button> -->
-                                    <md-button class="md-icon-button" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
-                                        <ng-md-icon icon="remove_red_eye"></ng-md-icon>
-                                    </md-button>
-                                    <md-button class="md-icon-button" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
-                                            <ng-md-icon icon="done"></ng-md-icon>
-                                    </md-button>
-                                </md-card-actions>
-                            </md-card>
                     </div>
                 </div>
             </div>

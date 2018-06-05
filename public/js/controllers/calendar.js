@@ -55,7 +55,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
         for(var i = 0; i < $scope.userEpisodes.length; i++) {
             var airDate = new Date($scope.userEpisodes[i][5]);
             var title =  $scope.userEpisodes[i][0] + " - " +   $scope.userEpisodes[i][3] + "x" +  $scope.userEpisodes[i][4];
-            if($scope.userEpisodes[i][9] == "true") {
+            if($scope.userEpisodes[i][10] == "true") {
                 var className = "striked";
             } else {
                 var className = "";
@@ -71,7 +71,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 'episodeNo': $scope.userEpisodes[i][4],
                 'episodeName': $scope.userEpisodes[i][2],
                 'image':  $scope.userEpisodes[i][7],
-                'color': '#00897B',
+                'color': '#c89eb6',
                 'className': className,
                 'watched': $scope.userEpisodes[i][10],
                 'id': $scope.userEpisodes[i][8]
@@ -105,7 +105,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                                         'episodeNo': $scope.popularSeries[i]["season/" + p].episodes[k].episode_number,
                                         'episodeName': $scope.popularSeries[i]["season/" + p].episodes[k].name,
                                         'image':  $scope.popularSeries[i].poster_path,
-                                        'color': '#78909C'
+                                        'color': '#c89eb6'
                                     });
                             }
                         }

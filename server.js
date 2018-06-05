@@ -37,7 +37,6 @@ app.post("/user", function(req,res){
   var userDetail = req.body;
   var status = 'inactive';
   let token = jwt.sign({ username: userDetail.username, email: userDetail.email}, process.env.secret_jwt,{expiresIn: '24h'});
-  console.log(token);
     bcrypt.genSalt(saltRounds, function(err,salt) {
       bcrypt.hash(userDetail.password, salt, function(err, hash){
         oracledb.getConnection({  
@@ -101,7 +100,6 @@ app.post("/resendLink/:userName/:email", function(req, res){
           return;  
       }
       let token = jwt.sign({ username: req.params.userName}, process.env.secret_jwt,{expiresIn: '24h'});
-      console.log(token);
       var update_user = `UPDATE users_logged SET token='` + token + `' WHERE username = LOWER('` + req.params.userName + `')`;
       connection.execute(update_user, [], {autoCommit:true},  
       function(err, result) {
@@ -179,7 +177,6 @@ app.get('/activate/:token', function(req,res) {
                         return;  
                     }  
                     var updateUser = "UPDATE users_logged SET token='false', status='active' WHERE username = LOWER('" + result.rows[0][1] + "')";
-                    console.log(updateUser);
                     connection.execute(updateUser, [],  {autoCommit:true}, function(err, result) {  
                         if (err) { 
                               return;
@@ -594,7 +591,7 @@ app.get('/myShows/:userName', function(req, res) {
             res.send(result.rows);
           }
           else {
-            res.send("No user in database with this name!");
+            res.send("No shows for this user!");
           }
     });
   });
@@ -654,6 +651,7 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
       if (err) { 
             return;  
       }
+      console.log(result.rows);
       if(result.rows.length != 0) {
         res.send(result.rows);
       }

@@ -1,8 +1,12 @@
-<div layout-padding>
+<div ng-show="!hasShows" layout-padding ng-cloak>
+    <h1>You are not following any show!</h1>
+</div>
+
+<div layout-padding layout"column" ng-show="hasShows" ng-cloak>
     <h4>You have watched {{totalEpisodesWatched}} out of {{totalEpisodes}} episodes.</h4>
     <md-progress-linear md-height="200" md-mode="determinate" value="{{progress}}"></md-progress-linear>
-    <h4>You have spent x watching TV shows.</h4>
-
+    <br/>
+    <h2 layout="row" layout-align="center center" style="margin-bottom:0px">Current TV Shows</h2>
     <table layout-padding layout-align="center center" layout="row" cellpadding="0" cellspacing="0">
         <tr>
             <th width="10%"></th>
@@ -12,7 +16,7 @@
             <th width="10%">Unfollow</th>
         </tr>
         <!-- TODO: SORT HEADERS & SEND JSON FROM SERVER -->
-        <!-- <tr ng-repeat="show in myShows">
+         <tr ng-repeat="show in myShows">
             <td><img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/original" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
                 <span><md-icon class="tealCol">{{ show[0][6] == 0 ? "done" : "remove_red_eye"}}</md-icon></span> &nbsp;
@@ -22,56 +26,15 @@
             </td>
             <td> 
                 <strong> s{{ show[0][3] }}e{{ show[0][4] }} - {{show[0][2] ? show[0][2] : "-" }} </strong>
-                <em class="airDate">19 May 2018 - TODO</em>
+                <em class="airDate">{{show[0][5] | date : 'dd MMM yyyy'}}</em>
             </td>
             <td> 
                 <strong> {{ show[1][3] ? "s" + show[1][3] : "" }}{{ show[1][4] ? "e" + show[1][4] + "-" : "" }}  {{show[1][2] ? show[1][2] : "-" }} </strong>
-                <em class="airDate">19 May 2018 - TODO</em>
+                <em class="airDate">{{show[1][5] | date : 'dd MMM yyyy'}}</em>
             </td>
             <td>
-                <md-checkbox md-checked="{{unfollowed}}" ng-click="unfollowShow(show[0][1], $event)" aria-label="Unfollow show"></md-checkbox>
+                <!-- <md-checkbox md-checked="{{unfollowed}}" ng-click="unfollowShow(show[0][1], $event)" aria-label="Unfollow show"></md-checkbox> -->
                  <md-button md-theme="navbar" ng-click="unfollowShow(show[0][1], $event)" class="md-fab md-mini md-primary"><md-icon size="28">clear</md-icon></md-button> 
-            </td>
-        </tr> -->
-        
-        <tr>
-            <td><img ng-src='/public/images/eye.png' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
-            <td>
-                <span><md-icon class="tealCol">remove_red_eye</md-icon></span> &nbsp;
-                <a ng-href="#/show/1399">Game of thrones</a>
-                <br/>
-                <span class="pinkCol">45 unwatched episodes</span>
-            </td>
-            <td> 
-                    <strong>s05e13 - title 2</strong>
-                    <em class="airDate">19 May 2018</em>    
-            </td>
-            <td> 
-                    <strong>s05e13 - title 2</strong>
-                    <em class="airDate">19 May 2018</em>
-            </td>
-            <td>
-                <md-button md-theme="navbar" class="md-fab md-mini md-primary"><md-icon>clear</md-icon></md-button>
-            </td>
-        </tr>
-        <tr>
-            <td><img ng-src='/public/images/eye.png' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
-            <td>
-                <span><md-icon  class="tealCol">remove_red_eye</md-icon></span> &nbsp;
-                <a ng-href="#/show/1399">Game of thrones</a>
-                <br/>
-                <span class="pinkCol">45 unwatched episodes</span>
-            </td>
-            <td> 
-                    <strong>s05e13 - title 2</strong>
-                    <em class="airDate">19 May 2018</em>   
-                </td>
-            <td>  
-                    <strong>s05e13 - title 2</strong>
-                    <em class="airDate">19 May 2018</em>  
-                </td>
-            <td>
-                <md-button md-theme="navbar" class="md-fab md-mini md-primary"><md-icon size="28">clear</md-icon></md-button>
             </td>
         </tr>
     </table>
