@@ -858,6 +858,14 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
       .catch(err => res.send(error))
   })
 
+  app.get('/genresAPI/', function(req, res){
+    var recommendantionsTvShow = `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.TMDB_KEY}&language=en-US`;
+    fetch(`${recommendantionsTvShow}`)
+      .then(resp => resp.json())
+      .then(genres => res.send(genres))
+      .catch(err => res.send(error))
+  })
+  
 
 app.listen(3000);
 

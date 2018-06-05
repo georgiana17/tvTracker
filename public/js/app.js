@@ -320,6 +320,11 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         });
                     })
                 }
+            },
+            genres : function($http) {
+                return $http.get("/genresAPI/").then(function(res){
+                    return res.data;
+                })
             }
         }        
     })
