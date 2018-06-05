@@ -1,24 +1,13 @@
-<div class="parallax" ng-style="{'background-image':'url('+backgroundImage+')', 'background-size':'cover', 'background-position':'inherit', 'height': '100%', 'display': 'inline-block'}">
-    <div class="dark-background">
-        <!-- TODO: flex-offset responsive -->
-        <div layout="row" flex-offset="25"> 
-            <img src="/public/images/banner.png" style="max-width: 820px; height:360px; margin-top:25%" layout-align="center center"/>
+<div layout="column">
+    <div class="parallax" ng-style="{'background-image':'url('+backgroundImage+')', 'background-size':'cover', 'background-attachment':'fixed', 'background-repeat':'no-repeat no-repeat', 'height': '100vh', 'display': 'inline-block'}">
+        <div class="dark-background">
+            <!-- TODO: flex-offset responsive -->
+            <div layout="row" flex-offset="25"> 
+                <img src="/public/images/banner.png" style="max-width: 820px; height:360px; margin-top:25%" layout-align="center center"/>
+            </div>
         </div>
     </div>
     <div layout="row" layout-xs="column" layout-sm="column"  layout-padding>
-        <div layout="column" flex="33" flex-xs="50" flex-sm="50">
-            <md-card flex="flex" md-whiteframe="3" layout-align="center center" style="text-align: center" layout-padding>
-                <ng-md-icon icon="date_range" size="64"></ng-md-icon>
-                <md-card-title>
-                    <md-card-title-text>
-                    <span class="md-headline">NEVER MISS AN EPISODE</span>
-                    </md-card-title-text>
-                </md-card-title>
-                <md-card-content>
-                    <p>You cannot remember when your next episodes are going to be aired? TvTracker will help you!</p>
-                </md-card-content>
-            </md-card>
-        </div>
         <div layout="column" flex="33" flex-xs="50" flex-sm="50">
             <md-card flex="flex" layout-align="center center" style="text-align: center" layout-padding>
                 <ng-md-icon icon="playlist_add_check" size="64"></ng-md-icon>
@@ -30,6 +19,19 @@
                 <md-card-content>
                     <p>Can't remember what are the last episodes you've watched? TvTracker helps you to track your episodes by checking them.</p>
                 </md-card-content> 
+            </md-card>
+        </div>
+        <div layout="column" flex="33" flex-xs="50" flex-sm="50">
+            <md-card flex="flex" md-whiteframe="3" layout-align="center center" style="text-align: center" layout-padding>
+                <ng-md-icon icon="date_range" size="64"></ng-md-icon>
+                <md-card-title>
+                    <md-card-title-text>
+                    <span class="md-headline">NEVER MISS AN EPISODE</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content>
+                    <p>You cannot remember when your next episodes are going to be aired? TvTracker will help you!</p>
+                </md-card-content>
             </md-card>
         </div>
         <div layout="column" flex="33" flex-xs="50" flex-sm="50" >
@@ -58,18 +60,11 @@
     </div>
 </div>
 
+
 <style>
     .dark-background {
         height: 100%;
         display: flex;
         background-color: rgba(0,0,0,.61);
-    }
-
-    .parallax {
-        /*Parallax effect*/
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
     }
 </style>
