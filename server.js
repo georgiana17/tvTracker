@@ -33,6 +33,11 @@ const saltRounds = 10;
 
 // DATABASE CALLS
 
+var databaseConfig = {  user: process.env.ORACLE_USERNAME,  
+  password: process.env.ORACLE_PASSWORD,  
+  connectString: "localhost:1521/orcl"  
+};
+
 app.post("/user", function(req,res){
   var userDetail = req.body;
   var status = 'inactive';
@@ -95,6 +100,57 @@ app.post("/user", function(req,res){
  
 });
 
+app.post("/avoidSpoilers/:value/:userName", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var avoid_spoilers = `UPDATE users_logged SET avoid_spoilers='` + req.params.value + `' where username =LOWER('` + req.params.userName + `')`;
+    connection.execute(avoid_spoilers, [], { autoCommit:true }, function(err,result) {
+      if(result.rowsAffected != 0) {
+        res.send("Table updated successfully!"); 
+      } else 
+          res.send("Table was not updated!");
+    }); 
+  });
+});
+
+app.get("/userAvoid/:userName", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var avoid_spoilers = `SELECT avoid_spoilers from users_logged where username =LOWER('` + req.params.userName + `')`;
+    connection.execute(avoid_spoilers, [], { autoCommit:true }, function(err,result) {
+      if(result.rows.length != 0) {
+        res.send({avoidSpoilers : result.rows[0][0]}); 
+      } else {
+        res.send("Error received!");
+      }
+    }); 
+  });
+});
+
+app.post("/updatePassword/:value/:userName", function(req,res){
+    bcrypt.genSalt(saltRounds, function(err,salt) {
+      bcrypt.hash(req.params.value, salt, function(err, hash){
+        oracledb.getConnection(databaseConfig, function(err, connection) {
+          if(err) {
+            return ;
+          }
+          var updatePass = `UPDATE users_logged SET password='` + hash + `' where username = LOWER('` + req.params.userName + `')`;
+          connection.execute(updatePass, [], { autoCommit:true }, function(err,result) {
+            if(result.rowsAffected != 0) {
+              res.send("Password updated successfully!"); 
+            } else 
+                res.send("Password was not updated!");
+          }); 
+        });
+      });
+    });
+});
+
+
 app.post("/resendLink/:userName/:email", function(req, res){
   oracledb.getConnection(databaseConfig, function(err, connection) {
       if (err) { 
@@ -142,10 +198,6 @@ app.post("/resendLink/:userName/:email", function(req, res){
 
 });
 
-var databaseConfig = {  user: process.env.ORACLE_USERNAME,  
-                        password: process.env.ORACLE_PASSWORD,  
-                        connectString: "localhost:1521/orcl"  
-                  };
 
 app.get('/users', function (req, res) {
   User.find((err, users) => {

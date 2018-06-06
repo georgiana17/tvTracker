@@ -6,7 +6,7 @@
                 <div class="font-thin m-b-sm"><strong>{{event.seasonNo}}x{{event.episodeNo}}</strong> {{episode.title}}</div>
                 <div class="line b-b b-light"></div>
                 <div><i class="icon-calendar text-muted m-r-xs"></i>{{event.start}}</div>
-                <div class="m-t-sm"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}"  class="img-full" align="left">{{event.overview}}</div>
+                <div class="m-t-sm" ng-class="{ 'avoidSpoilers': hideOverview}"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}" class="img-full" align="left">{{event.overview}}</div>
             </div>        
         </div>
     <!-- </md-tooltip> -->
@@ -254,5 +254,9 @@
     }
     .ui-calendar .fc-toolbar .fc-center {
         margin-top: 10px;
+    }
+    .avoidSpoilers{
+        letter-spacing: -4px;
+        word-spacing: 8px;
     }
 </style>

@@ -291,6 +291,13 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         return res.data;
                     });
                 }
+            },
+            avoidSpoilers : function($http, $rootScope){
+                if($rootScope.loggedIn){
+                    return $http.get("/userAvoid/"+$rootScope.user).then(function(res){
+                        return res.data;
+                    })
+                }
             }
         }
     })

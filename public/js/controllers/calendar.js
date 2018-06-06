@@ -4,7 +4,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $mdThemingProvider.theme('custom')
       .primaryPalette('cyan');
 })
-app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, watchedEpisodes, $q, uiCalendarConfig, $window) {
+app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, watchedEpisodes, avoidSpoilers, $q, uiCalendarConfig, $window) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
     $scope.firstDayOfWeek = 0;
@@ -15,6 +15,12 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     if($rootScope.loggedIn) {
         $scope.userEpisodes = popularSeries;
         $scope.watchedEpisodes = watchedEpisodes;
+        $scope.avoid = avoidSpoilers;
+        if($scope.avoid.avoidSpoilers == "true"){
+            $scope.hideOverview = true;
+        } else {
+            $scope.hideOverview = false;
+        }
         // console.log($scope.userEpisodes);
         
         //if episode is watched add true to episodes

@@ -2,21 +2,26 @@
     <div>
         <h1>Account</h1>
         <div layout="column" layout-flex md-theme="navbar" flex-xs="100" flex-sm="60" flex-md="35" flex-lg="30">
-            <md-input-container class="md-block">
-                <label>Old Password</label>
-                <input md-maxlength="50" ng-minlength="7" ng-model="oldPassword">
-            </md-input-container>
-            
-            <md-input-container class="md-block">
-                <label>New password</label>
-                <input md-maxlength="50" ng-minlength="7" ng-model="newPassword">
-            </md-input-container>
-            
-            <md-input-container class="md-block">
-                <label>Confirm new password</label>
-                <input md-maxlength="50" ng-minlength="7" ng-model="confirmPassword">
-            </md-input-container>
-            <md-button class="md-raised md-primary">Change password</md-button>
+            <form name="Form">     
+                <md-input-container class="md-block">
+                    <label>New password</label>
+                    <input type="password" md-maxlength="50" ng-minlength="7" name="newPassword" required ng-model="newPassword">
+                    <div ng-messages="Form.newPassword.$error" role="alert" multiple="">
+                        <div ng-message="required">Required.</div>
+                        <div ng-message="minlength">Too short.</div>
+                    </div>
+                </md-input-container>
+                
+                <md-input-container class="md-block">
+                    <label>Confirm new password</label>
+                    <input type="password" md-maxlength="50" ng-minlength="7" name="newPasswordConfirm" required ng-model="confirmPassword" pw-check="{{newPassword}}">
+                    <div ng-messages="Form.newPasswordConfirm.$error" role="alert" multiple="">
+                        <div ng-message="noMatch">Passwords do not match.</div>
+                        <div ng-message="required">Required.</div>
+                    </div>
+                </md-input-container>
+            </form>       
+            <md-button  ng-disabled="!Form.$valid" class="md-raised md-primary" ng-click="changePass(newPassword)">Change password</md-button>
         </div>
     </div>
     <md-divider></md-divider>
@@ -25,9 +30,14 @@
         <h1>Avoid spoilers</h1>
         
         <p>Hide episode overviews</p>
-        <md-switch ng-model="avoidSpoilers" aria-label="Avoid spoilers">
+        <md-switch ng-model="avoidSpoilers" ng-change="onChange(avoidSpoilers)" aria-label="Avoid spoilers">
             Avoid spoilers
         </md-switch>
     </div>
-
 </div>
+
+<style>
+    .md-toast.success {
+        background-color: green;
+    }
+</style>

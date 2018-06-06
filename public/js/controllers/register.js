@@ -60,10 +60,12 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
                                 if(result.data == "Email successfully sent!"){
                                     $mdDialog.show(
                                         $mdDialog
-                                          .simple()
+                                          .parent(angular.element(document.querySelector('#popupContainer')))
+                                          .clickOutsideToClose(true)
+                                          .title('Info')
                                           .content("Please check your email for confirmation! Redirecting...")
-                                          .position('bottom left')
-                                          .hideDelay(4000)
+                                          .ariaLabel('Alert Dialog Demo')
+                                          .ok('Got it!')
                                       );
                                     $timeout(function() {
                                         $location.path('/login');
