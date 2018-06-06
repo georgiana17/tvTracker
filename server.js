@@ -36,6 +36,7 @@ const saltRounds = 10;
 app.post("/user", function(req,res){
   var userDetail = req.body;
   var status = 'inactive';
+  var avoid_spoilers = 'false';
   let token = jwt.sign({ username: userDetail.username, email: userDetail.email}, process.env.secret_jwt,{expiresIn: '24h'});
     bcrypt.genSalt(saltRounds, function(err,salt) {
       bcrypt.hash(userDetail.password, salt, function(err, hash){
@@ -48,8 +49,8 @@ app.post("/user", function(req,res){
                 console.error(err.message);  
                 return;  
             }  
-            connection.execute("insert into users_logged values(:0,:1,:2,:3,:4,:5)",  
-            ['', userDetail.username, userDetail.email, hash, token, status], { autoCommit: true }, 
+            connection.execute("insert into users_logged values(:0,:1,:2,:3,:4,:5,:6)",  
+            ['', userDetail.username, userDetail.email, hash, token, status, avoid_spoilers], { autoCommit: true }, 
             function(err, result) {  
                 if (err) {  
                       console.error(err.message);  
@@ -582,7 +583,7 @@ app.get('/myShows/:userName', function(req, res) {
     if(err) {
       return ;
     }
-    var sql_myShows = "SELECT show_id from users_tv_shows where user_id = (select user_id from users_logged where username = LOWER('" + req.params.userName + "'))";
+    var sql_myShows = "SELECT show_id, tv_show_name from users_tv_shows where user_id = (select user_id from users_logged where username = LOWER('" + req.params.userName + "'))";
     connection.execute(sql_myShows, [],  function(err, result) {
           if (err) { 
                 return;  

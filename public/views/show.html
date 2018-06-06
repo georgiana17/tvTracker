@@ -43,7 +43,7 @@
             <img ng-src="{{posterPath}}">
         </div>
         <div layout-padding flex-offset="5">
-            <h4>{{data.name}}</h4>
+            <h4>{{data.last_air_date | date: "EEEE" | uppercase}} on {{data.networks[0].name}}</h4>
             <p style="text-align:justify" class="text-muted">{{data.overview}}</p>
         </div>
         <div layout-padding flex-offset="5" flex="25" flex-xs="33">
@@ -103,8 +103,9 @@
                         </md-card-actions>
                     </md-card>
                 </div>
-                <div layout-padding layout="column" ng-cloak ng-if="followed">
+                <div layout-padding layout="column" ng-cloak ng-if="followed && loggedIn">
                     <div layout="column" layout-align="start center" style="position:relative">
+                        <h2 class="text-muted">TV Show progress</h2>
                         <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
                         <h4 id="progress">{{progress}}%</h4>
                     </div>

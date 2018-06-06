@@ -58,8 +58,8 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
                         $http.post("/user", vm.userData)
                             .then(function(result){
                                 if(result.data == "Email successfully sent!"){
-                                    $mdToast.show(
-                                        $mdToast
+                                    $mdDialog.show(
+                                        $mdDialog
                                           .simple()
                                           .content("Please check your email for confirmation! Redirecting...")
                                           .position('bottom left')

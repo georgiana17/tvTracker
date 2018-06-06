@@ -1,12 +1,12 @@
 <div layout-padding ng-show="!showByGenres">
     <div ng-repeat="show in series" >
-        <h1>Because you are watching <em>{{show.show_name}}</em></h1>
+        <h1 class="center">Because you are watching <em>{{show.show_name}}</em></h1>
         <div layout="row" layout-padding layout-wrap>
             <div ng-repeat="item in show.recommendantions.results"  class="poster" layout-flex layout="column" flex-xs="50" flex-sm="30" flex-md="20" flex-lg="15" flex-gt-lg="10" layout-align="top center">
                 <a ng-href="#/show/{{item.id}}">
                     <img ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}" style="width: 102px; height: 150px;">
                 </a>
-                <strong class="center"><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
+                <strong class="center" layout-padding><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
                 <strong>{{item.vote_count}} followers</strong>
             </div>
         </div>

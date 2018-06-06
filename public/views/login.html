@@ -27,7 +27,11 @@
                 </md-input-container>
                 <md-button ng-disabled="!Form.$valid" ng-click="signin()" class="md-raised md-primary" md-theme="navbar">&nbsp Login &nbsp</md-button>
             </form>
-            <footer style="float:right">
+            <footer style="float:left;">
+                <p class="md-body-1"><a style="color:grey" ng-href="#/resendPassword">Forgot your password?</a></p>
+            </footer>
+            <footer style="float:right;">
+                <span flex></span>
                 <p class="md-body-1" style="color:grey">Not a member?</p>
                 <p class="md-body-1">Create an account <a ng-href="#/signup">here</a></p>
             </footer>

@@ -1,0 +1,33 @@
+<div layout-padding>
+    <div>
+        <h1>Account</h1>
+        <div layout="column" layout-flex md-theme="navbar" flex-xs="100" flex-sm="60" flex-md="35" flex-lg="30">
+            <md-input-container class="md-block">
+                <label>Old Password</label>
+                <input md-maxlength="50" ng-minlength="7" ng-model="oldPassword">
+            </md-input-container>
+            
+            <md-input-container class="md-block">
+                <label>New password</label>
+                <input md-maxlength="50" ng-minlength="7" ng-model="newPassword">
+            </md-input-container>
+            
+            <md-input-container class="md-block">
+                <label>Confirm new password</label>
+                <input md-maxlength="50" ng-minlength="7" ng-model="confirmPassword">
+            </md-input-container>
+            <md-button class="md-raised md-primary">Change password</md-button>
+        </div>
+    </div>
+    <md-divider></md-divider>
+
+    <div layout="column">
+        <h1>Avoid spoilers</h1>
+        
+        <p>Hide episode overviews</p>
+        <md-switch ng-model="avoidSpoilers" aria-label="Avoid spoilers">
+            Avoid spoilers
+        </md-switch>
+    </div>
+
+</div>

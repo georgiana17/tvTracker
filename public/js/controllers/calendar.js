@@ -10,8 +10,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.firstDayOfWeek = 0;
     $scope.tooltips = true;
     $scope.watched = true;
-
-    
+  
     
     if($rootScope.loggedIn) {
         $scope.userEpisodes = popularSeries;
@@ -39,18 +38,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
         });
     }
 
-    // var seasonsArr = new Array();
-    // $scope.popularSeries.forEach( function(element, idx) {
-    //     var i = 0;
-    //     while( i <= element.number_of_seasons) {
-    //         i++;
-    //         seasonsArr.push(element["season/" + i]);
-    //     }
-    //     return seasonsArr;
-    // })
-    // $scope.seasons = seasonsArr;
-    if($rootScope.user != undefined) {
-        console.log($scope.userEpisodes)
+    if($rootScope.user != "" && $rootScope.user != undefined) {
         $scope.events = new Array();
         for(var i = 0; i < $scope.userEpisodes.length; i++) {
             var airDate = new Date($scope.userEpisodes[i][5]);
@@ -106,7 +94,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                                         'episodeName': $scope.popularSeries[i]["season/" + p].episodes[k].name,
                                         'image':  $scope.popularSeries[i].poster_path,
                                         'color': '#c89eb6'
-                                    });
+                                });
                             }
                         }
                     }
@@ -179,7 +167,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     }
 
     $scope.tooltipDiv = $('.tooltipSerie');
-    if($rootScope.user == undefined) {
+    if($rootScope.user == "" || $rootScope.user == undefined) {
         $scope.eventSources = [$scope.airDateEpisodes];
     } else {
         $scope.eventSources = [$scope.events];

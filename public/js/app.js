@@ -16,6 +16,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         session.destroy();
         $location.path("/login");
         $rootScope.loggedIn = false;
+        $rootScope.user = "";
         $rootScope.update();
     }
 
@@ -228,7 +229,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         } else {
                             var promises = [];
                             for(var i = 0; i < shows.length; i++) {
-                                promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i]).then(function(res){
+                                promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i][0]).then(function(res){
                                     return res.data;
                                 }))
                             }
@@ -299,17 +300,17 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         resolve: {
             recommendantions: function($http, $rootScope, $q){
                 if($rootScope.loggedIn){
-                 /*    return $http.get("/myShows/" + $rootScope.user).then(function(res){
+                    return $http.get("/myShows/" + $rootScope.user).then(function(res){
                         var usersShows = {};
                         usersShows = res.data;
                         return usersShows;
                     })
-                    .then(function(usersShows){ */
+                    .then(function(usersShows){ 
                         // var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
-                        var usersShows = [];
+                        // var usersShows = [];
                         
                         var contentPromises = [];
-                        if(usersShows.length !=0) {
+                        if(usersShows.length !=0 && usersShows != "No shows for this user!") {
                             for(var i=0; i < usersShows.length; i++){
                                 contentPromises.push(
                                     $http.get("/recommendantions/" + usersShows[i][0] + "/" + usersShows[i][1]).then(function(success){
@@ -344,9 +345,13 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                                 });
                             })
                         }
-                  /*   }) */
+                     }) 
                 }
             }
         }        
+    })
+    .when("/settings",{
+        controller: "SettingsController",
+        templateUrl: "/public/views/settings.html"
     })
   });

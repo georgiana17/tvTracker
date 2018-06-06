@@ -17,7 +17,7 @@ app.controller("TopRatedController", function($scope, $http, $rootScope, userSho
 
     $scope.isShowFollowed = function(showId) {
         for(var i = 0; i < $scope.userShows.length; i++) {
-            if($scope.userShows[i] == showId) {
+            if($scope.userShows[i][0] == showId) {
                 return true;
             }
         }

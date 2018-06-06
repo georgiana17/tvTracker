@@ -148,7 +148,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.isShowFollowed = function() {
         $http.get("/myShows/" + $rootScope.user).then(function(shows){
             for(var i = 0; i < shows.data.length; i++) {
-                if(shows.data[i] == $scope.data.id) {
+                if(shows.data[i][0] == $scope.data.id) {
                     $scope.followed = true;
                 }
             }
