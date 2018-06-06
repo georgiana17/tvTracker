@@ -1,5 +1,5 @@
-<div layout-padding ng-show="loggedIn">
-    <div ng-repeat="show in series" flex="flex">
+<div layout-padding ng-show="!showByGenres">
+    <div ng-repeat="show in series" >
         <h1>Because you are watching <em>{{show.show_name}}</em></h1>
         <div layout="row" layout-padding layout-wrap>
             <div ng-repeat="item in show.recommendantions.results"  class="poster" layout-flex layout="column" flex-xs="50" flex-sm="30" flex-md="20" flex-lg="15" flex-gt-lg="10" layout-align="top center">
@@ -14,21 +14,27 @@
     </div>
 </div>
 
-<div layout-padding ng-show="!loggedIn">
-        <div ng-repeat="show in series" flex="flex">
-            <h1>Because you are watching <em>{{show.show_name}}</em></h1>
-            <div layout="row" layout-padding layout-wrap>
-                <div ng-repeat="item in show.recommendantions.results"  class="poster" layout-flex layout="column" flex-xs="50" flex-sm="30" flex-md="20" flex-lg="15" flex-gt-lg="10" layout-align="top center">
-                    <a ng-href="#/show/{{item.id}}">
-                        <img ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}" style="width: 102px; height: 150px;">
-                    </a>
-                    <strong class="center"><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
-                    <strong>{{item.vote_count}} followers</strong>
-                </div>
+<div layout-padding ng-show="showByGenres">
+    <div ng-repeat="show in series" flex="flex">
+        <h1 class="center">{{show.genre_name}}</h1>
+        <div layout="row" layout-padding layout-wrap class="recommandantions">
+            <div ng-repeat="item in show.genres.results" ng-mouseover="showTooltip($event)" class="poster" layout-flex layout="column" flex-xs="50" flex-sm="30" flex-md="20" flex-lg="15" flex-gt-lg="10" layout-align="top center">
+                <a ng-href="#/show/{{item.id}}" >
+                    <img ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}" style="width: 102px; height: 150px;">
+                </a>
+                <strong class="center"><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
+                <strong>{{item.vote_count}} followers</strong>
+                <md-tooltip class="tooltipShow" md-direction="left">
+                    <div layout="column" layout-align="center center">
+                        <h1 layout="column">Premiered {{item.first_air_date | date: 'MMM yyyy'}}</h1>
+                        <!-- TODO: elipssis OVERVIEW -->
+                        <p layout="column" style="white-space:normal;">{{item.overview.length}}</p>
+                    </div>
+                </md-tooltip>
             </div>
-    
-        </div>
+        </div>    
     </div>
+</div>
 
 <style>
     .center {
@@ -47,4 +53,15 @@
     .poster {
         margin-bottom: 10px;
     }
+    .md-tooltip {
+        width:300px!important;
+        height: 250px !important;
+        color: white !important;
+        border-radius: 5px;
+        white-space: nowrap;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis !important;
+    }    
+   
 </style>

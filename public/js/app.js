@@ -305,7 +305,8 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         return usersShows;
                     })
                     .then(function(usersShows){ */
-                        var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
+                        // var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
+                        var usersShows = [];
                         
                         var contentPromises = [];
                         if(usersShows.length !=0) {
@@ -316,36 +317,35 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                                     })
                                 );
                             }
+                            return $q.all(contentPromises).then(function(res) {
+                                return res;
+                            });
+                        } else {
+                            return $http.get("/genresAPI/").then(function(res){
+                                var genres = {};
+                                genres = res.data.genres;
+
+                                return res.data.genres;
+                            })
+                            .then(function(genres){
+                                var contentPromises = [];
+                                for(var i=0; i < genres.length; i++){
+                                    if([10759, 18, 35, 80, 10751, 9648, 10765].indexOf(genres[i].id) > -1){
+                                        contentPromises.push(
+                                            $http.get("/seriesByGenre/" + genres[i].id + "/" + genres[i].name).then(function(res){
+                                                return res.data;
+                                            })
+                                        );
+                                    }
+                                }
+                                return $q.all(contentPromises).then(function(res) {
+                                    res.push({noShows : true});
+                                    return res;
+                                });
+                            })
                         }
-                        return $q.all(contentPromises).then(function(res) {
-                            console.log(res);
-                            return res;
-                        });
                   /*   }) */
-                } else {
-                    var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
-                    
-                    var contentPromises = [];
-                    if(usersShows.length !=0) {
-                        for(var i=0; i < usersShows.length; i++){
-                            contentPromises.push(
-                                $http.get("/recommendantions/" + usersShows[i][0] + "/" + usersShows[i][1]).then(function(success){
-                                    return success.data;
-                                })
-                            );
-                        }
-                    }
-                    return $q.all(contentPromises).then(function(res) {
-                        console.log(res);
-                        return res;
-                    });
                 }
-            }
-            ,
-            genres : function($http) {
-                return $http.get("/genresAPI/").then(function(res){
-                    return res.data;
-                })
             }
         }        
     })
