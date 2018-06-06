@@ -1,4 +1,50 @@
-<div>
-    cucuc
-    <!-- <img ng-src="" ng-repeat="item in shows"/> -->
+<div layout-padding ng-show="loggedIn">
+    <div ng-repeat="show in series" flex="flex">
+        <h1>Because you are watching <em>{{show.show_name}}</em></h1>
+        <div layout="row" layout-padding layout-wrap>
+            <div ng-repeat="item in show.recommendantions.results"  class="poster" layout-flex layout="column" flex-xs="50" flex-sm="30" flex-md="20" flex-lg="15" flex-gt-lg="10" layout-align="top center">
+                <a ng-href="#/show/{{item.id}}">
+                    <img ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}" style="width: 102px; height: 150px;">
+                </a>
+                <strong class="center"><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
+                <strong>{{item.vote_count}} followers</strong>
+            </div>
+        </div>
+
+    </div>
 </div>
+
+<div layout-padding ng-show="!loggedIn">
+        <div ng-repeat="show in series" flex="flex">
+            <h1>Because you are watching <em>{{show.show_name}}</em></h1>
+            <div layout="row" layout-padding layout-wrap>
+                <div ng-repeat="item in show.recommendantions.results"  class="poster" layout-flex layout="column" flex-xs="50" flex-sm="30" flex-md="20" flex-lg="15" flex-gt-lg="10" layout-align="top center">
+                    <a ng-href="#/show/{{item.id}}">
+                        <img ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}" style="width: 102px; height: 150px;">
+                    </a>
+                    <strong class="center"><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
+                    <strong>{{item.vote_count}} followers</strong>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+
+<style>
+    .center {
+        text-align: center;
+    }
+    a {
+        color: #00695C;
+        text-decoration-line: none;
+    }
+    .poster img{
+        width:102px;
+        border: 1px solid #c89eb6;
+        border-radius: 6px;
+        box-shadow: 0 0 20px #000;
+    }
+    .poster {
+        margin-bottom: 10px;
+    }
+</style>

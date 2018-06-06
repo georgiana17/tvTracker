@@ -154,13 +154,34 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
   });
   
   app.get('/search/:query', function(req, res){
-    var searchTvShow = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_KEY}&language=en-US&page=1&query=${req.params.query}`;
+    var searchTvShow = `http://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_KEY}&language=en-US&page=1&query=${req.params.query}`;
     fetch(`${searchTvShow}`)
       .then(resp => resp.json())
       .then(search => res.send(search))
       .catch(err => res.send(error))
   });
 
+  app.get('/recommendantions/:show_id/:show_name', function(req, res){
+    var recommendantionsTvShow = `http://api.themoviedb.org/3/tv/${req.params.show_id}/recommendations?api_key=${process.env.TMDB_KEY}&language=en-US`;
+    fetch(`${recommendantionsTvShow}`)
+      .then(resp => resp.json())
+      .then(recommendantions => res.send({recommendantions, show_id:req.params.show_id, show_name: req.params.show_name}))
+      // .catch(err => res.send(error))
+      .catch(function(err){
+        console.log(err);
+      })
+  })
+
+  app.get('/genresAPI/', function(req, res){
+    var genresTV = `http://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.TMDB_KEY}&language=en-US`;
+    fetch(`${genresTV}`)
+      .then(resp => resp.json())
+      .then(genres => res.send(genres))
+      // .catch(err => res.send(error))
+      .catch(function(err){
+        console.log(err);
+      })
+  })
 
 
 

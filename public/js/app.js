@@ -297,30 +297,51 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "RecommendantionsController",
         templateUrl: "/public/views/recommendantions.html",
         resolve: {
-            recommendantions: function($http, $rootScope, $q) {
+            recommendantions: function($http, $rootScope, $q){
                 if($rootScope.loggedIn){
-                    return $http.get("/myShows/" + $rootScope.user).then(function(res){
+                 /*    return $http.get("/myShows/" + $rootScope.user).then(function(res){
                         var usersShows = {};
                         usersShows = res.data;
                         return usersShows;
                     })
-                    .then(function(usersShows){
+                    .then(function(usersShows){ */
+                        var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
+                        
                         var contentPromises = [];
                         if(usersShows.length !=0) {
                             for(var i=0; i < usersShows.length; i++){
                                 contentPromises.push(
-                                    $http.get("/recommendantions/" + usersShows[i][0]).then(function(success){
+                                    $http.get("/recommendantions/" + usersShows[i][0] + "/" + usersShows[i][1]).then(function(success){
                                         return success.data;
                                     })
                                 );
                             }
                         }
                         return $q.all(contentPromises).then(function(res) {
+                            console.log(res);
                             return res;
                         });
-                    })
+                  /*   }) */
+                } else {
+                    var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
+                    
+                    var contentPromises = [];
+                    if(usersShows.length !=0) {
+                        for(var i=0; i < usersShows.length; i++){
+                            contentPromises.push(
+                                $http.get("/recommendantions/" + usersShows[i][0] + "/" + usersShows[i][1]).then(function(success){
+                                    return success.data;
+                                })
+                            );
+                        }
+                    }
+                    return $q.all(contentPromises).then(function(res) {
+                        console.log(res);
+                        return res;
+                    });
                 }
-            },
+            }
+            ,
             genres : function($http) {
                 return $http.get("/genresAPI/").then(function(res){
                     return res.data;
