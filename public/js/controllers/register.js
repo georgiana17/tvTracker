@@ -42,7 +42,7 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
                   );
             } else {
                 var promise = vm.getByEmail(Form.email.value).then(function(response){
-                    if (response.length >= 1) {
+                    if (response.length >= 1 && response != "Email not found!") {
                         $mdDialog.show(
                             $mdDialog.alert()
                               .parent(angular.element(document.querySelector('#popupContainer')))
@@ -52,7 +52,7 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
                               .ariaLabel('Alert Dialog Demo')
                               .ok('Got it!')
                           );
-                    } else {
+                    } else if (response == "Email not found!"){
                         vm.userData = {'username': Form.username.value, 'email': Form.email.value, 'password': Form.newPassword.value};
     
                         $http.post("/user", vm.userData)

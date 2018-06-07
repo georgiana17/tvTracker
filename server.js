@@ -210,9 +210,42 @@ app.post("/resendLink/:userName/:email", function(req, res){
           }
       });
   });
-
 });
 
+app.post("/resendPass/:userName/:email", function(req, res){
+      let token = jwt.sign({ username: req.params.userName, email: req.params.email}, process.env.secret_jwt,{expiresIn: '24h'});
+
+      var smtpTransport = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        secureConnection: true,
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASSWORD
+        }
+      });
+
+      var mailOptions = {
+        from : 'episodespy@gmail.com',
+        to: req.params.email,
+        subject: 'Activation link',
+        text: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Someone hass requested a link to change your password. To do that please click on the link below.<br/>` +
+                `<br/> <a href='http://localhost:3000/#/changePassword/'` + token +  `'>Change your password</a> <br/> If you didn't request this, please ignore this email.` + 
+                `<br/> Your password won't change until you access the link above and create a new one.`,
+        text: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Someone hass requested a link to change your password. To do that please click on the link below.<br/>` +
+               `<br/> <a href='http://localhost:3000/#/changePassword/'` + token +  `'>Change your password</a> <br/> If you didn't request this, please ignore this email.` + 
+               `<br/> Your password won't change until you access the link above and create a new one.`,
+      }
+      
+      smtpTransport.sendMail(mailOptions, function(error, response){
+          if(error){
+              res.send("Email could not sent due to error: " + error);
+          }else{
+              res.send("Email successfully sent!");
+          } 
+      }); 
+});
 
 app.get('/users', function (req, res) {
   User.find((err, users) => {
@@ -602,18 +635,22 @@ app.get('/users/:userName', function (req, res) {
 });
 
 app.get('/email/:email', function (req, res) {
-    oracledb.getConnection(databaseConfig, function(err, connection) {  
+    oracledb.getConnection(databaseConfig, function(err, connection) {
       if (err) {
           return;  
       }  
-      connection.execute("SELECT email from users_logged where email=LOWER('" + req.params.email + "')",  
+      connection.execute("SELECT email, username from users_logged where email=LOWER('" + req.params.email + "')",  
       [],  
       function(err, result) {  
           if (err) {  
                 console.error(err.message);  
                 return;  
           }
-          res.send(result.rows);
+          if(result.rows.length != 0 ){
+            res.send({username: result.rows[0][1], email: result.rows[0][0]})
+          } else {
+            res.send("Email not found!");
+          }
       });  
   });
 });

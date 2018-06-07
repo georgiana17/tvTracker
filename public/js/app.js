@@ -361,4 +361,12 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "SettingsController",
         templateUrl: "/public/views/settings.html"
     })
+    .when("/resendPassword",{
+        controller: "ForgotPassController",
+        templateUrl: "/public/views/forgotPassword.html"
+    })
+    .when("/changePassword",{
+        controller: "ChangePassController",
+        templateUrl: "/public/views/changePass.html"
+    })
   });

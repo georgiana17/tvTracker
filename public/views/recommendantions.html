@@ -24,13 +24,6 @@
                 </a>
                 <strong class="center"><a ng-href="#/show/{{item.id}}">{{item.name}}</a></strong>
                 <strong>{{item.vote_count}} followers</strong>
-                <md-tooltip class="tooltipShow" md-direction="left">
-                    <div layout="column" layout-align="center center">
-                        <h1 layout="column">Premiered {{item.first_air_date | date: 'MMM yyyy'}}</h1>
-                        <!-- TODO: elipssis OVERVIEW -->
-                        <p layout="column" style="white-space:normal;">{{item.overview.length}}</p>
-                    </div>
-                </md-tooltip>
             </div>
         </div>    
     </div>
@@ -52,16 +45,5 @@
     }
     .poster {
         margin-bottom: 10px;
-    }
-    .md-tooltip {
-        width:300px!important;
-        height: 250px !important;
-        color: white !important;
-        border-radius: 5px;
-        white-space: nowrap;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis !important;
-    }    
-   
+    }   
 </style>

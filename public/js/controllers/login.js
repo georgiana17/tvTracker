@@ -94,5 +94,4 @@ app.controller("LoginController", function($scope, $rootScope, $http, $window, a
             }
         });
     }
-    
 });
