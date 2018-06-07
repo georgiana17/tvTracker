@@ -14,7 +14,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
 
     $scope.signout = function() {
         session.destroy();
-        $location.path("/login");
+        $location.path("/");
         $rootScope.loggedIn = false;
         $rootScope.user = "";
         $rootScope.update();

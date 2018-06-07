@@ -6,7 +6,7 @@
                 <div class="font-thin m-b-sm"><strong>{{event.seasonNo}}x{{event.episodeNo}}</strong> {{episode.title}}</div>
                 <div class="line b-b b-light"></div>
                 <div><i class="icon-calendar text-muted m-r-xs"></i>{{event.start}}</div>
-                <div class="m-t-sm" ng-class="{ 'avoidSpoilers': hideOverview}"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}" class="img-full" align="left">{{event.overview}}</div>
+                <div class="m-t-sm" ng-class="{ 'avoidSpoilers': hideOverview}"><img ng-src="https://image.tmdb.org/t/p/original{{event.image}}" style="opacity:1!important;" class="img-full" align="left">{{event.overview}}</div>
             </div>        
         </div>
     <!-- </md-tooltip> -->
@@ -21,8 +21,11 @@
         text-decoration: line-through !important; 
     }
     .bg-white {
-        color: #58666e;
-        background-color: #fff;
+        /* color: #58666e; */
+        /* background-color: #fff; */
+        background-color: #111;
+        color: #fff;
+        opacity:0.9;
     }
     .img-full,.img-full img {
         width: 100%
@@ -83,7 +86,8 @@
         top: 1px;
         margin-left: -8px;
         border-top-width: 0;
-        border-bottom-color: #fff
+        /* border-bottom-color: #fff */
+        border-bottom-color: #111;
     }
 
     .arrow.right {
@@ -98,7 +102,8 @@
         right: 1px;
         bottom: -8px;
         border-right-width: 0;
-        border-left-color: #fff
+        /* border-left-color: #fff */
+        border-left-color: #111;
     }
 
     .arrow.bottom {
@@ -113,7 +118,8 @@
         bottom: 1px;
         margin-left: -8px;
         border-bottom-width: 0;
-        border-top-color: #fff
+        /* border-top-color: #fff */
+        border-top-color: #111;
     }
     .arrow.left {
         top: 50%;
@@ -127,7 +133,8 @@
         left: 1px;
         bottom: -8px;
         border-left-width: 0;
-        border-right-color: #fff
+        /* border-right-color: #fff */
+        border-right-color: #111;
     }
 
     .arrow.pull-left {
