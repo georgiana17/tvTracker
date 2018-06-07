@@ -5,7 +5,7 @@
                 <form name="Form">
                     <md-input-container class="md-block">
                         <label>New password</label>
-                        <input type="password" md-maxlength="50" ng-minlength="7" name="newPassword" required ng-model="newPassword">
+                        <input type="password" md-maxlength="50" ng-minlength="7" name="newPassword" required ng-model="newPassword" ng-keyup="$event.keyCode == 13 && Form.$valid ? changePass(confirmPassword) : null">
                         <div ng-messages="Form.newPassword.$error" role="alert" multiple="">
                             <div ng-message="required">Required.</div>
                             <div ng-message="minlength">Too short.</div>
@@ -14,14 +14,20 @@
                     
                     <md-input-container class="md-block">
                         <label>Confirm new password</label>
-                        <input type="password" md-maxlength="50" ng-minlength="7" name="newPasswordConfirm" required ng-model="confirmPassword" pw-check="{{newPassword}}">
+                        <input type="password" md-maxlength="50" ng-minlength="7" name="newPasswordConfirm" required ng-model="confirmPassword" pw-check="{{newPassword}}" ng-keyup="$event.keyCode == 13 && Form.$valid ? changePass(confirmPassword) : null">
                         <div ng-messages="Form.newPasswordConfirm.$error" role="alert" multiple="">
                             <div ng-message="noMatch">Passwords do not match.</div>
                             <div ng-message="required">Required.</div>
                         </div>
                     </md-input-container>
                 </form>
-                <md-button  ng-disabled="!Form.$valid" class="md-raised md-primary" ng-click="changePass(email)">Change password</md-button>
+                <md-button  ng-disabled="!Form.$valid" class="md-raised md-primary" ng-click="changePass(confirmPassword)">Change password</md-button>
             </div> 
         </div>  
     </div>
+
+<style>
+    md-toast.md-custom-toast-theme .md-toast-content {
+        background-color: teal;
+    }
+</style>

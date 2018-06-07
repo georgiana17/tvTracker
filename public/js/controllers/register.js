@@ -58,15 +58,23 @@ app.controller("RegisterController", function($scope, $http, $location, $mdDialo
                         $http.post("/user", vm.userData)
                             .then(function(result){
                                 if(result.data == "Email successfully sent!"){
-                                    $mdDialog.show(
-                                        $mdDialog
-                                          .parent(angular.element(document.querySelector('#popupContainer')))
-                                          .clickOutsideToClose(true)
-                                          .title('Info')
-                                          .content("Please check your email for confirmation! Redirecting...")
-                                          .ariaLabel('Alert Dialog Demo')
-                                          .ok('Got it!')
-                                      );
+                                    // $mdDialog.show(
+                                    //     $mdDialog.alert()
+                                    //       .parent(angular.element(document.querySelector('#popupContainer')))
+                                    //       .clickOutsideToClose(true)
+                                    //       .title('Info')
+                                    //       .content("Please check your email for confirmation! Redirecting...")
+                                    //       .ariaLabel('Alert Dialog Demo')
+                                    //       .ok('Got it!')
+                                    //   );
+                                    $mdToast.show(
+                                        $mdToast
+                                            .simple()
+                                            .content("Please check your email for confirmation! Redirecting...")
+                                            .position('bottom right')
+                                            .theme('custom-toast')
+                                            .hideDelay(4000)
+                                    );
                                     $timeout(function() {
                                         $location.path('/login');
                                     }, 3000);

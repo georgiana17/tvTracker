@@ -1,19 +1,22 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, $mdDialog){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog){
 
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
     $scope.unmarked = false;
     $scope.followed = false;
 
-    $scope.vote = 2;
+    if(rating){
+        $scope.vote = rating.showRating;
+    } else { 
+        $scope.vote = 0;
+    }
 
     $scope.onRating = function(rating){
-        // TODO: rating show => to add on users_tv_shows a new column named rating
-        $http.post("/rateShow/" + rating + "/" + $rootScope.user ).then(function(res){
+        $http.post("/rateShow/" + rating + "/" + $rootScope.user + "/" + $routeParams.id).then(function(res){
             console.log(res);
-        })
+        }) 
     }
     
     $scope.getSeason = function(season_id) {
@@ -177,7 +180,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.addEpisode = function(episodeId) {
         if($routeParams.id != undefined) {
             $http.post("/addEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
-                // console.log(response);
                 $scope.checkedEpisodes.push([episodeId]);
                 $scope.isMarked();
             });
@@ -211,7 +213,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.markSeason= function() {
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
             $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
-                // console.log("season marked");
             });
             if($scope.checkedEpisodes.hasOwnProperty([$scope.seasonData.episodes[i].id]) == false) {
                 $scope.checkedEpisodes.push([$scope.seasonData.episodes[i].id]);

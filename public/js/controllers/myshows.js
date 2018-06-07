@@ -18,8 +18,6 @@ app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope
         $scope.progress = Math.round(($scope.totalEpisodesWatched * 100)/$scope.totalEpisodes)
 
         $scope.unfollowShow = function(showId, event) {
-            // console.log(event);
-            // event.currentTarget.className = "md-checked"; //NOT NEEDED FOR BUTTON ANYMORE
             $mdDialog.show(
                 $mdDialog.confirm()
                 .title('Do you want to delete from list this show? ')
@@ -40,18 +38,7 @@ app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope
                     }
                 });  
             }, function() {
-                // event.currentTarget.className = ""; //NOT NEEDED FOR BUTTON ANYMORE
             });
         }
-
     }
-    
-    // $scope.checked = function(show) {
-    //     for(var i = 0; i < myShows.length; i++) {
-    //         if(show == myShows[i][0][1]) {
-    //             return true;
-    //         }
-    //     }
-    // }
-
 });

@@ -1,8 +1,8 @@
-<div ng-show="!hasShows" layout-padding ng-cloak>
+<div ng-if="!hasShows" layout-padding ng-cloak>
     <h1>You are not following any show!</h1>
 </div>
 
-<div layout-padding layout"column" ng-show="hasShows" ng-cloak>
+<div layout-padding layout"column" ng-if="hasShows" ng-cloak>
     <h4>You have watched {{totalEpisodesWatched}} out of {{totalEpisodes}} episodes.</h4>
     <md-progress-linear md-height="200" md-mode="determinate" value="{{progress}}"></md-progress-linear>
     <br/>

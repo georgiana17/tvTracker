@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ForgotPassController", function($scope, $http, $rootScope){
+app.controller("ForgotPassController", function($scope, $http, $rootScope, $mdDialog, $timeout, $location, $mdToast){
     
     $scope.sendEmail = function(email){
         $http.get("/email/" + email, {timeout: 3000}).then(function(response){
@@ -18,11 +18,33 @@ app.controller("ForgotPassController", function($scope, $http, $rootScope){
                       .ariaLabel('Alert Dialog Demo')
                       .ok('Got it!')
                   );
-            } else if (userData.length >= 1 &&  userData != "Email not found!") {
+            } else {
                 $http.post("/resendPass/" +   userData.username + "/" + userData.email).then(function(res){
-
+                    if(res.data == "Email successfully sent!"){
+                        $mdToast.show(
+                            $mdToast
+                                .simple()
+                                .content("Please verify your email to reset your password.")
+                                .position('bottom right')
+                                .theme('custom-toast')
+                                .hideDelay(4000)
+                        );
+                        $timeout(function() {
+                            $location.path('/login');
+                        }, 2000);
+                    } else {
+                        $mdDialog.show(
+                            $mdDialog.alert()
+                              .parent(angular.element(document.querySelector('#popupContainer')))
+                              .clickOutsideToClose(true)
+                              .title('Error')
+                              .textContent('Error encountered.')
+                              .ariaLabel('Alert Dialog Demo')
+                              .ok('Got it!')
+                          );
+                    }
                 })
             }
         })
     }
-});
+})

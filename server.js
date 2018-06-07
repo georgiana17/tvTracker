@@ -150,12 +150,12 @@ app.post("/updatePassword/:value/:userName", function(req,res){
     });
 });
 
-app.post("/rateShow/:vote/:userName", function(req,res){
+app.post("/rateShow/:vote/:userName/:showId", function(req,res){
   oracledb.getConnection(databaseConfig, function(err, connection) {
     if(err) {
       return ;
-    }
-    var update_rating = `UPDATE users_tv_shows SET rating='` + req.params.vote + `' where username =LOWER('` + req.params.userName + `')`;
+    } 
+    var update_rating = `UPDATE users_tv_shows SET rating='` + req.params.vote + `' where username = LOWER('` + req.params.userName + `') and show_id=` + req.params.showId;
     connection.execute(update_rating, [], { autoCommit:true }, function(err,result) {
       if(result.rowsAffected != 0) {
         res.send("Table updated successfully!"); 
@@ -164,6 +164,23 @@ app.post("/rateShow/:vote/:userName", function(req,res){
     }); 
   });
 });
+
+app.get("/ratingShow/:userName/:showId", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var ratingShow = `SELECT rating from users_tv_shows where username = LOWER('` + req.params.userName + `') and show_id = ` + req.params.showId;
+    connection.execute(ratingShow, [], { autoCommit:true }, function(err,result) {
+      if(result.rows.length != 0) {
+        res.send({showRating : result.rows[0][0]}); 
+      } else {
+        res.send("Error received!");
+      }
+    }); 
+  });
+
+})
 
 
 app.post("/resendLink/:userName/:email", function(req, res){
@@ -178,6 +195,7 @@ app.post("/resendLink/:userName/:email", function(req, res){
           if (err) { 
                 return;
           }
+          console.log(result);
           if(result.rowsAffected) {
             var smtpTransport = nodemailer.createTransport({
               host: "smtp.gmail.com",
@@ -213,8 +231,8 @@ app.post("/resendLink/:userName/:email", function(req, res){
 });
 
 app.post("/resendPass/:userName/:email", function(req, res){
-      let token = jwt.sign({ username: req.params.userName, email: req.params.email}, process.env.secret_jwt,{expiresIn: '24h'});
-
+      let token = jwt.sign({ username: req.params.userName, email: req.params.email}, process.env.secret_jwt);
+      console.log(token);
       var smtpTransport = nodemailer.createTransport({
         host: "smtp.gmail.com",
         secureConnection: true,
@@ -229,12 +247,12 @@ app.post("/resendPass/:userName/:email", function(req, res){
       var mailOptions = {
         from : 'episodespy@gmail.com',
         to: req.params.email,
-        subject: 'Activation link',
+        subject: 'Reset your password',
         text: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Someone hass requested a link to change your password. To do that please click on the link below.<br/>` +
-                `<br/> <a href='http://localhost:3000/#/changePassword/'` + token +  `'>Change your password</a> <br/> If you didn't request this, please ignore this email.` + 
+                `<br/> <a href='http://localhost:3000/#/changePassword/` + token +  `'>Change your password</a> <br/> If you didn't request this, please ignore this email.` + 
                 `<br/> Your password won't change until you access the link above and create a new one.`,
-        text: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Someone hass requested a link to change your password. To do that please click on the link below.<br/>` +
-               `<br/> <a href='http://localhost:3000/#/changePassword/'` + token +  `'>Change your password</a> <br/> If you didn't request this, please ignore this email.` + 
+        html: `Hello <strong>` + req.params.userName + `, </strong><br/><br/> Someone hass requested a link to change your password. To do that please click on the link below.<br/>` +
+               `<br/> <a href='http://localhost:3000/#/changePassword/` + token +  `'>Change your password</a> <br/><br/> If you didn't request this, please ignore this email.` + 
                `<br/> Your password won't change until you access the link above and create a new one.`,
       }
       
@@ -254,6 +272,17 @@ app.get('/users', function (req, res) {
       return res.status(200).send(users);
   });
 });
+
+app.get('/userByToken/:token', function(req,res){
+   jwt.verify(req.params.token, process.env.secret_jwt, function(err, decoded) {
+    if(err) {
+      res.send({success: false, message: 'Forgot password link has expired!'});
+    } else {
+      var user = jwt.verify(req.params.token, process.env.secret_jwt);
+      res.send({username: user.username})
+    }
+  });
+})
 
 
 app.get('/activate/:token', function(req,res) {
@@ -319,7 +348,6 @@ app.get('/tvShow/:show_id', function (req, res) {
 
 // add show to Database
 app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
-  // TODO: select count(*) pe episodes per user_id&show_id in tabel EPISODES_USERS => no_of_ep_watched
   var userId = "";
   var append_to_response = [];
 
@@ -423,9 +451,8 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
             let conn;
             try{
                 conn = await oracledb.getConnection(databaseConfig);
-                //TODO: add 0 by default for rating
                 var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
-                                        + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + 0 + `)`;
+                                        + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + 0 + `, ` + 0 +`)`;
                 let res = await conn.execute(sql_user_tv_show, [], { autoCommit:true });
                 resolve(res);
             } catch (err) {
@@ -536,9 +563,8 @@ app.post("/addShowToUser/:userName/:showId", function(req,res){
     if (err) {
         return;  
     }
-    //TODO: add 0 RATING by default to USERS_TV_SHOWS
     var addShow = `INSERT INTO USERS_TV_SHOWS 
-                   SELECT u.user_id, u.username, s.show_id, s.show_name, s.no_of_episodes, s.no_of_episodes
+                   SELECT u.user_id, u.username, s.show_id, s.show_name, s.no_of_episodes, s.no_of_episodes, 0
                    FROM (select username, user_id from users_logged where username = '` + req.params.userName + `') u, 
                         (select show_id, show_name, no_of_episodes from tv_show where show_id=` + req.params.showId + `) s`;
     connection.execute(addShow, [], { autoCommit:true}, function(err,result){
@@ -591,8 +617,7 @@ app.post("/deleteShowFromUser/:userName/:showId", function(req,res){
       let conn;
       try{
           conn = await oracledb.getConnection(databaseConfig);
-          var deleteShow = `delete from users_tv_shows
-                      where show_id = `+ req.params.showId;
+          var deleteShow = `delete from users_tv_shows where show_id = `+ req.params.showId;
           let res = await conn.execute(deleteShow, [], { autoCommit:true });
           resolve(res);
       } catch (err) {
@@ -667,12 +692,15 @@ app.get('/login/:userName/:password', function (req, res) {
                 return;  
           }
           if(result.rows.length != 0) {
+            console.log(result.rows[0][1]);
+            console.log(req.params.password)
             bcrypt.compare(req.params.password, result.rows[0][1], function(err, resp){
               if(result.rows[0][2] == 'active') {
                 var status = 'active';
               } else if (result.rows[0][2] == 'inactive') {
                 var status = 'inactive';
               }
+              console.log(resp)
               var data = {userData: result.rows, passwordMatch: resp, userStatus: status, email: result.rows[0][3]};
               return res.status(200).send(data);
             });
@@ -758,7 +786,6 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
       if (err) { 
             return;  
       }
-      console.log(result.rows);
       if(result.rows.length != 0) {
         res.send(result.rows);
       }

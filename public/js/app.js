@@ -177,9 +177,11 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         templateUrl: "public/views/topRated.html",
         resolve: {
             userShows : function($http, $rootScope) {
-                return $http.get("/myShows/" + $rootScope.user).then(function(shows) {
-                    return shows.data;
-                });
+                if($rootScope.loggedIn){
+                    return $http.get("/myShows/" + $rootScope.user).then(function(shows) {
+                        return shows.data;
+                    });
+                }
             }
         }
     })
@@ -204,6 +206,14 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
                         return resp.data;
                     });
+                }
+            },
+            rating: function($http, $rootScope, $route){
+                if($rootScope.loggedIn) {
+                    return $http.get("/ratingShow/"  + $rootScope.user + "/" + $route.current.params.id).then(function(res){
+                        console.log(res.data)
+                        return res.data;
+                    })
                 }
             }
         }
@@ -365,8 +375,15 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "ForgotPassController",
         templateUrl: "/public/views/forgotPassword.html"
     })
-    .when("/changePassword",{
+    .when("/changePassword/:token",{
         controller: "ChangePassController",
-        templateUrl: "/public/views/changePass.html"
+        templateUrl: "/public/views/changePass.html",
+        resolve: {
+            user: function($http, $route){
+                return $http.get("/userByToken/" + $route.current.params.token).then(function(res){
+                    return res.data
+                })
+            }
+        }
     })
   });
