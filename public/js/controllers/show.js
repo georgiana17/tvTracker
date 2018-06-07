@@ -7,6 +7,15 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.unmarked = false;
     $scope.followed = false;
 
+    $scope.vote = 2;
+
+    $scope.onRating = function(rating){
+        // TODO: rating show => to add on users_tv_shows a new column named rating
+        $http.post("/rateShow/" + rating + "/" + $rootScope.user ).then(function(res){
+            console.log(res);
+        })
+    }
+    
     $scope.getSeason = function(season_id) {
         $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
             //TODO

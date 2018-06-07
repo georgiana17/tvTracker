@@ -4,7 +4,6 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
     $scope.focusInput = false;
-    $scope.vote = 2;
 
     $rootScope.getUser = function() {
         if(auth.isLoggedIn()){

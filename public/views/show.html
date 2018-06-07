@@ -109,7 +109,7 @@
                         <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
                         <h4 id="progress">{{progress}}%</h4>
                         <h2 class="text-muted">Review TV show</h2>                        
-                        <jk-rating-stars max-rating="5" rating="vote" on-rating="onRating(rating)" >
+                        <jk-rating-stars class="custom-stars" max-rating="5" rating="vote" on-rating="onRating(rating)" >
                         </jk-rating-stars>
                     </div>
                 </div>
@@ -177,5 +177,16 @@
     }
     .pinkIcon {
         fill:#c89eb6 !important;
+    }
+    .custom-stars .button .material-icons {
+    font-size: 30px; 
+    }
+
+    .custom-stars .star-button.star-on .material-icons {
+        color: #c89eb6; 
+    }
+
+    .custom-stars .star-button.star-off .material-icons {
+        color: #c89eb68f; 
     }
 </style>

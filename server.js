@@ -150,6 +150,21 @@ app.post("/updatePassword/:value/:userName", function(req,res){
     });
 });
 
+app.post("/rateShow/:vote/:userName", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var update_rating = `UPDATE users_tv_shows SET rating='` + req.params.vote + `' where username =LOWER('` + req.params.userName + `')`;
+    connection.execute(update_rating, [], { autoCommit:true }, function(err,result) {
+      if(result.rowsAffected != 0) {
+        res.send("Table updated successfully!"); 
+      } else 
+          res.send("Table was not updated!");
+    }); 
+  });
+});
+
 
 app.post("/resendLink/:userName/:email", function(req, res){
   oracledb.getConnection(databaseConfig, function(err, connection) {
@@ -375,6 +390,7 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
             let conn;
             try{
                 conn = await oracledb.getConnection(databaseConfig);
+                //TODO: add 0 by default for rating
                 var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
                                         + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + 0 + `)`;
                 let res = await conn.execute(sql_user_tv_show, [], { autoCommit:true });
@@ -487,6 +503,7 @@ app.post("/addShowToUser/:userName/:showId", function(req,res){
     if (err) {
         return;  
     }
+    //TODO: add 0 RATING by default to USERS_TV_SHOWS
     var addShow = `INSERT INTO USERS_TV_SHOWS 
                    SELECT u.user_id, u.username, s.show_id, s.show_name, s.no_of_episodes, s.no_of_episodes
                    FROM (select username, user_id from users_logged where username = '` + req.params.userName + `') u, 
