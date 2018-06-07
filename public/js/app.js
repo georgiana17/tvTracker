@@ -1,9 +1,10 @@
 "use strict"
-var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages', 'ui.calendar'])
+var app = angular.module("tvTracker",['ngMaterial','ngMdIcons','ngRoute','ngMessages', 'ui.calendar', 'jkAngularRatingStars'])
 app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $location, $rootScope, $routeParams, auth, session, $window) {
     $scope.appName = "TvTracker";
     $rootScope.loggedIn = false;
     $scope.focusInput = false;
+    $scope.vote = 2;
 
     $rootScope.getUser = function() {
         if(auth.isLoggedIn()){

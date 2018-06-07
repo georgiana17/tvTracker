@@ -90,15 +90,15 @@
                             {{episode.air_date | date: 'EEEE, MMMM d, y'}}
                         </p>
                         </md-card-content>
-                        <md-card-actions layout="row" layout-align="end center" ng-show="loggedIn && followed">
+                        <md-card-actions layout="row" layout-align="end center" md-theme="navbar" ng-show="loggedIn && followed">
                             <!-- <md-button class="md-icon-button" aria-label="Favorite">
                                 <ng-md-icon icon="star"></ng-md-icon>
                             </md-button> -->
-                            <md-button class="md-icon-button" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
-                                <ng-md-icon icon="remove_red_eye"></ng-md-icon>
+                            <md-button class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
+                                <ng-md-icon icon="remove_red_eye" class="whiteIcon"></ng-md-icon>
                             </md-button>
-                            <md-button class="md-icon-button" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
-                                    <ng-md-icon icon="done"></ng-md-icon>
+                            <md-button class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
+                                <ng-md-icon icon="done" class="whiteIcon"></ng-md-icon>
                             </md-button>
                         </md-card-actions>
                     </md-card>
@@ -108,6 +108,9 @@
                         <h2 class="text-muted">TV Show progress</h2>
                         <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
                         <h4 id="progress">{{progress}}%</h4>
+                        <h2 class="text-muted">Review TV show</h2>                        
+                        <jk-rating-stars max-rating="5" rating="vote" on-rating="onRating(rating)" >
+                        </jk-rating-stars>
                     </div>
                 </div>
             </div>
@@ -171,5 +174,8 @@
     }
     .pinkCol {
         background-color:#c89eb6 !important;
+    }
+    .pinkIcon {
+        fill:#c89eb6 !important;
     }
 </style>
