@@ -21,7 +21,6 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
         } else {
             $scope.hideOverview = false;
         }
-        // console.log($scope.userEpisodes);
         
         //if episode is watched add true to episodes
         for(var i = 0; i < $scope.userEpisodes.length; i++) {

@@ -38,7 +38,7 @@
         </md-button>
         </h1>
     </div>
-    <div layout="row" layout-sm="column" layout-xs="column" >
+    <div layout="row" layout-sm="column" layout-xs="column">
         <div class="poster" flex-offset="5" flex-offset-xs="0" layout="column" layout-align-xs="center center" layout-align-sm="center center">
             <img ng-src="{{posterPath}}">
         </div>
@@ -57,16 +57,27 @@
     </div>
     <div class="seasons" layout-padding>
         <ul layout="row">                
-            <li ng-repeat="season in data.seasons | filter: displayPosterPath" layout-padding flex="flex">
+            <li ng-repeat="season in data.seasons" layout-padding flex="flex">
                 <a href ng-click="selectSeason(season.season_number)">
-                    <img ng-src="https://image.tmdb.org/t/p/original{{season.poster_path}}" style="width: 150px; height: 216px;" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
+                    <img ng-src='{{season.poster_path !== null ? "https://image.tmdb.org/t/p/original" + season.poster_path : "public/images/eye.png"}}' style="width: 150px; height: 216px;" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
                 </a>
             </li>
         </ul>
     </div>
     <div layout-padding>
-        <div layout="row" layout-align="end center">
-            <h1 layout-padding>{{seasonName}}</h1>
+        <h1 hide-gt-xs style="text-align: center" layout-padding>{{seasonName}}</h1>
+        <div layout-padding layout="column" ng-cloak ng-if="followed && loggedIn" hide-gt-xs>
+            <div layout="column" layout-align="start center" style="position:relative">
+                <h2 class="text-muted">TV Show progress</h2>
+                <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
+                <h4 id="progress">{{progress}}%</h4>
+                <h2 class="text-muted">Review TV show</h2>                        
+                <jk-rating-stars class="custom-stars" max-rating="5" rating="vote" on-rating="onRating(rating)" >
+                </jk-rating-stars>
+            </div>
+        </div>
+        <div layout="row" layout-align="end center" layout-xs="column">
+            <h1 hide-xs layout-padding>{{seasonName}}</h1>
             <span flex></span>
             <md-button md-theme="navbar" ng-show="imdb" class="md-raised md-primary"><a target="_blank" ng-href="{{imdbUrl}}">IMDB<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></a></md-button>
             <md-button md-theme="navbar" ng-show="trailer" class="md-raised md-primary"><a target="_blank" ng-href="{{youtubeUrl}}">Trailer<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></a></md-button>
@@ -74,9 +85,9 @@
             <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked && loggedIn && followed" ng-click="markSeason()">Mark season as watched</md-button>
             <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn && followed" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
         </div>
-        <div layout="row" layout-padding>
-            <div layout="row" layout-padding>
-                <div layout-padding layout-wrap layout="row">
+        <div layout="row" layout-padding layout-xs="column">
+            <div layout="row" layout-padding layout-xs="column">
+                <div layout-padding layout-wrap layout="row" layout-xs="column">
                     <md-card md-whiteframe="3" flex-xs flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
                         <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
                         <md-card-title>
@@ -103,7 +114,7 @@
                         </md-card-actions>
                     </md-card>
                 </div>
-                <div layout-padding layout="column" ng-cloak ng-if="followed && loggedIn">
+                <div layout-padding layout="column" ng-cloak ng-if="followed && loggedIn" hide-xs>
                     <div layout="column" layout-align="start center" style="position:relative">
                         <h2 class="text-muted">TV Show progress</h2>
                         <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>

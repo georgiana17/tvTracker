@@ -46,8 +46,11 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                 }
             }
             
-            // TODO: if backdrop_path == null => add a custom image.
-            $scope.urlImage = "https://image.tmdb.org/t/p/original" + response.data.backdrop_path;
+            if(response.data.backdrop_path == null) {
+                $scope.urlImage = "public/images/logo_episode_spy_original_207x35_black.png"; // CHANGE PHOTO DIMENSION
+            } else {
+                $scope.urlImage = "https://image.tmdb.org/t/p/original" + response.data.backdrop_path;
+            }
             $scope.releaseYear = response.data.first_air_date;
             if(response.data.name !== null) {
                 $scope.showName = response.data.name;
