@@ -10,9 +10,12 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
             $rootScope.user = JSON.parse(session.getUser());
             $rootScope.loggedIn = true;
         }
-    }    
+    }
 
     $scope.signout = function() {
+        if($mdSidenav('left').isOpen() && $mdSidenav('left').isLockedOpen() == false){
+            $scope.toggleSidenav('left');
+        }
         session.destroy();
         $location.path("/");
         $rootScope.loggedIn = false;
@@ -55,7 +58,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $scope.search = null;
     }
     $scope.searchTvShow = function() {
-        // $scope.toggleSidenav('left');
+        $scope.toggleSidenav('left');
         if(($scope.search != null &&  $scope.search !== undefined) && $scope.search != "") {
             $location.path("/search/" + $scope.search);
         } else if(($scope.sideNavSearch != null && $scope.sideNavSearch !== undefined) && $scope.sideNavSearch != "") {
@@ -147,9 +150,6 @@ app.directive('focusMe', function () {
 });
 
 app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locationProvider) {
-    // $mdThemingProvider.theme('default')
-    //   .primaryPalette('deep-purple')
-    //   .accentPalette('pink');
     $mdThemingProvider.theme('navbar')
       .primaryPalette('teal')
     //   .accentPalette('grey')
@@ -165,7 +165,6 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     //     requireBase: false
     // });
     $locationProvider.hashPrefix(''); 
-    // $locationProvider.html5Mode(true);
 
     $routeProvider
     .when("/", {
