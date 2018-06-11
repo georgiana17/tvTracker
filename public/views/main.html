@@ -1,9 +1,9 @@
 <div layout="column">
-    <div class="parallax" ng-style="{'background-image':'url('+backgroundImage+')', 'background-size':'cover', 'background-attachment':'fixed', 'background-repeat':'no-repeat no-repeat', 'height': '100vh', 'display': 'inline-block'}">
+    <div class="parallax" ng-style="{'background-image':'url('+backgroundImage+')', 'background-size':'cover', 'background-position':'center center', 'background-attachment':'fixed', 'background-repeat':'no-repeat no-repeat', 'height': '90vh', 'display': 'inline-block'}">
         <div class="dark-background">
             <!-- TODO: flex-offset responsive -->
-            <div layout="row" flex-offset="25"> 
-                <img src="/public/images/banner.png" style="max-width: 820px; height:360px; margin-top:25%" layout-align="center center"/>
+            <div layout="row" flex-offset-xs="" flex-offset-gt-xs="" flex-offset-sm="5" flex-offset-gt-sm="10" flex-offset-md="15" flex-offset-lg="25" flex-offset-gt-lg="25"> 
+                <img src="/public/images/banner.png" class="responsive" style="max-width: 820px; width:auto; height:360px; margin-top:25%" layout-align="center center"/>
             </div>
         </div>
     </div>
@@ -49,10 +49,10 @@
         </div>
     </div>
     <div layout="row" md-colors="{background: 'navbar-primary-800'}" layout-align="center center">
-        <h1>Here you can find all the TV Shows you like ... </h1>
+        <h1 style="text-align:center">Here you can find all the TV Shows you like ... </h1>
     </div>
-    <div layout="row" md-colors="{background: 'navbar-primary-800'}" layout-align="center center" layout-padding>        
-        <div layout="column" ng-repeat="item in popularSeries | limitTo : 5" layout-padding >
+    <div layout="row" md-colors="{background: 'navbar-primary-800'}" layout-align="center center" layout-xs="column" layout-wrap layout-padding>        
+        <div layout="column" ng-repeat="item in popularSeries | limitTo : 6" layout-padding>
             <a ng-href="#/show/{{item.id}}">
                 <img style="width:150px;" ng-src="https://image.tmdb.org/t/p/original{{item.poster_path}}">
             </a>            
@@ -66,5 +66,27 @@
         height: 100%;
         display: flex;
         background-color: rgba(0,0,0,.61);
+    }
+
+    @media only screen and (max-width: 600px) {
+        .responsive {
+            width: 100% !important; 
+            height: 260px !important;
+            margin-top:25% !important;
+        }
+    }
+
+    @media only screen and (min-width: 600px) and  (max-width: 900px) {
+        .responsive {
+            width: 100% !important; 
+            height: 360px !important;
+            margin-top:15% !important;
+        }
+    }
+
+    @media only screen and (min-width: 960px) {
+        .parallax {
+            height: 100vh !important;
+        }
     }
 </style>

@@ -1,7 +1,7 @@
 "use strict"
 var app = angular.module("tvTracker")
 app.controller("MainController", function($scope, $http){
-    var tvShows = [1399, 63247, 48866, 66732];
+    var tvShows = [1399, 63247, 44217, 66732];
     var randImage = tvShows[Math.floor(Math.random() * tvShows.length)]
     $scope.getBackground = function() {
         $http.get("/randomImage/" + randImage).then(function(response){
