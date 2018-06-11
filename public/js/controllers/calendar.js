@@ -129,10 +129,13 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             windowResize: function(date) {
                 $scope.height = $window.innerHeight - 70;
                 $scope.uiConfig.calendar.height = $scope.height;
+                if($window.innerWidth >= 960){
+                    $mdToast
+                        .hide()
+                }
             },
             eventMouseover: function(date, jsEvent, view) {
-                console.log($window.innerWidth);
-                if($window.innerWidth >= 600){
+                if($window.innerWidth >= 960){
                     $scope.event = date;
                     $scope.tooltipDiv.removeClass("left right").find(".arrow").removeClass("left right top pull-up");
                     var elem = $(jsEvent.target).closest(".fc-event");
@@ -147,11 +150,11 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             },
             eventClick: function(date, jsEvent, view){
                 $scope.event = date;
-                if($window.innerWidth < 600) {
+                if($window.innerWidth < 960) {
                     $mdToast.show({
                         position    : 'center center',
                         controller  : ToastCtrl,
-                        templateUrl : 'public/templates/template-toast.html',
+                        templateUrl : 'public/templates/template-toast-calendar.html',
                         locals: date,
                         hideDelay: false,
                         clickOutsideToClose: true
@@ -159,10 +162,39 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 }
                 function ToastCtrl($scope, $mdToast){
                     $scope.event = date;
+                    
+                    if(avoidSpoilers.avoidSpoilers == "true"){
+                        $scope.hideOverview = true;
+                    } else {
+                        $scope.hideOverview = false;
+                    }
+                    
+                    $scope.addShow = function(watched){
+                        var elem = $(jsEvent.target).closest(".fc-event");
+                        if(watched == "false") {
+                            $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.event.id).then(function(response) {
+                                if(response.data == "Episode added to user!") {
+                                    //TODO - CHECK AND UNCHECK
+                                    elem.find(".checkBox")[0].checked = true;
+                                    elem.addClass("striked");
+                                }
+                            });
+                            date.watched = "true";
+                        } else if (watched == "true") {
+                            $http.post("/deleteEpisode/" + $rootScope.user + "/" + $scope.event.id).then(function(response) {
+                                if(response.data == "Episode deleted from user!") {
+                                    //TODO - CHECK AND UNCHECK
+                                    elem.find(".checkBox")[0].unchecked = true;
+                                    elem.removeClass("striked");
+                                }
+                            });
+                            date.watched = "false";
+                        }
+                    }
                     $scope.closeToast = function() {                    
                         $mdToast
                           .hide()
-                      };
+                    };
                 }
             },
             eventRender: function(event, element, view) {
@@ -192,11 +224,6 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                             event.watched = "false";
                         }
                     });
-                }
-            },
-            eventResize: function(event){
-                if($window.innerWidth < 960){
-                    console.log(event);
                 }
             }
         }

@@ -1,8 +1,7 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("SettingsController", function($scope, $http, $rootScope, $mdToast) {
-    $scope.avoidSpoilers = true;
-
+app.controller("SettingsController", function($scope, $http, $rootScope, $mdToast, userData) {
+    $scope.avoidSpoilers = userData.avoidSpoilers;
     $scope.onChange = function(avoidSpoilers) {
         $http.post("/avoidSpoilers/" + avoidSpoilers + "/" + $rootScope.user).then(function(res){
             console.log(res);

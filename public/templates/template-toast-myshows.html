@@ -1,0 +1,17 @@
+<md-toast layout="column">
+    <div class="md-toast-text" layout="column" flex>
+        <div class="md-headline"><strong>{{event[0][0]}}</strong></div>
+        <div>
+            <p class="md-body-1">Last Episode</p>
+            <strong> s{{ event[0][3] }}e{{ event[0][4] }} - {{event[0][2] ? event[0][2] : "-" }} </strong>
+            <em class="airDate">{{event[0][5] | date : 'dd MMM yyyy'}}</em>
+        </div>
+        <div>
+            <p class="md-body-1">Next Episode</p>
+            <strong> {{ event[1][3] ? "s" + event[1][3] : "" }}{{ event[1][4] ? "e" + event[1][4] + "-" : "" }}  {{event[1][2] ? event[1][2] : "-" }} </strong>
+            <em class="airDate">{{event[1][5] | date : 'dd MMM yyyy'}}</em>
+        </div>
+    </div>   
+
+    <md-button  layout="column" ng-click="closeToast()"><md-icon class="whiteCol">close</md-icon></md-button>
+</md-toast>

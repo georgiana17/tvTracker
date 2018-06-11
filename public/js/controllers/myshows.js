@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope, $mdDialog) {
+app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope, $mdDialog, $mdToast) {
     // $scope.progress = 34;
     $scope.myShows = myShows;
     if($scope.myShows == "No shows for this user!"){
@@ -39,6 +39,26 @@ app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope
                 });  
             }, function() {
             });
+        }
+
+        $scope.showInfo = function(show){
+            console.log(show);
+            $mdToast.show({
+                position    : 'center center',
+                controller  : ToastCtrl,
+                templateUrl : 'public/templates/template-toast-myShows.html',
+                locals: show,
+                hideDelay: false,
+                clickOutsideToClose: true
+            });
+            function ToastCtrl($scope, $mdToast){
+                $scope.event = show;
+                
+                $scope.closeToast = function() {                    
+                    $mdToast
+                      .hide()
+                };
+            }
         }
     }
 });

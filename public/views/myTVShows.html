@@ -9,32 +9,40 @@
     <h2 layout="row" layout-align="center center" style="margin-bottom:0px">Current TV Shows</h2>
     <table layout-padding layout-align="center center" layout="row" cellpadding="0" cellspacing="0">
         <tr>
-            <th width="10%"></th>
+            <th width="10%" hide-xs></th>
             <th width="30%">Show</th>
-            <th width="30%">Last Episode</th>
-            <th width="30%">Next Episode</th>
-            <th width="10%">Unfollow</th>
+            <th width="30%" hide-xs>Last Episode</th>
+            <th width="30%" hide-xs>Next Episode</th>
+            <th width="10%" hide-gt-xs>Info</th>
+            <th width="10%" hide-xs>Unfollow</th>
+            <th width="10%" hide-gt-xs>Unfollow</th>
         </tr>
         <!-- TODO: SORT HEADERS & SEND JSON FROM SERVER -->
          <tr ng-repeat="show in myShows">
-            <td><img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/original" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
+            <td hide-xs>
+                <img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/original" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
                 <span><md-icon class="tealCol">{{ show[0][6] == 0 ? "done" : "remove_red_eye"}}</md-icon></span> &nbsp;
-                <a ng-href="#/show/{{show[0][1]}}">{{show[0][0] ? show[0][0] : "-" }}</a>
+                <a ng-href="#/show/{{show[0][1]}}" class="text-resp">{{show[0][0] ? show[0][0] : "-" }}</a>
                 <br/>
-                <span class="pinkCol">{{show[0][6]}} unwatched episodes</span>
+                <span class="pinkCol text-resp-unwatched">{{show[0][6]}} unwatched episodes</span>
             </td>
-            <td> 
+            <td hide-xs> 
                 <strong> s{{ show[0][3] }}e{{ show[0][4] }} - {{show[0][2] ? show[0][2] : "-" }} </strong>
                 <em class="airDate">{{show[0][5] | date : 'dd MMM yyyy'}}</em>
             </td>
-            <td> 
+            <td hide-xs>  
                 <strong> {{ show[1][3] ? "s" + show[1][3] : "" }}{{ show[1][4] ? "e" + show[1][4] + "-" : "" }}  {{show[1][2] ? show[1][2] : "-" }} </strong>
                 <em class="airDate">{{show[1][5] | date : 'dd MMM yyyy'}}</em>
             </td>
-            <td>
-                <!-- <md-checkbox md-checked="{{unfollowed}}" ng-click="unfollowShow(show[0][1], $event)" aria-label="Unfollow show"></md-checkbox> -->
-                 <md-button md-theme="navbar" ng-click="unfollowShow(show[0][1], $event)" class="md-fab md-mini md-primary"><md-icon size="28">clear</md-icon></md-button> 
+            <td hide-gt-xs>
+                <md-button md-theme="navbar" ng-click="showInfo(show, $event)" class="md-fab md-mini md-primary"><md-icon>info</md-icon></md-button> 
+            </td>
+            <td hide-xs>
+                <md-button md-theme="navbar" ng-click="unfollowShow(show[0][1], $event)" class="md-fab md-mini md-primary"><md-icon size="28">clear</md-icon></md-button> 
+            </td>
+            <td hide-gt-xs>
+                <md-button md-theme="navbar" ng-click="unfollowShow(show[0][1], $event)" class="md-fab md-mini md-primary"><md-icon>clear</md-icon></md-button> 
             </td>
         </tr>
     </table>
@@ -84,5 +92,22 @@
     }
     .pinkCol {
         color:#c89eb6;
+    }    
+    md-toast .md-toast-content{
+        max-height: 183px !important;
+        min-height: fit-content !important;
+    }
+    .md-toast-text {
+        padding: 8px 0px !important;
+    }
+    @media only screen and (max-width: 600px) {
+        .text-resp{
+            font-size: 14px !important;
+            line-height: 14px !important; 
+        }
+        .text-resp-unwatched{
+            font-size: 12px !important;
+            line-height: 14px !important; 
+        }
     }
 </style>

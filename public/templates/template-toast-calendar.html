@@ -1,0 +1,14 @@
+<md-toast layout="column">
+    <div class="md-toast-text" layout="column" flex>
+        <div class="md-headline"><strong>{{event.showName}}</strong></div>
+        <div class="md-body-1">
+            <strong>{{(event.seasonNo <= 9) ? "0" + event.seasonNo : event.seasonNo }}x{{(event.episodeNo <= 9) ? "0" + event.episodeNo : event.episodeNo}}</strong>:
+            <span class="md-caption">{{event.episodeName}}</span>
+            &nbsp;&nbsp;
+            <md-button ng-show="event.watched != undefined" ng-click="addShow(event.watched)"><md-icon class="whiteCol">{{ event.watched == 'true' ? "done" : "remove_red_eye"}}</md-icon></md-button>
+        </div>
+        <p class="text-toast" ng-class="{ 'avoidSpoilers': hideOverview}">{{event.overview}}</p>
+    </div>   
+
+    <md-button  layout="column" ng-click="closeToast()"><md-icon class="whiteCol">close</md-icon></md-button>
+</md-toast>

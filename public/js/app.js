@@ -368,7 +368,16 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/settings",{
         controller: "SettingsController",
-        templateUrl: "/public/views/settings.html"
+        templateUrl: "/public/views/settings.html",
+        resolve: {
+            userData : function($http, $rootScope){
+                if($rootScope.loggedIn){
+                    return $http.get("/userAvoid/"+$rootScope.user).then(function(res){
+                        return res.data;
+                    })
+                }
+            }
+        }
     })
     .when("/resendPassword",{
         controller: "ForgotPassController",
