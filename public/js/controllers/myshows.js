@@ -43,6 +43,7 @@ app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope
 
         $scope.showInfo = function(show){
             console.log(show);
+            //mdToast to close when click outside
             $mdToast.show({
                 position    : 'center center',
                 controller  : ToastCtrl,
