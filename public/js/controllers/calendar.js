@@ -4,7 +4,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $mdThemingProvider.theme('custom')
       .primaryPalette('cyan');
 })
-app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, watchedEpisodes, avoidSpoilers, $q, uiCalendarConfig, $window) {
+app.controller("CalendarController", function($scope, $filter, $rootScope, $http, popularSeries, watchedEpisodes, avoidSpoilers, $q, uiCalendarConfig, $window, $mdToast) {
     $scope.selectedDate = new Date();
     $scope.dayFormat = "d";
     $scope.firstDayOfWeek = 0;
@@ -86,7 +86,11 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         for(var k=0; k < $scope.popularSeries[i]["season/" + p].episodes.length; k++) {
                             if($scope.popularSeries[i]["season/" + p].episodes[k] != undefined) {
                                 var airDate = new Date($scope.popularSeries[i]["season/" + p].episodes[k].air_date);
-                                var title =  $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number;
+                                if($window.innerWidth < 600) {
+                                    title = $scope.popularSeries[i].name;
+                                } else {
+                                    var title =  $scope.popularSeries[i].name + " - " +  p + "x" + $scope.popularSeries[i]["season/" + p].episodes[k].episode_number;
+                                }
                                 $scope.airDateEpisodes.push({
                                         'title': title,
                                         'start': airDate,
@@ -122,24 +126,46 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 center: 'title',
                 right: 'next'
             },
-            windowResize: function() {
+            windowResize: function(date) {
                 $scope.height = $window.innerHeight - 70;
                 $scope.uiConfig.calendar.height = $scope.height;
             },
             eventMouseover: function(date, jsEvent, view) {
+                console.log($window.innerWidth);
+                if($window.innerWidth >= 600){
+                    $scope.event = date;
+                    $scope.tooltipDiv.removeClass("left right").find(".arrow").removeClass("left right top pull-up");
+                    var elem = $(jsEvent.target).closest(".fc-event");
+                    var calendarElem = elem.closest(".calendar");
+                    var offset = elem.offset().left - calendarElem.offset().left;
+                    var height = $scope.height - elem.offset().top;
+                    var width = calendarElem.width() - (elem.offset().left - calendarElem.offset().left + elem.width());
+                    width > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("left").find(".arrow").addClass("left") : offset > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("right").find(".arrow").addClass("right") : $scope.tooltipDiv.find(".arrow").addClass("top"),
+                    $scope.tooltipDiv.height() > height ? $scope.tooltipDiv.addClass("top").find(".arrow").addClass("pull-down") : $scope.tooltipDiv.removeClass("top").find(".arrow").addClass("pull-up"),
+                    0 == elem.find(".tooltipSerie").length && elem.append($scope.tooltipDiv)
+                }
+            },
+            eventClick: function(date, jsEvent, view){
                 $scope.event = date;
-                $scope.tooltipDiv.removeClass("left right").find(".arrow").removeClass("left right top pull-up");
-                var elem = $(jsEvent.target).closest(".fc-event");
-                var calendarElem = elem.closest(".calendar");
-                var offset = elem.offset().left - calendarElem.offset().left;
-                var height = $scope.height - elem.offset().top;
-                var width = calendarElem.width() - (elem.offset().left - calendarElem.offset().left + elem.width());
-                width > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("left").find(".arrow").addClass("left") : offset > $scope.tooltipDiv.width() ? $scope.tooltipDiv.addClass("right").find(".arrow").addClass("right") : $scope.tooltipDiv.find(".arrow").addClass("top"),
-                $scope.tooltipDiv.height() > height ? $scope.tooltipDiv.addClass("top").find(".arrow").addClass("pull-down") : $scope.tooltipDiv.removeClass("top").find(".arrow").addClass("pull-up"),
-                0 == elem.find(".tooltipSerie").length && elem.append($scope.tooltipDiv)
+                if($window.innerWidth < 600) {
+                    $mdToast.show({
+                        position    : 'center center',
+                        controller  : ToastCtrl,
+                        templateUrl : 'public/templates/template-toast.html',
+                        locals: date,
+                        hideDelay: false,
+                        clickOutsideToClose: true
+                    });
+                }
+                function ToastCtrl($scope, $mdToast){
+                    $scope.event = date;
+                    $scope.closeToast = function() {                    
+                        $mdToast
+                          .hide()
+                      };
+                }
             },
             eventRender: function(event, element, view) {
-                // console.log(element);
                 if($rootScope.loggedIn){
                     if(event.watched == "true"){
                         var checked = "checked";
@@ -166,6 +192,11 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                             event.watched = "false";
                         }
                     });
+                }
+            },
+            eventResize: function(event){
+                if($window.innerWidth < 960){
+                    console.log(event);
                 }
             }
         }
