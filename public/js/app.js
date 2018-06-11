@@ -322,7 +322,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         usersShows = res.data;
                         return usersShows;
                     })
-                    .then(function(usersShows){ 
+                    .then(function(usersShows){
                         // var usersShows = [[1399, "Game of Thrones"],[1412, "Grey's Anatomy"],[63247,"Westworld"], [48866, "The 100"], [66732,"Stranger Things"]];
                         // var usersShows = [];
                         
