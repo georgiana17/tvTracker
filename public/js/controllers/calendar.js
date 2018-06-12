@@ -157,16 +157,19 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         templateUrl : 'public/templates/template-toast-calendar.html',
                         locals: date,
                         hideDelay: false,
-                        clickOutsideToClose: true
+                        clickOutsideToClose: true,
+                        hideDelay: 40000
                     });
                 }
                 function ToastCtrl($scope, $mdToast){
                     $scope.event = date;
                     
-                    if(avoidSpoilers.avoidSpoilers == "true"){
-                        $scope.hideOverview = true;
-                    } else {
-                        $scope.hideOverview = false;
+                    if($rootScope.loggedIn){
+                        if(avoidSpoilers.avoidSpoilers == "true"){
+                            $scope.hideOverview = true;
+                        } else {
+                            $scope.hideOverview = false;
+                        }
                     }
                     
                     $scope.addShow = function(watched){
