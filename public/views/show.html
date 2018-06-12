@@ -99,16 +99,16 @@
                         <md-card-content>
                         <p>
                             {{episode.air_date | date: 'EEEE, MMMM d, y'}}
-                        </p>
+                        </p> 
                         </md-card-content>
                         <md-card-actions layout="row" layout-align="end center" md-theme="navbar" ng-show="loggedIn && followed">
                             <!-- <md-button class="md-icon-button" aria-label="Favorite">
                                 <ng-md-icon icon="star"></ng-md-icon>
                             </md-button> -->
-                            <md-button class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
+                            <md-button ng-disabled="episode.air_date > currentDate" class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
                                 <ng-md-icon icon="remove_red_eye" class="whiteIcon"></ng-md-icon>
                             </md-button>
-                            <md-button class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
+                            <md-button ng-disabled="episode.air_date > currentDate" class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="checkEpisode(episode.id)" ng-click="deleteEpisode(episode.id)">
                                 <ng-md-icon icon="done" class="whiteIcon"></ng-md-icon>
                             </md-button>
                         </md-card-actions>

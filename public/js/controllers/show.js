@@ -1,11 +1,12 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter){
 
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
     $scope.unmarked = false;
     $scope.followed = false;
+    $scope.currentDate = $filter('date')(new Date(), 'yyyy-mm-dd');
 
     if(rating){
         $scope.vote = rating.showRating;
