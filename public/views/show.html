@@ -86,9 +86,9 @@
             <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn && followed" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
         </div>
         <div layout="row" layout-padding layout-xs="column">
-            <div layout="row" layout-padding layout-xs="column">
-                <div layout-padding layout-wrap layout="row" layout-xs="column">
-                    <md-card md-whiteframe="3" flex-xs flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
+            <!-- <div layout="row" layout-padding layout-xs="column"> -->
+                <div layout-padding layout-wrap layout="row" flex="80" flex-sm="50" layout-xs="column">
+                    <md-card md-whiteframe="3" flex-xs="50" flex-sm="100" flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
                         <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
                         <md-card-title>
                             <md-card-title-text>
@@ -97,14 +97,9 @@
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
-                        <p>
-                            {{episode.air_date | date: 'EEEE, MMMM d, y'}}
-                        </p> 
+                            <p>{{episode.air_date | date: 'EEEE, MMMM d, y'}}</p> 
                         </md-card-content>
                         <md-card-actions layout="row" layout-align="end center" md-theme="navbar" ng-show="loggedIn && followed">
-                            <!-- <md-button class="md-icon-button" aria-label="Favorite">
-                                <ng-md-icon icon="star"></ng-md-icon>
-                            </md-button> -->
                             <md-button ng-disabled="episode.air_date > currentDate" class="md-icon-button md-fab md-primary" aria-label="Settings" ng-show="!checkEpisode(episode.id)" ng-click="addEpisode(episode.id)">
                                 <ng-md-icon icon="remove_red_eye" class="whiteIcon"></ng-md-icon>
                             </md-button>
@@ -114,7 +109,7 @@
                         </md-card-actions>
                     </md-card>
                 </div>
-                <div layout-padding layout="column" ng-cloak ng-if="followed && loggedIn" hide-xs>
+                <div layout-padding layout="column" ng-cloak flex="20" flex-sm="50" ng-if="followed && loggedIn" hide-xs>
                     <div layout="column" layout-align="start center" style="position:relative">
                         <h2 class="text-muted">TV Show progress</h2>
                         <md-progress-circular md-diameter="200" md-mode="determinate" value="{{progress}}"></md-progress-circular>
@@ -124,7 +119,7 @@
                         </jk-rating-stars>
                     </div>
                 </div>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 </div>

@@ -6,7 +6,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.marked = false;
     $scope.unmarked = false;
     $scope.followed = false;
-    $scope.currentDate = $filter('date')(new Date(), 'yyyy-mm-dd');
+    $scope.currentDate = $filter('date')(new Date(), 'yyyy-MM-dd');
 
     if(rating){
         $scope.vote = rating.showRating;
@@ -26,6 +26,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             $scope.seasonData = response.data;
             $scope.seasonName = $scope.seasonData.name;
             $scope.episodes = $scope.seasonData.episodes;
+            
 
             $scope.isMarked();
             $scope.isShowFollowed();
@@ -61,10 +62,9 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             // TODO: if poster_path == null => add a custom image.
             $scope.posterPath = "https://image.tmdb.org/t/p/original" + response.data.poster_path;
 
-            if($rootScope.loggedIn){
+            if($rootScope.loggedIn) {
                 if($scope.checkedEpisodes.length != 0) {
                     $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
-                    console.log($scope.progress);
                 } else {
                     $scope.progress = 0;
                 }
@@ -144,14 +144,18 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.isMarked = function() {
         if($scope.followed == true) {
             let n = 0;
+            let episodesToAppear = 0;
             for(var i=0; i< $scope.seasonData.episodes.length; i++) {
                 for(var j=0; j<$scope.checkedEpisodes.length; j++) {
                     if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
                         n++;
                     }
+                    if($scope.seasonData.episodes[i].air_date <= $scope.currentDate){
+                        episodesToAppear ++;
+                    }
                 }
             }
-            if(n == $scope.seasonData.episodes.length) {
+            if(n == $scope.seasonData.episodes.length - episodesToAppear) {
                 $scope.marked = true;
                 $scope.unmarked = true;
             } else {
@@ -216,9 +220,12 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     $scope.markSeason= function() {
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
-            $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
-            });
-            if($scope.checkedEpisodes.hasOwnProperty([$scope.seasonData.episodes[i].id]) == false) {
+            if($scope.seasonData.episodes[i].air_date <= $scope.currentDate) {                
+                $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
+                });
+            }
+
+            if($scope.checkedEpisodes.hasOwnProperty([$scope.seasonData.episodes[i].id]) == false && $scope.seasonData.episodes[i].air_date <= $scope.currentDate) {
                 $scope.checkedEpisodes.push([$scope.seasonData.episodes[i].id]);
             }
         }
@@ -228,7 +235,9 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     $scope.unMarkSeason = function() {
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
-            $scope.deleteEpisode($scope.seasonData.episodes[i].id);
+            if($scope.seasonData.episodes[i].air_date <= $scope.currentDate) {
+                $scope.deleteEpisode($scope.seasonData.episodes[i].id);
+            }
         }
         $scope.unmarked = true;
     }
