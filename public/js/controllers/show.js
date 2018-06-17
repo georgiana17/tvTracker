@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter, seriesChanges){
 
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
@@ -8,7 +8,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.followed = false;
     $scope.currentDate = $filter('date')(new Date(), 'yyyy-MM-dd');
 
-    if(rating){
+    if(rating) {
         $scope.vote = rating.showRating;
     } else { 
         $scope.vote = 0;
@@ -18,6 +18,16 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         $http.post("/rateShow/" + rating + "/" + $rootScope.user + "/" + $routeParams.id).then(function(res){
             console.log(res);
         }) 
+    }
+    console.log(seriesChanges)
+    for(var i = 0; i < seriesChanges.length; i++){
+        for(var j = 0; j < seriesChanges[i].items.length; j++){
+            if(seriesChanges[i].items[j].value.season_id){
+                $http.get("/seasonChanges/" + seriesChanges[i].items[j].value.season_id).then(function(res){
+                    console.log(res.data)
+                })
+            }
+        }
     }
     
     $scope.getSeason = function(season_id) {
@@ -166,13 +176,15 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     }
 
     $scope.isShowFollowed = function() {
-        $http.get("/myShows/" + $rootScope.user).then(function(shows){
-            for(var i = 0; i < shows.data.length; i++) {
-                if(shows.data[i][0] == $scope.data.id) {
-                    $scope.followed = true;
+        if($rootScope.loggedIn){
+            $http.get("/myShows/" + $rootScope.user).then(function(shows){
+                for(var i = 0; i < shows.data.length; i++) {
+                    if(shows.data[i][0] == $scope.data.id) {
+                        $scope.followed = true;
+                    }
                 }
-            }
-        });
+            });            
+        }
     }
     
     $scope.displayPosterPath = function(p) {

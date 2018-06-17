@@ -571,6 +571,204 @@ app.post('/addShow/:showId/:noOfSeasons/:userName', function(req, res) {
     })
 });
 
+
+//UPDATE SHOW
+app.post('/updateShow/:showId/:noOfSeasons', function(req, res) {
+  var append_to_response = [];
+
+  var appendString = "";
+  if(req.params.noOfSeasons > 20) {
+    for(var i = 1 ; i <= req.params.noOfSeasons ; i++) {
+      if(i%20 != 0 && req.params.noOfSeasons == i) {
+        appendString = appendString + "season/" + i;
+        append_to_response.push(appendString);
+      } else if (i%20 == 0) {
+          appendString = appendString + "season/" + i; 
+          append_to_response.push(appendString);
+          appendString = "";
+      } else if(i%20 != 0) {
+        appendString = appendString + "season/" + i + ",";
+      }
+    }
+  } else {
+    for(var i = 1 ; i <= req.params.noOfSeasons ; i++) {
+      if(i == req.params.noOfSeasons) {
+        appendString = appendString + "season/" + i;
+      } else {
+        appendString = appendString + "season/" + i + ",";
+      }
+    }
+    append_to_response.push(appendString);
+  }
+
+  var urls = [];
+  for(var k = 0; k < append_to_response.length; k++) {
+    urls.push(`http://api.themoviedb.org/3/tv/${req.params.showId}?api_key=${process.env.TMDB_KEY}&append_to_response=${append_to_response[k]}`);
+  }
+
+  const multipleFetch = url => fetch(url)
+     .then(res => res.json())
+      .catch(error => res.send(error))
+
+  
+  let done = false;
+  let episodesInfo = [];
+  Promise
+      .all(urls.map(multipleFetch))
+      .then(function(responses) {
+        responses.forEach(function(element, index){
+          var noSpecials = -1;
+          if(element.seasons[0].name == "Specials") {
+            noSpecials = 0;
+          }
+
+          var seasonsStr = append_to_response[index].split(",");
+          seasonsStr.forEach(function(elem,idx) {
+            var seasonId = parseInt(elem.split("/")[1]) + noSpecials;
+            episodesInfo.push({id: element.seasons[seasonId].id, episodes_bind: element[elem].episodes});
+          })
+        });
+        
+        var showName = responses[0].name;
+        if(responses[0].name.indexOf("'") >= 0) {
+          
+          showName = showName.replace("'","''");
+        }
+
+        let promise1 = new Promise (async function(resolve, reject) {
+          let conn1;
+          try{
+              conn1 = await oracledb.getConnection(databaseConfig);
+
+              var sql_tv_show = "INSERT INTO TV_SHOW values(:1, '" + showName + "', :2, :3, :4, :5)";
+              var tv_show_binds = [req.params.showId, responses[0].number_of_episodes, req.params.noOfSeasons, responses[0].poster_path, responses[0].overview];
+
+              let res = await conn1.execute(sql_tv_show, tv_show_binds, { autoCommit:true });
+              resolve(res);
+          } catch (err){
+            console.log("error ocurred", err);
+            reject(err);
+          } finally {
+            if(conn1){
+              try{
+                await conn1.close();
+                console.log("connection close")
+              } catch(err) {
+                console.log("erro closing conn", err);
+              }
+            }
+          }
+        });
+
+        promise1.then(function(res){
+          let promise2 = new Promise(async function(resolve, reject) {
+            let conn;
+            try{
+                conn = await oracledb.getConnection(databaseConfig);
+                var sql_user_tv_show = `INSERT INTO USERS_TV_SHOWS values(` + userId[0][0] +  `,'` + req.params.userName + `', ` + req.params.showId 
+                                        + `,'` + showName + `',` + parseInt(responses[0].number_of_episodes) + `, ` + 0 + `, ` + 0 +`)`;
+                let res = await conn.execute(sql_user_tv_show, [], { autoCommit:true });
+                resolve(res);
+            } catch (err) {
+              console.log("error ocurred", err);
+              // reject(err);
+            } finally {
+              if(conn){
+                try{
+                  await conn.close();
+                  console.log("connection close")
+                } catch(err) {
+                  console.log("erro closing conn", err);
+                }
+              }
+            }
+          });
+
+          promise2
+          .then(function(res){
+            console.log(res + "show_users");
+              let promise3 = new Promise(async function(resolve, reject) {
+                let connection;
+                try{
+                    connection = await oracledb.getConnection(databaseConfig);
+                    var sql_seasons = `INSERT INTO SEASONS values(:id, `+ req.params.showId +`, :name, :season_number)`;
+                    var binds_seasons = responses[0].seasons;
+                    var seasons_options = {
+                      autoCommit:true, 
+                      bindDefs: { 
+                        id: { type: oracledb.NUMBER },
+                        name: { type: oracledb.STRING, maxSize: 100 },
+                        season_number: { type: oracledb.NUMBER }
+                      }
+                    }
+                    
+                    let res = await connection.executeMany(sql_seasons, binds_seasons, seasons_options);                    
+                    resolve(res);
+                  } catch (err) {
+                    console.log("error ocurred", err);
+                    reject(err);
+                  } finally {
+                    if(connection){
+                      try{
+                        await connection.close();
+                        console.log("connection close")
+                      } catch(err) {
+                        console.log("erro closing conn", err);
+                      }
+                    }
+                  }
+                }); 
+              promise3.then(function(res) {
+                console.log(res + "episodes");
+                let promises = [];
+                  episodesInfo.forEach(function(elem){
+                    var sql_episodes = `INSERT INTO EPISODES values(:id, `+ elem.id +`, :name, :episode_number, :air_date, :overview)`;
+                    // console.log(elem.episodes_bind)
+                    var binds_episodes = elem.episodes_bind;
+                    var episodes_options = {
+                      autoCommit:true, 
+                      bindDefs: {
+                        id: { type: oracledb.NUMBER },
+                        name: { type: oracledb.STRING, maxSize: 100 },
+                        episode_number: { type: oracledb.NUMBER },
+                        air_date: {type: oracledb.STRING, maxSize: 20 },
+                        overview: {type: oracledb.STRING, maxSize: 2000}
+                      }
+                    };
+                    let promise = new Promise(async function(resolve, reject) {
+                      let conn;                            
+                        try{
+                            conn = await oracledb.getConnection(databaseConfig);  
+                            let res = await conn.executeMany(sql_episodes, binds_episodes, episodes_options);
+                            resolve(res);
+                        } catch (err){
+                          console.log("error ocurred", err);
+                          reject(err);
+                        } finally {
+                          if(conn){
+                            try{
+                              await conn.close();
+                              console.log("connection close")
+                            } catch(err) {
+                              console.log("erro closing conn", err);
+                            }
+                          }
+                        }
+                    });
+                    promises.push(promise); 
+                  })
+                Promise.all(promises)
+                  .then(function(res) {
+                    console.log(res + "episodes")
+                  })
+              }).catch((err) => console.log(err));
+          })
+          .catch((err) => console.log(err))
+        }).catch((err) => console.log(err));  
+        res.send("Tv Show added to Database!");
+    })
+});
+
 //add show to User
 app.post("/addShowToUser/:userName/:showId", function(req,res){
   oracledb.getConnection(databaseConfig, function(err, connection) {
@@ -929,6 +1127,25 @@ app.get("/watchedEpisodes/:userName", function(req, res) {
   });
 });
 
+//get all database shows 
+
+app.get("/databaseShows", function(req, res) {
+  oracledb.getConnection(databaseConfig, function(err, connection){
+    if(err){
+      console.log(err.message);
+      return;
+    }
+    var shows = `SELECT show_id FROM  tv_show`;
+    connection.execute(shows, [], function(err,result){
+      if(result.rows != undefined) {
+        res.send(result.rows);
+      } else {
+        res.send("No shows in database!");
+      }
+    });
+  });
+});
+
 // API CALLS 
 
 app.get('/randomImage/:id', function(req, res){
@@ -983,7 +1200,7 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
   });
 
   app.get('/search/:query', function(req, res){
-    var searchTvShow = `https://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_KEY}&language=en-US&page=1&query=${req.params.query}`;
+    var searchTvShow = `http://api.themoviedb.org/3/search/tv?api_key=${process.env.TMDB_KEY}&language=en-US&page=1&query=${req.params.query}`;
     fetch(`${searchTvShow}`)
       .then(resp => resp.json())
       .then(search => res.send(search))
@@ -991,7 +1208,7 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
   });
 
   app.get('/videos/:show_id', function(req,res){
-    var videosTvShow = `https://api.themoviedb.org/3/tv/${req.params.show_id}/videos?api_key=${process.env.TMDB_KEY}&language=en-US`;
+    var videosTvShow = `http://api.themoviedb.org/3/tv/${req.params.show_id}/videos?api_key=${process.env.TMDB_KEY}&language=en-US`;
     fetch(`${videosTvShow}`)
       .then(resp => resp.json())
       .then(videos => res.send(videos))
@@ -1030,7 +1247,30 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
         console.log(err);
       })
   })
+
+  app.get('/tvChanges/:show_id', function(req,res){
+    var weekAgo = new Date(new Date().setDate(new Date().getDate()-7));
+    console.log(weekAgo);
+    var showChanges = `http://api.themoviedb.org/3/tv/${req.params.show_id}/changes?api_key=${process.env.TMDB_KEY}&language=en-US&start_date=${weekAgo}`;
+    fetch(`${showChanges}`)
+      .then(resp => resp.json())
+      .then(changes => res.send(changes))
+      .catch(function(err){
+        console.log(err);
+      })
+  })
   
+  app.get('/seasonChanges/:season_id', function(req,res){
+    var weekAgo = new Date(new Date().setDate(new Date().getDate()-7));
+    console.log(weekAgo);
+    var seasonChanges = `http://api.themoviedb.org/3/tv/season/${req.params.season_id}/changes?api_key=${process.env.TMDB_KEY}&language=en-US&start_date=${weekAgo}`;
+    fetch(`${seasonChanges}`)
+      .then(resp => resp.json())
+      .then(changes => res.send(changes))
+      .catch(function(err){
+        console.log(err);
+      })
+  })
 
 app.listen(3000);
 

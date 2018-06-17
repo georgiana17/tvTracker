@@ -79,8 +79,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     });
 
     $scope.toggleSidenav = function(menuId) {
-        $mdSidenav(menuId).toggle();
-    };
+        $mdSidenav(menuId).toggle();   };
 
 
     $rootScope.update = function() {
@@ -210,10 +209,14 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
             rating: function($http, $rootScope, $route){
                 if($rootScope.loggedIn) {
                     return $http.get("/ratingShow/"  + $rootScope.user + "/" + $route.current.params.id).then(function(res){
-                        console.log(res.data)
                         return res.data;
                     })
                 }
+            },
+            seriesChanges : function($http, $route) {
+                return $http.get("/tvChanges/" + $route.current.params.id).then(function(res) {
+                    return res.data.changes;
+                });
             }
         }
     })
