@@ -19,13 +19,18 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             console.log(res);
         }) 
     }
-    console.log(seriesChanges)
-    for(var i = 0; i < seriesChanges.length; i++){
-        for(var j = 0; j < seriesChanges[i].items.length; j++){
-            if(seriesChanges[i].items[j].value.season_id){
-                $http.get("/seasonChanges/" + seriesChanges[i].items[j].value.season_id).then(function(res){
-                    console.log(res.data)
-                })
+    if(seriesChanges.length>0){
+        for(var i = 0; i < seriesChanges.length; i++){
+            if(seriesChanges[i].items.length > 0){
+                for(var j = 0; j < seriesChanges[i].items.length; j++){
+                    if(seriesChanges[i].items[j].value != undefined){
+                        if(seriesChanges[i].items[j].value.season_id){
+                            $http.get("/seasonChanges/" + seriesChanges[i].items[j].value.season_id).then(function(res){
+                                console.log(res.data)
+                            })
+                        }
+                    }
+                }
             }
         }
     }
@@ -59,18 +64,24 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             }
             
             if(response.data.backdrop_path == null) {
-                $scope.urlImage = "public/images/logo_episode_spy_original_207x35_black.png"; // CHANGE PHOTO DIMENSION
+                $scope.urlImage = "public/images/logo_episode_spy_original_207x35_black_1_1663x450.png"; // CHANGE PHOTO DIMENSION
             } else {
                 $scope.urlImage = "https://image.tmdb.org/t/p/original" + response.data.backdrop_path;
             }
-            $scope.releaseYear = response.data.first_air_date;
+            if(response.data.first_air_date) {
+                $scope.releaseYear = response.data.first_air_date;
+            }
             if(response.data.name !== null) {
                 $scope.showName = response.data.name;
             } else {
                 $scope.showName = response.data.original_name;
             }
             // TODO: if poster_path == null => add a custom image.
-            $scope.posterPath = "https://image.tmdb.org/t/p/original" + response.data.poster_path;
+            if(response.data.poster_path == null){
+                $scope.posterPath = "public/images/eye.png"
+            } else {
+                $scope.posterPath = "https://image.tmdb.org/t/p/original" + response.data.poster_path;
+            }
 
             if($rootScope.loggedIn) {
                 if($scope.checkedEpisodes.length != 0) {

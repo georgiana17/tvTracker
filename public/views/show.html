@@ -26,7 +26,7 @@
         <h1>
             {{showName}}
             <br/>
-            ({{releaseYear | date:'yyyy'}})
+            <span ng-show="releaseYear != undefined">({{releaseYear | date:'yyyy'}})</span>
             <br/>
         <md-button ng-show="loggedIn && !followed" class="md-raised md-primary" md-colors="{background: 'navbar-primary-500'}" ng-click="followShow(data.id)">
                 <md-icon md-font-set="md">add</md-icon>
@@ -40,18 +40,19 @@
     </div>
     <div layout="row" layout-sm="column" layout-xs="column">
         <div class="poster" flex-offset="5" flex-offset-xs="0" layout="column" layout-align-xs="center center" layout-align-sm="center center">
-            <img ng-src="{{posterPath}}">
+            <img ng-src="{{posterPath}}" style="width:150px; height:225px;">
         </div>
         <div layout-padding flex-offset="5">
-            <h4>{{data.last_air_date | date: "EEEE" | uppercase}} on {{data.networks[0].name}}</h4>
-            <p style="text-align:justify" class="text-muted">{{data.overview}}</p>
+            <h4 ng-show="data.last_air_date != null && data.networks[0].name != null">{{data.last_air_date | date: "EEEE" | uppercase}} on {{data.networks[0].name}}</h4>
+            <p style="text-align:justify" class="text-muted" ng-show="data.overview">{{data.overview}}</p>
+            <h4 style="text-align:justify" class="text-muted" ng-show="data.overview == ''">TMDB API does not provide overview for {{showName}}!</h4>
         </div>
         <div layout-padding flex-offset="5" flex="25" flex-xs="33">
             <ul>
-                <li>Network: <span class="text-muted">{{data.networks[0].name}}</span></li>
-                <li>Country: <span class="text-muted">{{data.origin_country[0]}}</span></li>
-                <li>Runtime: <span class="text-muted">{{data.episode_run_time[0]}}</span></li>
-                <li>Status: <span class="text-muted">{{data.status}}</span></li>
+                <li>Network: <span class="text-muted">{{data.networks[0].name != null ? data.networks[0].name : "-"}}</span></li>
+                <li>Country: <span class="text-muted">{{data.origin_country[0] != null ? data.origin_country[0] : "-"}}</span></li>
+                <li>Runtime: <span class="text-muted">{{data.episode_run_time[0] != null ? data.episode_run_time[0] : "-"}}</span></li>
+                <li>Status: <span class="text-muted">{{data.status != null ? data.status : "-"}}</span></li>
             </ul>
         </div>
     </div>
@@ -63,6 +64,7 @@
                 </a>
             </li>
         </ul>
+        <h4 ng-show="data.seasons.length == 0">TMDB API does not provide any information about seasons for {{showName}} !</h4>
     </div>
     <div layout-padding>
         <h1 hide-gt-xs style="text-align: center" layout-padding>{{seasonName}}</h1>
