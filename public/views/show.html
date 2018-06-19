@@ -89,6 +89,7 @@
         </div>
         <div layout="row" layout-padding layout-xs="column">
             <!-- <div layout="row" layout-padding layout-xs="column"> -->
+                <h3 layout="row" ng-show="seasonData.episodes.length == 0" layout-padding layout-wrap flex="80" flex-sm="50">There are no episodes in this season yet!</h3>
                 <div layout-padding layout-wrap layout="row" flex="80" flex-sm="50" layout-xs="column">
                     <md-card md-whiteframe="3" flex-xs="50" flex-sm="100" flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
                         <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
