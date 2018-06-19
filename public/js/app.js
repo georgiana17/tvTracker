@@ -12,6 +12,23 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         }
     }
 
+    if(localStorage.getItem('language')){
+        $rootScope.language = localStorage.getItem('language');
+    }
+
+    if($rootScope.language != undefined){
+        if($rootScope.language == "Francais"){
+            $rootScope.locale = 'fr';
+        } else if($rootScope.language == "Romana"){
+            $rootScope.locale = 'ro';
+        }
+        if($rootScope.locale != undefined){
+            $scope.localeUrl = "node_modules/fullcalendar/dist/locale/" + $rootScope.locale + ".js";
+            $("<script>").attr({src: $scope.localeUrl}).appendTo("body");
+            console.log($scope.localeUrl);
+        }
+    }
+
     $scope.signout = function() {
         if($mdSidenav('left').isOpen() && $mdSidenav('left').isLockedOpen() == false){
             $scope.toggleSidenav('left');

@@ -10,8 +10,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.firstDayOfWeek = 0;
     $scope.tooltips = true;
     $scope.watched = true;
-  
-    
+        
     if($rootScope.loggedIn) {
         $scope.userEpisodes = popularSeries;
         $scope.watchedEpisodes = watchedEpisodes;
@@ -113,7 +112,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     }
 
 
-
+    console.log($rootScope.locale)
     var popover;
     $scope.uiConfig = {
         calendar: {
@@ -121,6 +120,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             editable: false,
             fixedWeekCount: false,
             displayEventTime: false,
+            lang: $rootScope.locale,
             header: {
                 left: 'prev',
                 center: 'title',

@@ -1,12 +1,33 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("SettingsController", function($scope, $http, $rootScope, $mdToast, userData) {
+app.controller("SettingsController", function($scope, $http, $rootScope, $mdToast, $window, userData) {
     $scope.avoidSpoilers = userData.avoidSpoilers;
     $scope.onChange = function(avoidSpoilers) {
         $http.post("/avoidSpoilers/" + avoidSpoilers + "/" + $rootScope.user).then(function(res){
             console.log(res);
         })
     };
+
+    $scope.language = undefined;
+    console.log($rootScope.language);
+    if(localStorage.getItem('language')){
+        $rootScope.language = localStorage.getItem('language');
+        $scope.language = $rootScope.language;
+    }
+
+    $scope.getSelectedLanguage = function () {
+        if ($scope.language !== undefined) {
+            $rootScope.language = $scope.language;
+            localStorage.setItem('language', $scope.language);
+            // TODO: ASSIGN TO USER in DB
+            console.log($rootScope.language);
+            return $scope.language;
+        }
+    };
+
+    $scope.saveLanguage = function() {        
+        $window.location.reload();
+    }
 
     $scope.changePass = function(newPassword){
         $http.post("/updatePassword/" + newPassword + "/" + $rootScope.user).then(function(res){
