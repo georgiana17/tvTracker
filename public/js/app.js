@@ -246,7 +246,18 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     })
     .when("/search/:query", {
         controller: "SearchController",
-        templateUrl: "public/views/search.html"
+        templateUrl: "public/views/search.html",
+        resolve: {
+            userShows : function($http, $rootScope) {
+                if($rootScope.loggedIn){
+                    return $http.get("/myShows/" + $rootScope.user).then(function(shows) {
+                        return shows.data;
+                    });
+                } else {
+                    return [[37680], [1399]]
+                }
+            }            
+        }
     })
     .when("/myShows/", {
         controller: "MyShowsController",

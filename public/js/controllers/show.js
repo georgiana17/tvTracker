@@ -54,12 +54,14 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             $scope.data = response.data;
             // remove the "Specials" season
             //TODO: if data.seasons == null 
-            if($scope.data.seasons.length > 0) {
-                if($scope.data.seasons[0].name == "Specials") {
-                    $scope.data.seasons = $scope.data.seasons.slice(1, $scope.data.seasons.length);
-                    $scope.selectSeason(1);
-                } else {
-                    $scope.selectSeason(1);
+            if($scope.data.seasons){
+                if($scope.data.seasons.length > 0) {
+                    if($scope.data.seasons[0].name == "Specials") {
+                        $scope.data.seasons = $scope.data.seasons.slice(1, $scope.data.seasons.length);
+                        $scope.selectSeason(1);
+                    } else {
+                        $scope.selectSeason(1);
+                    }
                 }
             }
             

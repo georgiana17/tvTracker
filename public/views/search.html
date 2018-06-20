@@ -22,7 +22,15 @@
                 </md-card-title>
                 <md-card-actions layout="row" layout-align="end right" layout-padding>
                     <!-- <md-button><md-icon class="tealCol" ng-click="followShow(show.id)" ng-show="!followed">add</md-icon></md-button> -->
-                    <a ng-href="#/show/{{show.id}}"><md-button class="md-fab md-primary" md-theme="navbar"><md-icon ng_bind="'more_horiz'" class="whiteCol"></md-icon></md-button></a>
+                    <a ng-show="loggedIn && !isShowFollowed(show.id)">
+                        <md-button aria-label="add" class="md-fab md-primary" ng-click="followShow(show.id)" md-theme="navbar"><md-icon ng_bind="'add'" class="whiteCol"></md-icon>
+                        </md-button>
+                    </a>
+                    <a ng-show="loggedIn && isShowFollowed(show.id)" ng-href="#/show/{{show.id}}">
+                        <md-button aria-label="done" class="md-fab md-primary" md-theme="navbar"><md-icon ng_bind="'done'" class="whiteCol"></md-icon>
+                        </md-button>
+                    </a>
+                    <a ng-href="#/show/{{show.id}}"><md-button class="md-fab md-primary" aria-label="more_info" md-theme="navbar"><md-icon ng_bind="'more_horiz'" class="whiteCol"></md-icon></md-button></a>
                 </md-card-actions>
             </md-card>
         </div>

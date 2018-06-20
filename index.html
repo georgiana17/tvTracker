@@ -95,7 +95,7 @@
 		
 				<md-input-container flex md-theme="navbar">
 					<!-- <label for="search">Search your favorite show</label> -->
-					<input id="search-input" focus-me="{{focusInput}}" type="text" ng-model="search" ng-keyup="$event.keyCode == 13 ? searchTvShow() : null"/>
+					<input id="search-input" aria-label="search" focus-me="{{focusInput}}" type="text" ng-model="search" ng-keyup="$event.keyCode == 13 ? searchTvShow() : null"/>
 				</md-input-container>
 		
 				<md-button class="md-icon-button" ng-click="endSearch()">
@@ -160,10 +160,11 @@
 </body>
 
 
-<script>
+<!-- <script>
 	document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
 	':35729/livereload.js?snipver=1"></' + 'script>')
-</script>
+</script> -->
+
 <style>
 	.search-bar { background-color: #222; }
 	.search-bar * { color: white !important; }

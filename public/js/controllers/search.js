@@ -1,13 +1,21 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("SearchController", function($scope, $routeParams, $http, $rootScope) {    
+app.controller("SearchController", function($scope, $routeParams, $http, $rootScope, userShows) {    
     if($routeParams.query != undefined) {
         $http.get("/search/" + $routeParams.query).then(function(res) {
             $scope.tvShows = res.data.results;
         });
     }
 
-    $scope.followed = false;
+    // $scope.userShows = [[37680], [1399]];  // FOR UNIT TESTING
+
+    $scope.isShowFollowed = function(showId) {
+        for(var i = 0; i < $scope.userShows.length; i++) {
+            if($scope.userShows[i][0] == showId) {
+                return true;
+            }
+        }
+    };
     
     $scope.followShow = function(showId) {
         console.log("shooow" + showId);
