@@ -112,7 +112,6 @@ app.get('/randomImage/:id', function(req, res){
 
 app.get('/show/:id', function(req,res){
   var showDetail = `http://api.themoviedb.org/3/tv/${req.params.id}?api_key=${process.env.TMDB_KEY}&append_to_response=videos,external_ids`;
-  console.log(showDetail);
   fetch(`${showDetail}`)
       .then(response => response.json())
       .then(info => res.send(info))
@@ -196,7 +195,6 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
 
   app.get('/tvChanges/:show_id', function(req,res){
     var weekAgo = new Date(new Date().setDate(new Date().getDate()-7));
-    console.log(weekAgo);
     var showChanges = `http://api.themoviedb.org/3/tv/${req.params.show_id}/changes?api_key=${process.env.TMDB_KEY}&language=en-US&start_date=${weekAgo}`;
     fetch(`${showChanges}`)
       .then(resp => resp.json())
@@ -208,7 +206,6 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
   
   app.get('/seasonChanges/:season_id', function(req,res){
     var weekAgo = new Date(new Date().setDate(new Date().getDate()-7));
-    console.log(weekAgo);
     var seasonChanges = `http://api.themoviedb.org/3/tv/season/${req.params.season_id}/changes?api_key=${process.env.TMDB_KEY}&language=en-US&start_date=${weekAgo}`;
     fetch(`${seasonChanges}`)
       .then(resp => resp.json())

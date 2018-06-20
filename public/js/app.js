@@ -40,6 +40,12 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $rootScope.update();
     }
 
+    $scope.toggleSidenavIfMobile = function() {
+        if($window.innerWidth < 1280){
+            $scope.toggleSidenav('left');            
+        }
+    }
+
     angular.element($window).bind('resize', function () {
         if($window.innerWidth < 1280) {
             $scope.endSearch();
@@ -96,7 +102,8 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
     });
 
     $scope.toggleSidenav = function(menuId) {
-        $mdSidenav(menuId).toggle();   };
+        $mdSidenav(menuId).toggle();   
+    };
 
 
     $rootScope.update = function() {

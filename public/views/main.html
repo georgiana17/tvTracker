@@ -2,12 +2,31 @@
     <div class="parallax" ng-style="{'background-image':'url('+backgroundImage+')', 'background-size':'cover', 'background-position':'center center', 'background-attachment':'fixed', 'background-repeat':'no-repeat no-repeat', 'height': '90vh', 'display': 'inline-block'}">
         <div class="dark-background">
             <!-- TODO: flex-offset responsive -->
-            <div layout="row" flex-offset-xs="" flex-offset-gt-xs="" flex-offset-sm="5" flex-offset-gt-sm="10" flex-offset-md="15" flex-offset-lg="25" flex-offset-gt-lg="25"> 
-                <img src="/public/images/banner.png" class="responsive" style="max-width: 820px; width:auto; height:360px; margin-top:25%" layout-align="center center"/>
+            <div layout="row" layout-xs="column" layout-sm="column" layout-md="column" flex-offset-xs="" flex-offset-gt-xs="" flex-offset-sm="5" flex-offset-gt-sm="10" flex-offset-md="15" flex-offset-lg="25" flex-offset-gt-lg="25"> 
+                <img src="/public/images/banner.png" layout-xs="column" layout-sm="column" layout-md="column"  class="responsive" style="max-width: 820px; width:auto; height:360px; margin-top:25%" layout-align="center center"/>
+                <span flex></span>
+            
+                <div hide-gt-md layout-fill layout-xs="column" layout-sm="column" layout-md="column" flex-offset-xs="" flex-offset-gt-xs="" flex-offset-sm="5" flex-offset-gt-sm="10" flex-offset-md="15" style="color:white!important; text-align:center;">
+                    <h2>Watched</h2>
+                    <p><strong>12</strong></p>
+                    <h2>Unwatched</h2>
+                    <p><strong>32</strong></p>
+                </div>
+            </div>
+
+            <div class="watched" hide-sm hide-xs hide-md flex-offset-lg="25" flex-offset-gt-lg="25" style="color:white!important; margin-top:45%; margin-left:-41%; text-align:center;">
+                <h2>Watched</h2>
+                <h2>12</h2>
+            </div>
+            &nbsp;
+            &nbsp;
+            <div class="unwatched" hide-sm hide-xs hide-md flex-offset-lg="25" flex-offset-gt-lg="25" style="color:white!important; margin-top:45%; text-align:center;">
+                <h2>Unwatched</h2>
+                <h2>45</h2>
             </div>
         </div>
     </div>
-    <div layout="row" layout-xs="column" layout-sm="column"  layout-padding>
+    <div layout="row" layout-xs="column" layout-sm="column" layout-padding>
         <div layout="column" flex="33" flex-xs="50" flex-sm="50">
             <md-card flex="flex" layout-align="center center" style="text-align: center" layout-padding>
                 <ng-md-icon icon="playlist_add_check" size="64"></ng-md-icon>
@@ -89,4 +108,46 @@
             height: 100vh !important;
         }
     }
+
+    @media only screen and (min-width: 1280px) and  (max-width: 1500px) {
+        .watched {
+            margin-top:50%!important;
+            margin-left:-53%!important;
+        }
+        .unwatched {
+            margin-top:50%!important;
+        }
+    }
+
+    @media only screen and (min-width: 1500px) and  (max-width: 1960px) {
+        .watched {
+            margin-top:44%!important;
+            margin-left:-41%!important;
+        }
+        .unwatched {
+            margin-top:44%!important;
+        }
+    }
+
+    @media only screen and (min-width: 1960px) and  (max-width: 2400px) {
+        .watched {
+            margin-top:35%!important;
+            margin-left:-30%!important;
+        }
+        .unwatched {
+            margin-top:35%!important;
+        }
+    }
+
+    @media only screen and (min-width: 2400px) {
+        .watched {
+            margin-top:30%!important;
+            margin-left:-20%!important;
+        }
+        .unwatched {
+            margin-top:30%!important;
+        }
+    }
+
+
 </style>
