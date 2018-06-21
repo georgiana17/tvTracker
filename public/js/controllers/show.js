@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter, seriesChanges){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter){
 
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
@@ -18,21 +18,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         $http.post("/rateShow/" + rating + "/" + $rootScope.user + "/" + $routeParams.id).then(function(res){
             console.log(res);
         }) 
-    }
-    if(seriesChanges.length>0){
-        for(var i = 0; i < seriesChanges.length; i++){
-            if(seriesChanges[i].items.length > 0){
-                for(var j = 0; j < seriesChanges[i].items.length; j++){
-                    if(seriesChanges[i].items[j].value != undefined){
-                        if(seriesChanges[i].items[j].value.season_id){
-                            $http.get("/seasonChanges/" + seriesChanges[i].items[j].value.season_id).then(function(res){
-                                console.log(res.data)
-                            })
-                        }
-                    }
-                }
-            }
-        }
     }
     
     $scope.getSeason = function(season_id) {

@@ -6,7 +6,7 @@ app.controller("SearchController", function($scope, $routeParams, $http, $rootSc
             $scope.tvShows = res.data.results;
         });
     }
-
+    $scope.userShows = userShows;
     // $scope.userShows = [[37680], [1399]];  // FOR UNIT TESTING
 
     $scope.isShowFollowed = function(showId) {
@@ -18,7 +18,6 @@ app.controller("SearchController", function($scope, $routeParams, $http, $rootSc
     };
     
     $scope.followShow = function(showId) {
-        console.log("shooow" + showId);
         $http.get("/tvShow/" + showId).then(function(response){
             return response;
         }).then(function(response) {

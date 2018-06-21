@@ -1146,6 +1146,25 @@ app.get("/databaseShows", function(req, res) {
   });
 });
 
+//get number_of_seasons and number_of_episodes of show from DB
+app.get("/showDBInfo/:show_id", function(req, res) {
+  oracledb.getConnection(databaseConfig, function(err, connection){
+    if(err){
+      console.log(err.message);
+      return;
+    }
+    var shows = `SELECT no_of_episodes, no_of_seasons FROM  tv_show WHERE show_id=` + req.params.show_id;
+    connection.execute(shows, [], function(err,result){
+      if(result.rows != undefined) {
+        res.send({number_of_episodes: result.rows[0][0], number_of_seasons: result.rows[0][1]});
+      } else {
+        res.send("No shows in database!");
+      }
+    });
+  });
+});
+
+
 // API CALLS 
 
 app.get('/randomImage/:id', function(req, res){

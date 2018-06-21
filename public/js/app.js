@@ -230,16 +230,37 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     });
                 }
             },
-            rating: function($http, $rootScope, $route){
+            rating : function($http, $rootScope, $route){
                 if($rootScope.loggedIn) {
                     return $http.get("/ratingShow/"  + $rootScope.user + "/" + $route.current.params.id).then(function(res){
                         return res.data;
                     })
                 }
             },
-            seriesChanges : function($http, $route) {
-                return $http.get("/tvChanges/" + $route.current.params.id).then(function(res) {
-                    return res.data.changes;
+            updateShow: function($http, $route){
+                return $http.get("/show/" + $route.current.params.id).then(function(res) {
+                    var show = {};
+                    show = res.data;
+                    return show;
+                }).then(function(show){
+                    return $http.get("/showDBInfo/"+ $route.current.params.id).then(function(res){
+                        if(res.data != "No shows in database!"){
+                            if(res.data.number_of_seasons != show.number_of_seasons){
+                                console.log("change on seasonss");
+                                console.log(show.number_of_seasons)
+                            } else {
+                                console.log("no change");
+                            }
+
+                            if(res.data.number_of_episodes != show.number_of_episodes){
+                                console.log("change on episodes");
+                                console.log(show.no_of_episodes)
+                            } else {
+                                console.log("no change");
+                            }
+                        }
+                        return res;
+                    })
                 });
             }
         }
