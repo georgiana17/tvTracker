@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter, showInfo){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter){
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
     $scope.unmarked = false;
@@ -55,23 +55,15 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         }
     }
     $scope.getSeason = function(season_id) {
-        // $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
-        //     //TODO
-        //     $scope.seasonData = response.data;
-        //     $scope.seasonName = $scope.seasonData.name;
-        //     $scope.episodes = $scope.seasonData.episodes;
+        $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
+            //TODO
+            $scope.seasonData = response.data;
+            $scope.seasonName = $scope.seasonData.name;
+            $scope.episodes = $scope.seasonData.episodes;
             
-
-        //     $scope.isMarked();
-        //     $scope.isShowFollowed();
-        // });
-        
-        $scope.seasonData = showInfo[0]["season/" + season_id];
-        $scope.seasonName = $scope.seasonData.name;
-        $scope.episodes = $scope.seasonData.episodes;
-
-        $scope.isMarked();
-        $scope.isShowFollowed();
+            $scope.isMarked();
+            $scope.isShowFollowed();
+        });
     }
 
     $scope.selected = 0;
@@ -81,65 +73,67 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     };
 
     if($routeParams.id != undefined) {
-        $scope.data = showInfo[0];
-        // remove the "Specials" season
-        //TODO: if data.seasons == null 
-        if($scope.data.seasons){
-            if($scope.data.seasons.length > 0) {
-                if($scope.data.seasons[0].name == "Specials") {
-                    $scope.data.seasons = $scope.data.seasons.slice(1, $scope.data.seasons.length);
-                    $scope.selectSeason(1);
-                } else {
-                    $scope.selectSeason(1);
+        $http.get("/show/" + $routeParams.id).then(function(response){
+            $scope.data = response.data;
+            // remove the "Specials" season
+            //TODO: if data.seasons == null 
+            if($scope.data.seasons){
+                if($scope.data.seasons.length > 0) {
+                    if($scope.data.seasons[0].name == "Specials") {
+                        $scope.data.seasons = $scope.data.seasons.slice(1, $scope.data.seasons.length);
+                        $scope.selectSeason(1);
+                    } else {
+                        $scope.selectSeason(1);
+                    }
                 }
             }
-        }
-        
-        if($scope.data.backdrop_path == null) {
-            $scope.urlImage = "public/images/logo_episode_spy_original_207x35_black_1_1663x450.png"; // CHANGE PHOTO DIMENSION
-        } else {
-            $scope.urlImage = "https://image.tmdb.org/t/p/original" + $scope.data.backdrop_path;
-        }
-        if($scope.data.first_air_date) {
-            $scope.releaseYear = $scope.data.first_air_date;
-        }
-        if($scope.data.name !== null) {
-            $scope.showName = $scope.data.name;
-        } else {
-            $scope.showName = $scope.data.original_name;
-        }
-        // TODO: if poster_path == null => add a custom image.
-        if($scope.data.poster_path == null){
-            $scope.posterPath = "public/images/eye.png"
-        } else {
-            $scope.posterPath = "https://image.tmdb.org/t/p/w154" + $scope.data.poster_path;
-        }
-
-        if($rootScope.loggedIn) {
-            if($scope.checkedEpisodes.length != 0) {
-                $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
+            
+            if($scope.data.backdrop_path == null) {
+                $scope.urlImage = "public/images/logo_episode_spy_original_207x35_black_1_1663x450.png"; // CHANGE PHOTO DIMENSION
             } else {
-                $scope.progress = 0;
+                $scope.urlImage = "https://image.tmdb.org/t/p/original" + $scope.data.backdrop_path;
             }
-
-        }
-        if($scope.data.videos != undefined){
-            if($scope.data.videos.results.length != 0) {
-                $scope.youtubeUrl = "https://www.youtube.com/watch?v=" + $scope.data.videos.results[0].key;
-                $scope.trailer = true;
+            if($scope.data.first_air_date) {
+                $scope.releaseYear = $scope.data.first_air_date;
+            }
+            if($scope.data.name !== null) {
+                $scope.showName = $scope.data.name;
             } else {
-                $scope.trailer = false;
+                $scope.showName = $scope.data.original_name;
             }
-        }
-
-        if($scope.data.external_ids != undefined){
-            if($scope.data.external_ids.imdb_id) {
-                $scope.imdbUrl = "https://www.imdb.com/title/" + $scope.data.external_ids.imdb_id;
-                $scope.imdb = true;
+            // TODO: if poster_path == null => add a custom image.
+            if($scope.data.poster_path == null){
+                $scope.posterPath = "public/images/eye.png"
             } else {
-                $scope.imdb = false;
+                $scope.posterPath = "https://image.tmdb.org/t/p/w154" + $scope.data.poster_path;
             }
-        }
+    
+            if($rootScope.loggedIn) {
+                if($scope.checkedEpisodes.length != 0) {
+                    $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
+                } else {
+                    $scope.progress = 0;
+                }
+    
+            }
+            if($scope.data.videos != undefined){
+                if($scope.data.videos.results.length != 0) {
+                    $scope.youtubeUrl = "https://www.youtube.com/watch?v=" + $scope.data.videos.results[0].key;
+                    $scope.trailer = true;
+                } else {
+                    $scope.trailer = false;
+                }
+            }
+    
+            if($scope.data.external_ids != undefined){
+                if($scope.data.external_ids.imdb_id) {
+                    $scope.imdbUrl = "https://www.imdb.com/title/" + $scope.data.external_ids.imdb_id;
+                    $scope.imdb = true;
+                } else {
+                    $scope.imdb = false;
+                }
+            }
+        })
     }
     
     $scope.followShow = function(showId) {

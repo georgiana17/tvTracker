@@ -247,22 +247,6 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
         controller: "ShowController",
         templateUrl: "public/views/show.html",
         resolve: {
-            showInfo: function($http,$route,$q){
-                return $http.get("/show/" + $route.current.params.id).then(function(res) {
-                    var show = {};
-                    show = res.data;
-                    return show;
-                })
-                .then(function(show){
-                    var promises = [];
-                    promises.push($http.get("/allEpisodes/" + show.id + "/" + show.number_of_seasons).then(function(succes){
-                        return succes.data;
-                    }))
-                    return $q.all(promises).then(function(res) {
-                        return res;
-                    });
-                });
-            },
             episodes : function($http, $rootScope, $route) {
                 if($rootScope.loggedIn) {
                     return $http.get("/userEpisodes/" + $rootScope.user + "/" + $route.current.params.id).then(function(resp){
