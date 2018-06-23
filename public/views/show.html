@@ -60,7 +60,7 @@
         <ul layout="row">                
             <li ng-repeat="season in data.seasons" layout-padding flex="flex">
                 <a href ng-click="selectSeason(season.season_number)">
-                    <img ng-src='{{season.poster_path !== null ? "https://image.tmdb.org/t/p/original" + season.poster_path : "public/images/eye.png"}}' style="width: 150px; height: 216px;" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
+                    <img ng-src='{{season.poster_path !== null ? "https://image.tmdb.org/t/p/w154" + season.poster_path : "public/images/eye.png"}}' style="width: 150px; height: 216px;" ng-class="{'seasons_selected border': selected === season.season_number || (season === data.seasons[0] && selected == 0)}">
                 </a>
             </li>
         </ul>
@@ -92,7 +92,7 @@
                 <h3 layout="row" ng-show="seasonData.episodes.length == 0" layout-padding layout-wrap flex="80" flex-sm="50">There are no episodes in this season yet!</h3>
                 <div layout-padding layout-wrap layout="row" flex="80" flex-sm="50" layout-xs="column">
                     <md-card md-whiteframe="3" flex-xs="50" flex-sm="100" flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
-                        <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/original" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
+                        <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/w300" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">{{(episode.season_number <= 9) ? "0" + episode.season_number : episode.season_number }}x{{(episode.episode_number <= 9) ? "0" + episode.episode_number : episode.episode_number}}</span>

@@ -1154,8 +1154,8 @@ app.get("/showDBInfo/:show_id", function(req, res) {
       return;
     }
     var shows = `SELECT no_of_episodes, no_of_seasons FROM  tv_show WHERE show_id=` + req.params.show_id;
-    connection.execute(shows, [], function(err,result){
-      if(result.rows != undefined) {
+    connection.execute(shows, [], function(err,result){      
+      if(result.rows != undefined && result.rows.length != 0) {
         res.send({number_of_episodes: result.rows[0][0], number_of_seasons: result.rows[0][1]});
       } else {
         res.send("No shows in database!");

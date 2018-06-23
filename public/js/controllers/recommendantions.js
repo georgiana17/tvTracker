@@ -11,7 +11,7 @@ app.controller("RecommendantionsController", function($scope, $http, recommendan
         }
     }
 
-    $scope.random = function() {
-        return 0.5 - Math.random();
-    }
+    // $scope.random = function() {
+    //     return 0.5 - Math.random();
+    // }
 });
