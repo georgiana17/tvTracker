@@ -1,6 +1,6 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("MyShowsController", function($scope, myShows,  $http, $rootScope, $mdDialog, $mdToast) {
+app.controller("MyShowsController", function($scope, myShows, $http, $rootScope, $mdDialog, $mdToast) {
     // $scope.progress = 34;
     $scope.myShows = myShows;
     if($scope.myShows == "No shows for this user!"){

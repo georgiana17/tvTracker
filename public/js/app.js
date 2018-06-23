@@ -192,7 +192,31 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
     $routeProvider
     .when("/", {
         controller: "MainController",
-        templateUrl: "public/views/main.html"
+        templateUrl: "public/views/main.html",
+        resolve: {
+            myShows : function($http, $q, $rootScope) {
+                if($rootScope.loggedIn) {
+                    return $http.get("/myShows/" + $rootScope.user).then(function(res) {
+                        return res.data;
+                    })
+                    .then(function(shows) {
+                        if(shows == "No shows for this user!"){
+                            return "No shows for this user!";
+                        } else {
+                            var promises = [];
+                            for(var i = 0; i < shows.length; i++) {
+                                promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i][0]).then(function(res){
+                                    return res.data;
+                                }))
+                            }
+                            return $q.all(promises).then(function(result){
+                                return result;
+                            })
+                        }
+                    })
+                }
+            }
+        }
     })
     .when("/topSeries", {
         controller: "TopRatedController",

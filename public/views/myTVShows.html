@@ -20,7 +20,7 @@
         <!-- TODO: SORT HEADERS & SEND JSON FROM SERVER -->
          <tr ng-repeat="show in myShows">
             <td hide-xs>
-                <img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/original" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
+                <img ng-src='{{ show[0][7] ? "https://image.tmdb.org/t/p/w92" + show[0][7] : "public/images/eye.png"}}' class="md-avatar face" style="width: 60px; height: 60px;" alt="GOT"></td>
             <td>
                 <span><md-icon class="tealCol">{{ show[0][6] == 0 ? "done" : "remove_red_eye"}}</md-icon></span> &nbsp;
                 <a ng-href="#/show/{{show[0][1]}}" class="text-resp">{{show[0][0] ? show[0][0] : "-" }}</a>

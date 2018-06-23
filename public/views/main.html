@@ -6,23 +6,23 @@
                 <img src="/public/images/banner.png" layout-xs="column" layout-sm="column" layout-md="column"  class="responsive" style="max-width: 820px; width:auto; height:360px; margin-top:25%" layout-align="center center"/>
                 <span flex></span>
             
-                <div ng-show="loggedIn" hide-gt-md layout-fill layout-xs="column" layout-sm="column" layout-md="column" flex-offset-xs="" flex-offset-gt-xs="" flex-offset-sm="5" flex-offset-gt-sm="10" flex-offset-md="15" style="color:white!important; text-align:center;">
+                <div ng-show="loggedIn && hasShows" hide-gt-md layout-fill layout-xs="column" layout-sm="column" layout-md="column" flex-offset-xs="" flex-offset-gt-xs="" flex-offset-sm="5" flex-offset-gt-sm="10" flex-offset-md="15" style="color:white!important; text-align:center;">
                     <h2>Watched</h2>
-                    <p><strong>12</strong></p>
+                    <p><strong>{{totalEpisodesWatched}}</strong></p>
                     <h2>Unwatched</h2>
-                    <p><strong>32</strong></p>
+                    <p><strong>{{episodesUnwatched}}</strong></p>
                 </div>
             </div>
 
-            <div ng-show="loggedIn" class="watched" hide-sm hide-xs hide-md flex-offset-lg="25" flex-offset-gt-lg="25" style="color:white!important; margin-top:45%; margin-left:-41%; text-align:center;">
+            <div ng-show="loggedIn && hasShows" class="watched" hide-sm hide-xs hide-md flex-offset-lg="25" flex-offset-gt-lg="25" style="color:white!important; margin-top:45%; margin-left:-41%; text-align:center;">
                 <h2>Watched</h2>
-                <h2>12</h2>
+                <h2>{{totalEpisodesWatched}}</h2>
             </div>
             &nbsp;
             &nbsp;
-            <div ng-show="loggedIn" class="unwatched" hide-sm hide-xs hide-md flex-offset-lg="25" flex-offset-gt-lg="25" style="color:white!important; margin-top:45%; text-align:center;">
+            <div ng-show="loggedIn && hasShows" class="unwatched" hide-sm hide-xs hide-md flex-offset-lg="25" flex-offset-gt-lg="25" style="color:white!important; margin-top:45%; text-align:center;">
                 <h2>Unwatched</h2>
-                <h2>45</h2>
+                <h2>{{episodesUnwatched}}</h2>
             </div>
         </div>
     </div>
