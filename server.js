@@ -79,12 +79,12 @@ app.post("/user", function(req,res){
                     from : 'episodespy@gmail.com',
                     to: userDetail.email,
                     subject: 'Activation link',
-                    text: `<div style="text-align:center;"><img src="http://localhost:3000/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
+                    text: `<div style="text-align:center;"><img src='https://raw.githubusercontent.com/georgiana17/tvTracker/master/public/images/logo_episode_spy_original_black.png' style="width:403px; height:37px;"/></div> <br/>` +
                           `<h1 style="color: teal">Hello <strong>` + userDetail.username + `, </strong></h1><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
                           ` complete your activation: <br/><br/> <a href="http://localhost:3000/#/activate/` + token +  `">http://localhost:3000/activate</a> <br/><br/>
                           <div style="text-align:center"><p style="font-size:12px;"> This email was automatically sent from <strong style="color:teal">EpisodeSpy</strong>.`+
                           ` Do not reply to this email, use contact page instead. </p></div>`,
-                    html: `<div style="text-align:center;"><img src="http://localhost:3000/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
+                    html: `<div style="text-align:center;"><img src='https://raw.githubusercontent.com/georgiana17/tvTracker/master/public/images/logo_episode_spy_original_black.png' style="width:403px; height:37px;"/></div> <br/>` +
                           `<h1 style="color: teal">Hello <strong>` + userDetail.username + `, </strong></h1><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
                           ` complete your activation: <br/><br/> <a href="http://localhost:3000/#/activate/` + token +  `">http://localhost:3000/activate</a> <br/><br/>
                           <div style="text-align:center"><p style="font-size:12px;"> This email was automatically sent from <strong style="color:teal">EpisodeSpy</strong>.`+
@@ -218,12 +218,12 @@ app.post("/resendLink/:userName/:email", function(req, res){
               from : 'episodespy@gmail.com',
               to: req.params.email,
               subject: 'Activation link',
-              text: `<div style="text-align:center;"><img src="http://localhost:3000/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
+              text: `<div style="text-align:center;"><img src="https://raw.githubusercontent.com/georgiana17/tvTracker/master/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
                     `<h1 style="color: teal">Hello <strong>` + req.params.username + `, </strong></h1><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
                     ` complete your activation: <br/><br/> <a href="http://localhost:3000/#/activate/` + token +  `">http://localhost:3000/activate</a> <br/><br/>
                     <div style="text-align:center"><p style="font-size:12px;"> This email was automatically sent from <strong style="color:teal">EpisodeSpy</strong>.`+
                     ` Do not reply to this email, use contact page instead. </p></div>`,
-              html: `<div style="text-align:center;"><img src="http://localhost:3000/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
+              html: `<div style="text-align:center;"><img src="https://raw.githubusercontent.com/georgiana17/tvTracker/master/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
                     `<h1 style="color: teal">Hello <strong>` + req.params.username + `, </strong></h1><br/> Thank you for registering at episodeSpy. Please click on the link below to` +
                     ` complete your activation: <br/><br/> <a href="http://localhost:3000/#/activate/` + token +  `">http://localhost:3000/activate</a> <br/><br/>
                     <div style="text-align:center"><p style="font-size:12px;"> This email was automatically sent from <strong style="color:teal">EpisodeSpy</strong>.`+
@@ -260,12 +260,12 @@ app.post("/resendPass/:userName/:email", function(req, res){
         from : 'episodespy@gmail.com',
         to: req.params.email,
         subject: "Reset your password",
-        text: `<div style="text-align:center;"><img src="http://localhost:3000/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
+        text: `<div style="text-align:center;"><img src='https://raw.githubusercontent.com/georgiana17/tvTracker/master/public/images/logo_episode_spy_original_black.png' style="width:403px; height:37px;"/></div> <br/>` +
               `<h1 style="color: teal">Hello <strong>` + req.params.userName + `, </strong></h1><br/> Someone has requested a link to change your password. To do that please click on the link below. <br/>` +
               ` <br/> <a href='http://localhost:3000/#/changePassword/'` + token +  `'>Change your password</a> <br/><br/> If you didn't request this, please ignore this email.` + `<br/> Your password won't change until you access the link above and create a new one.
               <div style="text-align:center"><br/><p style="font-size:12px;"> This email was automatically sent from <strong style="color:teal">EpisodeSpy</strong>.`+
               ` Do not reply to this email, use contact page instead. </p></div>`,
-        html: `<div style="text-align:center;"><img src="http://localhost:3000/public/images/logo_episode_spy_original_black.png" style="width:403px; height:37px;"/></div> <br/>` +
+        html: `<div style="text-align:center;"><img src='https://raw.githubusercontent.com/georgiana17/tvTracker/master/public/images/logo_episode_spy_original_black.png' style="width:403px; height:37px;"/></div> <br/>` +
               `<h1 style="color: teal">Hello <strong>` + req.params.userName + `, </strong></h1><br/> Someone has requested a link to change your password. To do that please click on the link below. <br/>` +
               ` <br/> <a href='http://localhost:3000/#/changePassword/'` + token +  `'>Change your password</a> <br/><br/> If you didn't request this, please ignore this email.` + `<br/> Your password won't change until you access the link above and create a new one.
               <div style="text-align:center"><br/><p style="font-size:12px;"> This email was automatically sent from <strong style="color:teal">EpisodeSpy</strong>.`+
