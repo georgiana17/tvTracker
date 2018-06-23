@@ -337,6 +337,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         } else {
                             var promises = [];
                             for(var i = 0; i < shows.length; i++) {
+                                console.log($rootScope.user)
                                 promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i][0]).then(function(res){
                                     return res.data;
                                 }))

@@ -16,10 +16,14 @@ app.controller("TopRatedController", function($scope, $http, $rootScope, userSho
     $scope.getPopularTvSeries();
 
     $scope.isShowFollowed = function(showId) {
-        for(var i = 0; i < $scope.userShows.length; i++) {
-            if($scope.userShows[i][0] == showId) {
-                return true;
+        if($scope.userShows != "No shows for this user!"){
+            for(var i = 0; i < $scope.userShows.length; i++) {
+                if($scope.userShows[i][0] == showId) {
+                    return true;
+                }
             }
+        } else {
+            $scope.userShows = [];
         }
     };
 

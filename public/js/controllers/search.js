@@ -9,11 +9,17 @@ app.controller("SearchController", function($scope, $routeParams, $http, $rootSc
     $scope.userShows = userShows;
     // $scope.userShows = [[37680], [1399]];  // FOR UNIT TESTING
 
+    console.log(userShows)
+
     $scope.isShowFollowed = function(showId) {
-        for(var i = 0; i < $scope.userShows.length; i++) {
-            if($scope.userShows[i][0] == showId) {
-                return true;
+        if($scope.userShows != "No shows for this user!"){
+            for(var i = 0; i < $scope.userShows.length; i++) {
+                if($scope.userShows[i][0] == showId) {
+                    return true;
+                }
             }
+        } else {
+            $scope.userShows = [];
         }
     };
     

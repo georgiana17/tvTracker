@@ -978,9 +978,10 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
     var my_episodes = `SELECT * FROM (
                        SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, t.NO_OF_EPISODES - f.episode_watched AS no_of_ep_unwatched, t.poster_path, t.NO_OF_EPISODES
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s,
-                       (SELECT count(*) as episode_watched
+                       (SELECT count(count(a.episode_id)) as episode_watched
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s, users_episodes a
-                       WHERE u.username = LOWER('`+ req.params.userName + `') AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id and a.episode_id = e.episode_id AND u.show_id = ` + req.params.show_id + ` ) f
+                       WHERE a.user_id = (select user_id from users_logged where username = LOWER('`+ req.params.userName + `')) AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id and a.episode_id = e.episode_id AND u.show_id = ` + req.params.show_id + ` 
+                       group by a.episode_id ) f
                        WHERE u.username = LOWER('`+ req.params.userName + `') AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date < to_char(sysdate, 'yyyy-mm-dd')
                        order by air_date desc, episode_number desc )
                        WHERE rownum <=1 
@@ -988,12 +989,14 @@ app.get('/lastAndNextEpisode/:userName/:show_id', function(req, res){
                        SELECT * FROM (
                        SELECT t.show_name, t.show_id, e.episode_name, s.season_number, e.episode_number, e.air_date, t.NO_OF_EPISODES - f.episode_watched AS no_of_ep_unwatched, t.poster_path, t.NO_OF_EPISODES
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s,
-                       (SELECT count(*) as episode_watched
+                       (SELECT count(count(a.episode_id)) as episode_watched
                        FROM tv_show t, users_tv_shows u, episodes e, seasons s, users_episodes a
-                       WHERE u.username = LOWER('`+ req.params.userName + `') AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id and a.episode_id = e.episode_id AND u.show_id = ` + req.params.show_id + ` ) f
+                       WHERE a.user_id = (select user_id from users_logged where username = LOWER('`+ req.params.userName + `')) AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id and a.episode_id = e.episode_id AND u.show_id = ` + req.params.show_id + ` 
+                       group by a.episode_id ) f
                        WHERE u.username = LOWER('`+ req.params.userName + `') AND u.show_id = ` + req.params.show_id + ` AND s.season_id = e.season_id AND u.show_id = s.serie_id AND t.show_id = u.show_id AND air_date >= to_char(sysdate, 'yyyy-mm-dd')
                        order by air_date asc, episode_number asc )
                        WHERE rownum <= 1`;
+     console.log(my_episodes)
     connection.execute(my_episodes, [], function(err, result){
       if (err) { 
             return;  
