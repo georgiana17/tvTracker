@@ -175,24 +175,16 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                         var elem = $(jsEvent.target).closest(".fc-event");
                         if(watched == "false") {
                             $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.event.id).then(function(response) {
-                                if(response.data == "Episode added to user!") {
-                                    //TODO - CHECK AND UNCHECK
-                                    elem.find(".checkBox")[0].checked = true;
-                                    elem.addClass("striked");
-                                }
                             });
                             date.watched = "true";
+                            date.className[0] = "striked";
                         } else if (watched == "true") {
                             $http.post("/deleteEpisode/" + $rootScope.user + "/" + $scope.event.id).then(function(response) {
-                                if(response.data == "Episode deleted from user!") {
-                                    //TODO - CHECK AND UNCHECK
-                                    elem.find(".checkBox")[0].unchecked = true;
-                                    elem.removeClass("striked");
-                                }
                             });
                             date.watched = "false";
+                            date.className[0] = "";
                         }
-                        uiCalendarConfig.calendars.myCalendar.fullCalendar('updateEvent', event);
+                        uiCalendarConfig.calendars.myCalendar.fullCalendar('updateEvent', date);
                     }
                     $scope.closeToast = function() {                    
                         $mdToast
