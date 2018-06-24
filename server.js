@@ -882,7 +882,14 @@ app.get("/userEpisodes/:userName/:show_id", function(req, res){
     
     connection.execute(check_episode, [], function(err,result){
         if(result.rows != undefined) {
-          res.send(result.rows);
+          console.log(result.rows[0])
+          var shows = [];
+          console.log(result.rows.length)
+          for(var i=0; i< result.rows.length; i++){
+            console.log(result.rows[i][0])
+            shows.push({id: result.rows[i][0] });
+          }
+          res.send(shows);
         } else {
           res.send("No episodes for this user!");
         }
@@ -1166,6 +1173,25 @@ app.post('/updateSeasons/:show_id/:noOfSeasons', function(req, res) {
         }).catch((err) => console.log(err));  
         res.send("Tv Show UPDATED!");
     })
+});
+
+
+// checkIfShowExists
+app.get("/followedShow/:userName/:show_id", function(req,res){
+  oracledb.getConnection(databaseConfig, function(err, connection) {
+    if(err) {
+      return ;
+    }
+    var followedShow = `SELECT show_id from users_tv_shows where username =LOWER('` + req.params.userName + `') AND show_id=` + req.params.show_id;
+    console.log(followedShow)
+    connection.execute(followedShow, [], { autoCommit:true }, function(err,result) {
+      if(result.rows.length != 0) {
+        res.send({followed : true}); 
+      } else {
+        res.send("No show for this user!");
+      }
+    }); 
+  });
 });
 
 // API CALLS 

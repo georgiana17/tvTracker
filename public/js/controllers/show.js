@@ -1,11 +1,15 @@
 "use strict"
 var app = angular.module("tvTracker")
-app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter){
+app.controller("ShowController", function($scope, $http, $routeParams, $rootScope, episodes, rating, $mdDialog, $filter, isShowFollowed){
     $scope.checkedEpisodes = episodes;
     $scope.marked = false;
     $scope.unmarked = false;
-    $scope.followed = false;
     $scope.currentDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+    if(isShowFollowed != "No show for this user!" && $rootScope.loggedIn){        
+        $scope.followed = isShowFollowed.followed;
+    } else {
+        $scope.followed = false;
+    }
 
     if(rating) {
         $scope.vote = rating.showRating;
@@ -25,12 +29,12 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             let episodesToAppear = 0;
             for(var i=0; i< $scope.seasonData.episodes.length; i++) {
                 for(var j=0; j<$scope.checkedEpisodes.length; j++) {
-                    if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j][0]) {
+                    if($scope.seasonData.episodes[i].id == $scope.checkedEpisodes[j].id) {
                         n++;
                     }
-                    if($scope.seasonData.episodes[i].air_date <= $scope.currentDate){
-                        episodesToAppear ++;
-                    }
+                }
+                if($scope.seasonData.episodes[i].air_date >= $scope.currentDate){
+                    episodesToAppear ++;
                 }
             }
             if(n == $scope.seasonData.episodes.length - episodesToAppear) {
@@ -43,17 +47,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         }
     }
 
-    $scope.isShowFollowed = function() {
-        if($rootScope.loggedIn){
-            $http.get("/myShows/" + $rootScope.user).then(function(shows){
-                for(var i = 0; i < shows.data.length; i++) {
-                    if(shows.data[i][0] == $scope.data.id) {
-                        $scope.followed = true;
-                    }
-                }
-            });            
-        }
-    }
     $scope.getSeason = function(season_id) {
         $http.get("/season/" + $routeParams.id + "/" + season_id).then(function(response){
             //TODO
@@ -62,7 +55,6 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             $scope.episodes = $scope.seasonData.episodes;
             
             $scope.isMarked();
-            $scope.isShowFollowed();
         });
     }
 
@@ -193,17 +185,23 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     $scope.addEpisode = function(episodeId) {
         if($routeParams.id != undefined) {
             $http.post("/addEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
-                $scope.checkedEpisodes.push([episodeId]);
+                $scope.checkedEpisodes.push({id: episodeId});
                 $scope.isMarked();
+                
+                if($scope.data.number_of_episodes == $scope.checkedEpisodes.length){
+                    $scope.progress = 100;
+                } else {
+                    $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
+                }
+                console.log($scope.checkedEpisodes.length);
             });
-            $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
         }
     }
 
     $scope.checkEpisode = function(episodeId) {
         if($scope.followed == true) {
             for(var i = 0; i < $scope.checkedEpisodes.length; i++){
-                if(episodeId == $scope.checkedEpisodes[i][0])
+                if(episodeId == $scope.checkedEpisodes[i].id)
                     return true;
             }
         }
@@ -213,11 +211,12 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
         if($routeParams.id != undefined) {
             $http.post("/deleteEpisode/" + $rootScope.user + "/" + episodeId).then(function(response) {
                 for(var i=0; i<$scope.checkedEpisodes.length; i++){
-                    if(episodeId == $scope.checkedEpisodes[i][0]) {
+                    if(episodeId == $scope.checkedEpisodes[i].id) {
                         $scope.checkedEpisodes.splice(i,1);
                     }
                 }
                 $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
+                console.log($scope.checkedEpisodes.length);
             });
         }
         $scope.marked = false;
@@ -225,15 +224,26 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
 
     $scope.markSeason= function() {
         for(var i = 0; i < $scope.seasonData.episodes.length; i++) {
-            if($scope.seasonData.episodes[i].air_date <= $scope.currentDate) {                
+            if($scope.seasonData.episodes[i].air_date <= $scope.currentDate) {
                 $http.post("/addEpisode/" + $rootScope.user + "/" + $scope.seasonData.episodes[i].id).then(function(response) {
                 });
             }
-
-            if($scope.checkedEpisodes.hasOwnProperty([$scope.seasonData.episodes[i].id]) == false && $scope.seasonData.episodes[i].air_date <= $scope.currentDate) {
-                $scope.checkedEpisodes.push([$scope.seasonData.episodes[i].id]);
+            $scope.exists = false;
+            for(var j = 0; j < $scope.checkedEpisodes.length; j++){
+                if($scope.checkedEpisodes[j].id == $scope.seasonData.episodes[i].id){
+                    $scope.exists = true;
+                }
+            } 
+            
+            if($scope.exists == true){
+                continue;
+            } else {
+                if($scope.seasonData.episodes[i].air_date <= $scope.currentDate){
+                    $scope.checkedEpisodes.push({id: $scope.seasonData.episodes[i].id});
+                }
             }
         }
+        console.log($scope.checkedEpisodes.length);
         $scope.progress = Math.round(($scope.checkedEpisodes.length * 100)/$scope.data.number_of_episodes);
         $scope.marked = true;
     }
@@ -244,6 +254,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
                 $scope.deleteEpisode($scope.seasonData.episodes[i].id);
             }
         }
+        console.log($scope.checkedEpisodes.length);
         $scope.unmarked = true;
     }
     

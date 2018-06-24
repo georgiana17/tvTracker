@@ -119,6 +119,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
             fixedWeekCount: false,
             displayEventTime: false,
             lang: $rootScope.locale,
+            handleWindowResize: false,
             header: {
                 left: 'prev',
                 center: 'title',
@@ -191,6 +192,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                             });
                             date.watched = "false";
                         }
+                        uiCalendarConfig.calendars.myCalendar.fullCalendar('updateEvent', event);
                     }
                     $scope.closeToast = function() {                    
                         $mdToast
@@ -209,21 +211,16 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                     element.find(".checkBox").bind('click', function() {
                         if(event.watched == "false") {
                             $http.post("/addEpisode/" + $rootScope.user + "/" + event.id).then(function(response) {
-                                // console.log(response.data);
-                                if(response.data == "Episode added to user!") {
-                                    element.addClass("striked");
-                                }
                             });
                             event.watched = "true";
+                            event.className[0] = "striked";
                         } else if (event.watched == "true") {
                             $http.post("/deleteEpisode/" + $rootScope.user + "/" + event.id).then(function(response) {
-                                // console.log(response.data);
-                                if(response.data == "Episode deleted from user!") {
-                                    element.removeClass("striked");
-                                }
                             });
                             event.watched = "false";
+                            event.className[0] = "";
                         }
+                        uiCalendarConfig.calendars.myCalendar.fullCalendar('updateEvent', event);
                     });
                 }
             }

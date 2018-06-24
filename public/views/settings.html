@@ -37,19 +37,22 @@
     
     <md-divider></md-divider>
 
-    <div layout="column"  layout-flex md-theme="navbar" flex-xs="100"  flex-sm="60" flex-md="35" flex-lg="30" flex-gt-lg="30">
+    <div layout="column"  layout-flex flex-xs="100" md-theme="navbar" flex-sm="60" flex-md="35" flex-lg="30" flex-gt-lg="30">
         <h1>Choose your language</h1>
         <md-select ng-model="language" placeholder="English" md-selected-text="getSelectedLanguage()">
             <md-option value="English"><em>English</em></md-option>
             <md-option value="Francais"><em>Français</em></md-option>
             <md-option value="Romana"><em>Română</em></md-option>
         </md-select>
-        <md-button class="md-raised md-primary" ng-click="saveLanguage()">Save</md-button>
+        <md-button class="md-raised md-primary" md-theme="navbar" ng-click="saveLanguage()">Save</md-button>
     </div>
 </div>
 
 <style>
     .md-toast.success {
         background-color: green;
+    }
+    md-select-menu.md-navbar-theme md-content {
+        background-color: white!important;
     }
 </style>

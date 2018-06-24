@@ -267,7 +267,7 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                     show = res.data;
                     return show;
                 }).then(function(show){
-                    return $http.get("/showDBInfo/"+ $route.current.params.id).then(function(res){
+                    return $http.get("/showDBInfo/" + $route.current.params.id).then(function(res){
                         if(res.data != "No shows in database!"){
                             if(res.data.number_of_seasons != show.number_of_seasons || res.data.number_of_episodes != show.number_of_episodes){
                                 $http.post("/updateSeasons/" + $route.current.params.id + "/" + show.number_of_seasons).then(function(res){
@@ -292,6 +292,13 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         return res;
                     })
                 });
+            },
+            isShowFollowed: function($http, $route, $rootScope){
+                if($rootScope.loggedIn){
+                    return $http.get("/followedShow/" + $rootScope.user + "/" + $route.current.params.id).then(function(res){
+                        return res.data;
+                    });            
+                }
             }
         }
     })
