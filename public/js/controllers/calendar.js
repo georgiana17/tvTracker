@@ -111,8 +111,6 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
         }
     }
 
-
-    console.log($rootScope.locale)
     var popover;
     $scope.uiConfig = {
         calendar: {

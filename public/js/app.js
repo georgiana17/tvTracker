@@ -269,19 +269,25 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                 }).then(function(show){
                     return $http.get("/showDBInfo/"+ $route.current.params.id).then(function(res){
                         if(res.data != "No shows in database!"){
-                            if(res.data.number_of_seasons != show.number_of_seasons){
-                                console.log("change on seasonss");
+                            if(res.data.number_of_seasons != show.number_of_seasons || res.data.number_of_episodes != show.number_of_episodes){
+                                $http.post("/updateSeasons/" + $route.current.params.id + "/" + show.number_of_seasons).then(function(res){
+                                    console.log(res.data);
+                                })
+                                console.log("change on seasonss or episodes");
                                 console.log(show.number_of_seasons)
                             } else {
                                 console.log("no change");
                             }
 
-                            if(res.data.number_of_episodes != show.number_of_episodes){
-                                console.log("change on episodes");
-                                console.log(show.no_of_episodes)
-                            } else {
-                                console.log("no change");
-                            }
+                            // if(res.data.number_of_episodes != show.number_of_episodes && res.data.number_of_seasons == show.number_of_seasons){
+                            //     console.log("change on episodes");
+                            //     $http.post("/updateEpisodes/" + $route.current.params.id + "/" + show.number_of_seasons).then(function(res){
+                            //         console.log(res.data);
+                            //     })
+                            //     console.log(show.number_of_episodes)
+                            // } else {
+                            //     console.log("no change");
+                            // }
                         }
                         return res;
                     })
@@ -321,7 +327,6 @@ app.config(function($mdThemingProvider, $mdIconProvider, $routeProvider, $locati
                         } else {
                             var promises = [];
                             for(var i = 0; i < shows.length; i++) {
-                                console.log($rootScope.user)
                                 promises.push($http.get("/lastAndNextEpisode/" + $rootScope.user + "/" + shows[i][0]).then(function(res){
                                     return res.data;
                                 }))

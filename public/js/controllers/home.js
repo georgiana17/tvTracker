@@ -12,7 +12,6 @@ app.controller("MainController", function($scope, $http, myShows, $rootScope){
         });
     }
 
-    console.log($scope.myShows)
     if($rootScope.loggedIn){
         if($scope.myShows == "No shows for this user!"){
             $scope.hasShows = false;
