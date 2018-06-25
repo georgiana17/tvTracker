@@ -32,6 +32,8 @@ app.controller("MyShowsController", function($scope, myShows, $http, $rootScope,
                     if(resp.data == "TV show deleted successfully!") {
                         for(var i=0; i < $scope.myShows.length; i++) {
                             if($scope.myShows[i][0][1] == showId) {
+                                $scope.totalEpisodes = $scope.totalEpisodes - myShows[i][0][8];
+                                $scope.totalEpisodesWatched = $scope.totalEpisodesWatched - (myShows[i][0][8] - myShows[i][0][6]);
                                 $scope.myShows.splice(i,1);
                             }
                         }

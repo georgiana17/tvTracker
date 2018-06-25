@@ -7,9 +7,18 @@ app.controller("MainController", function($scope, $http, myShows, $rootScope){
     $scope.hasShows = false;
     
     $scope.getBackground = function() {
-        $http.get("/randomImage/" + randImage).then(function(response){
-            $scope.backgroundImage = "http://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
-        });
+        if(randImage == 1399){
+            $scope.backgroundImage = "/public/images/game_of_thrones.jpg";
+        } else if(randImage == 63247){
+            $scope.backgroundImage = "/public/images/westworld.jpg" ;            
+        } else if(randImage == 44217){
+            $scope.backgroundImage = "/public/images/vikings.jpg";            
+        } else if(randImage == 66732){
+            $scope.backgroundImage = "/public/images/stranger_things.jpg";            
+        }
+        // $http.get("/randomImage/" + randImage).then(function(response){
+        //     $scope.backgroundImage = "http://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
+        // });
     }
 
     if($rootScope.loggedIn){

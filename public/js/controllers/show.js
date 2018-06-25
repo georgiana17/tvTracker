@@ -261,7 +261,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);
     // })
-
+ 
     // $http.post("/addShow/4779/64/georgy17").then(function(resp){
     //     console.log(resp);
     // })
