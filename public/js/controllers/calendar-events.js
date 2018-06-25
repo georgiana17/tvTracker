@@ -115,7 +115,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.uiConfig = {
         calendar: {
             height:  $window.innerHeight - 70,
-            editable: true,
+            editable: false,
             fixedWeekCount: false,
             displayEventTime: false,
             lang: $rootScope.locale,
@@ -141,7 +141,7 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 if($scope.viewDate){
                     uiCalendarConfig.calendars.myCalendar.fullCalendar('updateEvents', $scope.eventSources);
                 }
-                
+
                 if($scope.viewDate){
                     uiCalendarConfig.calendars.myCalendar.fullCalendar('gotoDate', $scope.viewDate);
                     $scope.viewDate = null;
