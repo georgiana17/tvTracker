@@ -83,7 +83,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             if($scope.data.backdrop_path == null) {
                 $scope.urlImage = "public/images/logo_episode_spy_original_207x35_black_1_1663x450.png"; // CHANGE PHOTO DIMENSION
             } else {
-                $scope.urlImage = "https://image.tmdb.org/t/p/original" + $scope.data.backdrop_path;
+                $scope.urlImage = "http://image.tmdb.org/t/p/original" + $scope.data.backdrop_path;
             }
             if($scope.data.first_air_date) {
                 $scope.releaseYear = $scope.data.first_air_date;
@@ -97,7 +97,7 @@ app.controller("ShowController", function($scope, $http, $routeParams, $rootScop
             if($scope.data.poster_path == null){
                 $scope.posterPath = "public/images/eye.png"
             } else {
-                $scope.posterPath = "https://image.tmdb.org/t/p/w154" + $scope.data.poster_path;
+                $scope.posterPath = "http://image.tmdb.org/t/p/w154" + $scope.data.poster_path;
             }
     
             if($rootScope.loggedIn) {

@@ -8,7 +8,7 @@ app.controller("MainController", function($scope, $http, myShows, $rootScope){
     
     $scope.getBackground = function() {
         $http.get("/randomImage/" + randImage).then(function(response){
-            $scope.backgroundImage = "https://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
+            $scope.backgroundImage = "http://image.tmdb.org/t/p/original/" + response.data.backdrop_path;
         });
     }
 

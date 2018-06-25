@@ -115,11 +115,12 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
     $scope.uiConfig = {
         calendar: {
             height:  $window.innerHeight - 70,
-            editable: false,
+            editable: true,
             fixedWeekCount: false,
             displayEventTime: false,
             lang: $rootScope.locale,
-            handleWindowResize: false,
+            handleWindowResize: true,
+            refetchResourcesOnNavigate: true,
             header: {
                 left: 'prev',
                 center: 'title',
@@ -131,6 +132,19 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 if($window.innerWidth >= 960){
                     $mdToast
                         .hide()
+                }
+                $scope.view = uiCalendarConfig.calendars.myCalendar.fullCalendar('getView');
+                $scope.viewDate = uiCalendarConfig.calendars.myCalendar.fullCalendar('getDate');
+                $scope.eventSources = uiCalendarConfig.calendars.myCalendar.fullCalendar('clientEvents');
+            },
+            eventAfterAllRender: function(){
+                if($scope.viewDate){
+                    uiCalendarConfig.calendars.myCalendar.fullCalendar('updateEvents', $scope.eventSources);
+                }
+                
+                if($scope.viewDate){
+                    uiCalendarConfig.calendars.myCalendar.fullCalendar('gotoDate', $scope.viewDate);
+                    $scope.viewDate = null;
                 }
             },
             eventMouseover: function(date, jsEvent, view) {
@@ -217,6 +231,11 @@ app.controller("CalendarController", function($scope, $filter, $rootScope, $http
                 }
             }
         }
+    }
+
+    if($window.width < 960){        
+        uiCalendarConfig.calendars.myCalendar.fullCalendar('option', 'height', $window.innerHeight - 70);
+        console.log($window.innerHeight - 70)
     }
 
     $scope.tooltipDiv = $('.tooltipSerie');
