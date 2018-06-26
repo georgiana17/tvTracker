@@ -32,13 +32,22 @@ app.controller("SettingsController", function($scope, $http, $rootScope, $mdToas
     $scope.changePass = function(newPassword){
         $http.post("/updatePassword/" + newPassword + "/" + $rootScope.user).then(function(res){
             if(res.data == "Password updated successfully!"){
-                $mdToast.show( {                   
-                        template: '<md-toast class="md-toast success"> Password updated successfully!</md-toast>',
-                        hideDelay: 6000,
-                        position: 'bottom right'
-                    }
-                )
-                
+                // $mdToast.show( {                   
+                //         template: '<md-toast class="md-toast success"> Password updated successfully!</md-toast>',
+                //         hideDelay: 6000,
+                //         position: 'bottom right'
+                //     }
+                // )
+
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content("Password updated successfully!")
+                        .position('bottom right')
+                        .theme('custom-toast')
+                        .hideDelay(4000)
+                );
+
                 // $scope.confirmPassword = "";
                 // $scope.newPassword = "";
             }
