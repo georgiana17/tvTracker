@@ -1289,7 +1289,7 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
     var serieByGenre = `http://api.themoviedb.org/3/discover/tv?api_key=${process.env.TMDB_KEY}&language=en-US&sort_by=vote_count.desc&include_adult=false&with_genres=${req.params.genre_id}&page=1`;
     fetch(`${serieByGenre}`)
       .then(resp => resp.json())
-      .then(genres => res.send(res.send({genres, genre_id:req.params.genre_id, genre_name:req.params.genre_name})))
+      .then(genres => res.send({genres: genres, genre_id:req.params.genre_id, genre_name:req.params.genre_name}))
       // .catch(err => res.send(error))
       .catch(function(err){
         console.log(err);
