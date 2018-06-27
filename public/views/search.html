@@ -7,7 +7,7 @@
         <div layout="row" layout-xs="column"  layout-wrap layout-padding>
             <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" flex-gt-lg="30" flex-lg="45" flex-md="45" flex-sm="100" md-theme-watch ng-repeat="show in tvShows" layout-wrap layout-flex layout-padding>
                 <md-card-title layout-xs="column" layout-padding>
-                    <md-card-title-media layout-xs="column" layout-padding>
+                    <md-card-title-media layout-xs="column" layout-align-xs="center center" layout-padding>
                         <a ng-href="#/show/{{show.id}}">
                             <img ng-src='{{show.poster_path != null ? "https://image.tmdb.org/t/p/original" + show.poster_path : "public/images/eye.png"}}' style="width:152px; height:228px;" class="md-card-image"/>
                         </a>
