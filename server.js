@@ -1259,7 +1259,7 @@ app.get('/allEpisodes/:serie_id/:no_of_seasons', function(req,res) {
     var videosTvShow = `http://api.themoviedb.org/3/tv/${req.params.show_id}/videos?api_key=${process.env.TMDB_KEY}&language=en-US`;
     fetch(`${videosTvShow}`)
       .then(resp => resp.json())
-      .then(videos => res.send(videos))
+      .then(videos => res.send(videos)) 
       .catch(err => res.send(error))
   })
 
