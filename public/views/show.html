@@ -81,8 +81,8 @@
         <div layout="row" layout-align="end center" layout-xs="column">
             <h1 hide-xs layout-padding>{{seasonName}}</h1>
             <span flex></span>
-            <md-button md-theme="navbar" ng-show="imdb" class="md-raised md-primary"><a target="_blank" ng-href="{{imdbUrl}}">IMDB<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></a></md-button>
-            <md-button md-theme="navbar" ng-show="trailer" class="md-raised md-primary"><a target="_blank" ng-href="{{youtubeUrl}}">Trailer<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></a></md-button>
+            <a target="_blank" ng-href="{{imdbUrl}}" ng-show="imdb"><md-button md-theme="navbar" ng-show="imdb" class="md-raised md-primary">IMDB<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></md-button></a>
+            <a target="_blank" ng-href="{{youtubeUrl}}" ng-show="trailer"><md-button md-theme="navbar" ng-show="trailer" class="md-raised md-primary">Trailer<ng-md-icon class="whiteIcon" icon="call_made"></ng-md-icon></md-button></a>
             <span flex></span>
             <md-button md-theme="navbar" class="md-raised md-primary" ng-show="!marked && loggedIn && followed" ng-click="markSeason()">Mark season as watched</md-button>
             <md-button md-theme="navbar" class="md-raised md-primary" ng-show="marked && loggedIn && followed" ng-click="unMarkSeason()">Mark season as unwatched</md-button>
@@ -90,8 +90,8 @@
         <div layout="row" layout-padding layout-xs="column">
             <!-- <div layout="row" layout-padding layout-xs="column"> -->
                 <h3 layout="row" ng-show="seasonData.episodes.length == 0" layout-padding layout-wrap flex="80" flex-sm="50">There are no episodes in this season yet!</h3>
-                <div layout-padding layout-wrap layout="row" flex="80" flex-sm="50" layout-xs="column">
-                    <md-card md-whiteframe="3" flex-xs="50" flex-sm="100" flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
+                <div layout-padding layout-wrap layout-flex layout="row" flex="80" flex-sm="50" layout-xs="column">
+                    <md-card layout-xs="column" md-whiteframe="3" flex-xs="50" flex-sm="100" flex-gt-xs="30" ng-repeat="episode in seasonData.episodes" layout-flex layout-padding>
                         <img ng-src='{{episode.still_path !== null ? "https://image.tmdb.org/t/p/w300" + episode.still_path : "public/images/episode_poster_null.png"}}' class="md-card-image" alt="Washed Out">
                         <md-card-title>
                             <md-card-title-text>
@@ -197,5 +197,13 @@
 
     .custom-stars .star-button.star-off .material-icons {
         color: #c89eb68f; 
+    }
+    @media (max-width: 599px) {
+        .layout-xs, .layout-xs-column, .layout-xs-row {
+            box-sizing: border-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: block !important;
+        }
     }
 </style>
