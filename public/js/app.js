@@ -81,7 +81,7 @@ app.controller("AppController", function($scope, $http, $mdSidenav, $mdDialog, $
         $scope.search = null;
     }
     $scope.searchTvShow = function() {
-        $scope.toggleSidenav('left');
+        $scope.toggleSidenavIfMobile();
         if(($scope.search != null &&  $scope.search !== undefined) && $scope.search != "") {
             $location.path("/search/" + $scope.search);
         } else if(($scope.sideNavSearch != null && $scope.sideNavSearch !== undefined) && $scope.sideNavSearch != "") {
